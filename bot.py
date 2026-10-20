@@ -255,6 +255,12 @@ def handle_incoming(message):
 
 if __name__ == '__main__':
     keep_alive()
-    print("Bot started...")
-    bot.remove_webhook()
-    bot.infinity_polling(skip_pending=True)
+    print("Bot starting and clearing old webhooks/pending updates...")
+    try:
+        # আগের সব ঝুলন্ত ওয়েবহুক এবং পেন্ডিং আপডেট ক্লিয়ার করা
+        bot.remove_webhook()
+    except Exception as e:
+        print(f"Webhook removal error: {e}")
+
+    # drop_pending_updates=True দিলে পুরনো কোনো জ্যাম আটকে থাকবে না
+    bot.infinity_polling(skip_pending=True, timeout=20)
