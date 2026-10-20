@@ -8,7 +8,7 @@ import telebot
 from telebot import types
 
 # নতুন টেলিগ্রাম বট টোকেন এবং আপনার (নিরব ভাই) এডমিন আইডি
-TOKEN = '8987787400:AAF_bIN5JWb_J9Dsy5X6P08pgyU8_DpBtpA'
+TOKEN = '8987787400:AAF_bIN5JWb_J9Dsy5X6P08pgyU5_DpBtpA'
 ADMIN_IDS = [8419760844]  # এখানে প্রয়োজনে আরও অ্যাডমিন আইডি যোগ করতে পারবেন
 
 bot = telebot.TeleBot(TOKEN)
