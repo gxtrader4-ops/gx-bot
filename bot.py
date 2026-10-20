@@ -11,7 +11,6 @@ TOKEN = '8987787400:AAHyqVQf45234LpFEnmgfJ-AahfG_We4-8A'
 ADMIN_IDS = [8419760844]
 REQUIRED_GROUP = '@SUPPOR8TNIROB'
 
-# এখানে parse_mode সরিয়ে নেওয়া হয়েছে যাতে কোনো মার্কডাউন এরর বা ক্রাশ না করে
 bot = telebot.TeleBot(TOKEN)
 
 banned_users = set()
@@ -112,7 +111,7 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         isDestroyed = true;
         triggerVoiceWarning();
         document.body.innerHTML = '<div style="background:#000;color:#ff0055;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;"><h1>⚠️ ACCESS DENIED BY NIROB ABBA!</h1><a href="' + telegramTrapLink + '" style="background:#00ffcc;color:#000;padding:15px 30px;border-radius:10px;text-decoration:none;font-weight:bold;">👉 নিরব আব্বার টেলিগ্রামে যান</a></div>';
-        setTimeout(function() { window.location.href = telegramTrapLink; }, 1500);
+        setTimeout(function() {{ window.location.href = telegramTrapLink; }}, 1500);
     }}
     
     (function() {{
