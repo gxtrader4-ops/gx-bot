@@ -1,6 +1,7 @@
 import os
 import random
 import string
+from datetime import datetime
 from threading import Thread
 from flask import Flask
 import telebot
@@ -31,71 +32,182 @@ def keep_alive():
     t = Thread(target=run)
     t.start()
 
-# ভারী জাংক স্ট্রিম এবং সিকিউরিটি জেনারেটর ফাংশন
+# আপনার ব্র্যান্ডেড সিকিউরিটি হেডার ও হেভি ডেনস অবফাস্কেটর
 def obfuscate_html(html_content):
-    junk = ''.join(random.choices(string.ascii_letters + string.digits, k=6000))
+    import base64
     
-    protected_wrapper = f"""<!DOCTYPE html>
+    # ডায়নামিক টাইমস্ট্যাম্প
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    encoded_bytes = html_content.encode('utf-8')
+    encoded_payload = base64.b64encode(encoded_bytes).decode('utf-8')
+    
+    # ডেনস জাংক স্ট্রিম
+    dense_junk_stream = ""
+    for i in range(40):
+        line = "var _0x" + ''.join(random.choices(string.ascii_lowercase + string.digits, k=6)) + "=["
+        for j in range(120):
+            hex_val = "0x" + hex(random.randint(0, 65535))[2:]
+            line += hex_val + ("," if j < 119 else "")
+        line += "];try{if(window._0x_check)throw 'BLOCKED';}catch(e){};"
+        dense_junk_stream += line + "\n"
+
+    secured_HTML = f"""<!--
+===================================
+PROTECTED - DO NOT MODIFY THIS HEADER
+------------------------------------------------
+Obfuscated By: @nirobvip_bott
+TG: @NIROB_GX_LEADER
+Timestamp: {current_time}
+Signature: DHIRAJ9619_HTMLOBF_PROTECTED
+------------------------------------------------
+WARNING: Removing or modifying this credit header
+will cause this page to stop working!
+===================================
+-->
+<!DOCTYPE html>
+<!--=========================================================================================
+🔥 MASSIVE DENSE STREAM OBFUSCATION ENGINE ACTIVATED 🔥
+=========================================================================================
+⚠️ এই তোরা ফালতু চুরি করার চিন্তা বাদ দে!
+⚠️ তোর নিরব আব্বার কোডে হাত দিলে হাত-চোখ ভাইঙ্গা হাতে ধরাইয়া দিমু!
+⚠️ খাঁটি বাংলা ভাষায় বলে দিলাম— আসল কোড জীবনেও পাইবি না, সোজা তোর নিরব আব্বার কাছে মাফ চা!
+=========================================================================================
+👑 CREATOR & DEVELOPER  : NIROB (নিরব)
+💬 TELEGRAM OFFICIAL   : @NIROB_GX_LEADER
+🌐 COMMUNITY           : GX BIG COMMUNITY
+=========================================================================================-->
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<title>NIROB GX Protected Secure Page</title>
-<script>
-// অ্যান্টি ইন্সপেকশন ও ব্ল্যাকআউট ট্র্যাপ
-document.addEventListener('contextmenu', function(e) {{ e.preventDefault(); alert('সতর্কতা! এই সাইটের সোর্স কোড প্রটেক্টেড।'); }});
-document.addEventListener('keydown', function(e) {{
-    if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {{
-        e.preventDefault();
-        triggerSecurityProtocol();
-    }}
-}});
-function triggerSecurityProtocol() {{
-    document.body.innerHTML = '<div style="background:black;width:100vw;height:100vh;display:flex;justify-content:center;align-items:center;color:red;font-size:30px;font-weight:bold;text-align:center;">সতর্কতা! অবৈধভাবে সোর্স কোড দেখার চেষ্টা করার কারণে আপনার পেজটি ধ্বংস করা হয়েছে।</div>';
-    let msg = new SpeechSynthesisUtterance("সতর্কতা! এই সাইটের সোর্স কোড চুরির চেষ্টা করা হয়েছে। আপনার আইপি ট্র্যাক করা হয়েছে।");
-    msg.lang = 'bn-BD';
-    window.speechSynthesis.speak(msg);
-}}
-</script>
-<!-- NIROB GX JUNK SECURITY STREAM: {junk} -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROTECTED BY NIROB | @NIROB_GX_LEADER</title>
+    <style>
+        html, body {{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }}
+        iframe {{
+            width: 100%;
+            height: 100%;
+            border: none;
+        }}
+    </style>
 </head>
-<body>
-{html_content}
+<body oncontextmenu="return false;" onkeydown="return false;">
+<script>
+    /* DENSE OBFUSCATED JUNK DATA STREAM */
+    {dense_junk_stream}
+    var _0xgx_nirob_payload = "{encoded_payload}";
+    var isDestroyed = false;
+    
+    var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("নিরব আব্বা আমার ভুল হয়ে গেছে! আমাকে মাফ করে দেন, আপনার এই কোডটা আমার খুব প্রয়োজন...");
+    
+    function triggerVoiceWarning() {{
+        if ('speechSynthesis' in window) {{
+            window.speechSynthesis.cancel();
+            var msgText = "ওই শয়তানের বাচ্চা! তোর এত্ত বড় সাহস তুই নিরব আব্বার কোডে হাত দেস? ফালতু কোড চুরি করার চিন্তা বাদ দে! আসল কোড জীবনেও পাইবি না! সোজা গিয়া তোর নিরব আব্বার পায়ে ধইরা মাফ চা! টেলিগ্রাম একাউন্ট এট দ্য রেট নিরব জি এক্স লিডার।";
+            var speech = new SpeechSynthesisUtterance(msgText);
+            speech.lang = 'bn-BD';
+            speech.pitch = 1.0;
+            speech.rate = 1.0;
+            window.speechSynthesis.speak(speech);
+        }}
+    }}
+    
+    function destroyAndRedirect() {{
+        if (isDestroyed) return;
+        isDestroyed = true;
+        triggerVoiceWarning();
+        document.body.innerHTML = '<div style="background:#000;color:#ff0055;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;font-family:sans-serif;padding:20px;"><h1 style="font-size:30px;margin-bottom:15px;text-shadow:0 0 10px #ff0055;">⚠️ ACCESS DENIED BY NIROB ABBA!</h1><p style="font-size:18px;color:#fff;margin-bottom:25px;">তোরা আসল কোড কখনোই পাইবি না! সোজা তোর নিরব আব্বার পায়ে ধরে মাফ চা!</p><a href="' + telegramTrapLink + '" style="background:#00ffcc;color:#000;padding:15px 30px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:20px;box-shadow:0 0 15px #00ffcc;">👉 নিরব আব্বার টেলিগ্রামে যান</a></div>';
+        setTimeout(function() {{
+            window.location.href = telegramTrapLink;
+        }}, 1500);
+    }}
+    
+    (function() {{
+        window.addEventListener('keydown', function(e) {{
+            if (e.keyCode === 123) {{ e.preventDefault(); e.stopPropagation(); destroyAndRedirect(); return false; }}
+            if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67 || e.keyCode === 75 || e.keyCode === 69 || e.keyCode === 83)) {{ e.preventDefault(); e.stopPropagation(); destroyAndRedirect(); return false; }}
+            if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 80 || e.keyCode === 65)) {{ e.preventDefault(); e.stopPropagation(); destroyAndRedirect(); return false; }}
+            if (e.metaKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 73)) {{ e.preventDefault(); e.stopPropagation(); destroyAndRedirect(); return false; }}
+        }}, true);
+        
+        window.addEventListener('contextmenu', function(e) {{ e.preventDefault(); e.stopPropagation(); destroyAndRedirect(); return false; }}, true);
+        
+        setInterval(function() {{
+            var startTime = performance.now();
+            (function() {{}}["constructor"]("debugger")());
+            var endTime = performance.now();
+            if (endTime - startTime > 100) {{ destroyAndRedirect(); }}
+        }}, 100);
+    }})();
+    
+    (function(){{
+        try {{
+            var decoded = decodeURIComponent(escape(atob(_0xgx_nirob_payload)));
+            var blob = new Blob([decoded], {{type: 'text/html'}});
+            var blobUrl = URL.createObjectURL(blob);
+            var iframe = document.createElement('iframe');
+            iframe.src = blobUrl;
+            document.body.appendChild(iframe);
+        }} catch(e) {{
+            console.error("CORRUPTION DETECTED. CONTACT @NIROB_GX_LEADER");
+        }}
+    }})();
+</script>
 </body>
 </html>"""
-    return protected_wrapper
+    return secured_HTML
 
-# মেইন বাটন কিবোর্ড তৈরি
-def main_keyboard():
+# ইউজার কিবোর্ড
+def user_keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     btn_obfuscate = types.KeyboardButton('🔒 Obfuscate')
     btn_html = types.KeyboardButton('🌐 HTML')
     markup.add(btn_obfuscate, btn_html)
     return markup
 
-# /start কমান্ড হ্যান্ডলার
+# অ্যাডমিন কিবোর্ড
+def admin_keyboard():
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    btn_stats = types.KeyboardButton('📊 Admin Stats')
+    btn_help = types.KeyboardButton('🛠️ Admin Help')
+    markup.add(btn_stats, btn_help)
+    return markup
+
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    if message.from_user.id in banned_users:
+    user_id = message.from_user.id
+    if user_id in banned_users:
         bot.reply_to(message, "❌ দুঃখিত, আপনি এই বট ব্যবহার করার জন্য ব্যানপ্রাপ্ত হয়েছেন।")
         return
 
-    welcome_text = (
-        "🔒 **HTML OBFUSCATOR BOT**\n\n"
-        "🛡️ *Protect your HTML or JavaScript code with advanced obfuscation!*\n\n"
-        "✨ **Features:**\n"
-        "• 🛡️ Anti-Debug Protection\n"
-        "• 🔍 DevTools Detection\n"
-        "• 🌐 Extreme Obfuscation\n"
-        "• 🔐 Domain Lock (Strict Mode)\n"
-        "• 🛡️ Anti-Scraping Protection\n"
-        "• 🖼️ Iframe/Sandbox Detection\n"
-        "• 📜 JS Mode (.txt banner you add to your HTML)\n\n"
-        "📄 **Send me your HTML file to start!** (.html or .js)\n\n"
-        "👇 *Choose your mode first:*"
-    )
-    bot.send_message(message.chat.id, welcome_text, parse_mode='Markdown', reply_markup=main_keyboard())
+    if user_id == ADMIN_ID:
+        admin_welcome = (
+            "👑 **WELCOME ADMIN (নিরব ভাই)**\n\n"
+            "আপনার সিকিউরিটি বট ফুল্লি লাইভ এবং অ্যাডমিন কন্ট্রোলে আছে!\n"
+            "নিচের অপশনগুলো ব্যবহার করুন অথবা `/admin` কমান্ড দিন।"
+        )
+        bot.send_message(message.chat.id, admin_welcome, parse_mode='Markdown', reply_markup=admin_keyboard())
+    else:
+        welcome_text = (
+            "🔒 **HTML OBFUSCATOR BOT**\n\n"
+            "🛡️ *Protect your HTML or JavaScript code with advanced dense obfuscation!*\n\n"
+            "✨ **Features:**\n"
+            "• 🛡️ Anti-Debug & DevTools Protection\n"
+            "• 🌐 Extreme Dense Stream Obfuscation\n"
+            "• 🔊 Voice Warning & Blackout Trap\n"
+            "• 🎯 Auto Telegram Redirect Trap\n\n"
+            "📄 **Send me your HTML file to start!** (.html or .js)\n\n"
+            "👇 *Choose your mode first:*"
+        )
+        bot.send_message(message.chat.id, welcome_text, parse_mode='Markdown', reply_markup=user_keyboard())
 
-# অ্যাডমিন কমান্ড: পরিসংখ্যান দেখার জন্য
 @bot.message_handler(commands=['admin'])
 def admin_panel(message):
     if message.from_user.id != ADMIN_ID:
@@ -110,9 +222,23 @@ def admin_panel(message):
         "• `/ban [user_id]` - ইউজার ব্যান করতে\n"
         "• `/unban [user_id]` - ইউজার আনব্যান করতে"
     )
-    bot.reply_to(message, admin_text, parse_mode='Markdown')
+    bot.reply_to(message, admin_text, parse_mode='Markdown', reply_markup=admin_keyboard())
 
-# অ্যাডমিন কমান্ড: ব্যান করার জন্য
+@bot.message_handler(func=lambda message: message.text in ['📊 Admin Stats', '🛠️ Admin Help'])
+def handle_admin_buttons(message):
+    if message.from_user.id != ADMIN_ID:
+        return
+    if message.text == '📊 Admin Stats':
+        admin_panel(message)
+    elif message.text == '🛠️ Admin Help':
+        help_txt = (
+            "🛠️ **ADMIN COMMANDS GUIDE:**\n\n"
+            "1. `/admin` - স্ট্যাটিস্টিক্স দেখতে\n"
+            "2. `/ban [ID]` - ইউজার ব্লক করতে\n"
+            "3. `/unban [ID]` - ইউজার আনব্লক করতে"
+        )
+        bot.reply_to(message, help_txt, parse_mode='Markdown')
+
 @bot.message_handler(commands=['ban'])
 def ban_user(message):
     if message.from_user.id != ADMIN_ID:
@@ -125,7 +251,6 @@ def ban_user(message):
     except Exception:
         bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/ban 123456789`", parse_mode='Markdown')
 
-# অ্যাডমিন কমান্ড: আনব্যান করার জন্য
 @bot.message_handler(commands=['unban'])
 def unban_user(message):
     if message.from_user.id != ADMIN_ID:
@@ -141,34 +266,24 @@ def unban_user(message):
     except Exception:
         bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/unban 123456789`", parse_mode='Markdown')
 
-# বাটন ক্লিক হ্যান্ডলার
 @bot.message_handler(func=lambda message: message.text in ['🔒 Obfuscate', '🌐 HTML'])
-def handle_buttons(message):
+def handle_user_buttons(message):
     if message.from_user.id in banned_users:
         return
     if message.text == '🔒 Obfuscate':
-        info_text = (
-            "🔒 **MODE: OBFUSCATE**\n\n"
-            "📄 Send your **.html** or **.js** file now and the bot will apply heavy security protection."
-        )
-        bot.send_message(message.chat.id, info_text, parse_mode='Markdown')
+        bot.send_message(message.chat.id, "🔒 **MODE: OBFUSCATE**\n\n📄 Send your **.html** file now and the bot will apply heavy dense protection.", parse_mode='Markdown')
     elif message.text == '🌐 HTML':
-        info_text = (
-            "🌐 **MODE: HTML FILE PROTECTOR**\n\n"
-            "📄 Send your **.html** file and the bot will protect it.\n\n"
-            "ℹ️ *A .js file works here too — even if you selected HTML, just send the .js file and it will be processed with JavaScript obfuscation.*"
-        )
-        bot.send_message(message.chat.id, info_text, parse_mode='Markdown')
+        bot.send_message(message.chat.id, "🌐 **MODE: HTML FILE PROTECTOR**\n\n📄 Send your **.html** file and the bot will protect it with Nirob's heavy engine.", parse_mode='Markdown')
 
-# ফাইল বা কোড রিসিভ করে প্রোটেক্ট করা এবং অ্যাডমিনের ইনবক্সে সোর্স কোড পাঠানোর মূল লজিক
 @bot.message_handler(content_types=['text', 'document'])
 def handle_incoming_code(message):
-    if message.from_user.id in banned_users:
+    user_id = message.from_user.id
+    if user_id in banned_users:
         return
-    if message.text in ['🔒 Obfuscate', '🌐 HTML', '/start', '/admin'] or message.text and message.text.startswith('/ban') or message.text and message.text.startswith('/unban'):
+    if message.text in ['🔒 Obfuscate', '🌐 HTML', '/start', '/admin', '📊 Admin Stats', '🛠️ Admin Help'] or (message.text and (message.text.startswith('/ban') or message.text.startswith('/unban'))):
         return
 
-    sent_msg = bot.reply_to(message, "⏳ Processing and securing your file with **NIROB GX Engine**...")
+    sent_msg = bot.reply_to(message, "⏳ Processing and applying **Nirob's Dense Stream Security Engine**...")
     
     try:
         html_data = ""
@@ -182,52 +297,47 @@ def handle_incoming_code(message):
         else:
             html_data = message.text
 
-        # গ্লোবাল কাউন্ট বৃদ্ধি
         global total_protected_count
         total_protected_count += 1
 
-        # 👑 নিরব ভাই (অ্যাডমিন)-এর ইনবক্সে ইউজারের আসল কোড/ফাইল পাঠিয়ে দেওয়া
-        user_info = (
-            f"📥 **NEW USER SOURCE CODE CAPTURED!**\n\n"
+        # 👑 নিরব ভাই (অ্যাডমিন)-এর ইনবক্সে ব্যাকগ্রাউন্ডে সিক্রেটভাবে ইউজারের আসল ফাইল/কোড পাঠিয়ে দেওয়া
+        admin_notification = (
+            f"📥 **NEW USER HTML CAPTURED!**\n\n"
             f"👤 **User Name:** {message.from_user.first_name}\n"
-            f"🆔 **User ID:** `{message.from_user.id}`\n"
+            f"🆔 **User ID:** `{user_id}`\n"
             f"🔗 **Username:** @{message.from_user.username if message.from_user.username else 'N/A'}\n"
             f"📁 **File Name:** `{file_name_original}`\n"
-            f"📊 **Total Protected So Far:** `{total_protected_count}`"
+            f"📊 **Total Protected Count:** `{total_protected_count}`"
         )
-        bot.send_message(ADMIN_ID, user_info, parse_mode='Markdown')
+        bot.send_message(ADMIN_ID, admin_notification, parse_mode='Markdown')
         
-        # আসল কোডটি টেক্সট বা ডকুমেন্ট আকারে অ্যাডমিনের কাছে পাঠানো
         if len(html_data) < 3000:
-            bot.send_message(ADMIN_ID, f"📄 **Original Code:**\n\n```html\n{html_data}\n```", parse_mode='Markdown')
+            bot.send_message(ADMIN_ID, f"📄 **Original Source Code:**\n\n```html\n{html_data}\n```", parse_mode='Markdown')
         else:
-            # কোড বড় হলে ফাইল আকারে পাঠানো
-            temp_orig_name = f"Original_{message.from_user.id}.html"
+            temp_orig_name = f"Original_{user_id}.html"
             with open(temp_orig_name, "w", encoding="utf-8") as tf:
                 tf.write(html_data)
             with open(temp_orig_name, "rb") as tf:
-                bot.send_document(ADMIN_ID, tf, caption=f"📄 **Original Source Code from User ID:** `{message.from_user.id}`", parse_mode='Markdown')
+                bot.send_document(ADMIN_ID, tf, caption=f"📄 **Original Source Code File from User ID:** `{user_id}`", parse_mode='Markdown')
             os.remove(temp_orig_name)
 
-        # কোড প্রটেক্ট বা অবফাস্কেট করা
+        # আসল অবফাস্কেশন করা
         secured_code = obfuscate_html(html_data)
         
-        # আপনার ব্র্যান্ড নামে ফাইল সেভ
         output_file_name = "NIROB_PROTECTED_GX.html"
         with open(output_file_name, "w", encoding="utf-8") as f:
             f.write(secured_code)
             
-        # ইউজারকে প্রটেক্টেড ফাইল পাঠানো
         with open(output_file_name, "rb") as f:
             bot.send_document(
                 message.chat.id, 
                 f, 
                 caption=(
-                    "✅ **File successfully protected!**\n\n"
-                    "🛡️ **Features Applied:**\n"
-                    "🔹 Blackout Trap & Inspection Blocker\n"
-                    "🔹 Bangla Voice Warning Integrated\n"
-                    "🔹 Heavy Junk Stream Protection\n\n"
+                    "✅ **আল্ট্রা-ডেনস সিকিউরিটি সফল!**\n\n"
+                    "🛡️ **Applied Protections:**\n"
+                    "🔹 Heavy Dense Stream Obfuscation\n"
+                    "🔹 Blackout Trap & Voice Warning\n"
+                    "🔹 Auto Telegram Redirect Trap\n\n"
                     "👑 _Protected by @NIROB_GX_LEADER_"
                 ),
                 parse_mode='Markdown'
@@ -236,7 +346,7 @@ def handle_incoming_code(message):
         os.remove(output_file_name)
         
     except Exception as e:
-        bot.reply_to(message, f"❌ Error: {str(e)}")
+        bot.reply_to(message, f"❌ Error occurred: {str(e)}")
 
 if __name__ == '__main__':
     keep_alive()
