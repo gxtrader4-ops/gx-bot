@@ -30,6 +30,7 @@ def keep_alive():
     t = Thread(target=run)
     t.start()
 
+# ইউজার গ্রুপে জয়েন আছে কি না তা চেক করার ফাংশন
 def check_user_membership(user_id):
     if user_id in ADMIN_IDS:
         return True
@@ -41,16 +42,18 @@ def check_user_membership(user_id):
         print(f"Membership check error: {e}")
     return False
 
+# বাধ্যতামূলক গ্রুপ জয়েনিং বাটন মেসেজ পাঠানোর ফাংশন
 def send_force_join_msg(chat_id):
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("📢 Join Support Group", url="https://t.me/SUPPOR8TNIROB"))
     markup.add(types.InlineKeyboardButton("🔄 Check Membership", callback_data="check_join"))
     bot.send_message(
         chat_id,
-        "⚠️ অ্যাক্সেস ব্লকড!\n\n"
+        "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
         "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে 'Check Membership' বাটনে ক্লিক করুন।",
-        reply_markup=markup
+        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
+        reply_markup=markup,
+        parse_mode='Markdown'
     )
 
 def obfuscate_html(html_content):
@@ -153,6 +156,7 @@ def send_welcome(message):
         bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন। যোগাযোগ করুন: @NIROB_GX_LEADER")
         return
 
+    # এখানে প্রথমে চেক করা হবে ইউজার গ্রুপে আছে কি না
     if not check_user_membership(user_id):
         send_force_join_msg(message.chat.id)
         return
@@ -160,14 +164,14 @@ def send_welcome(message):
     if user_id in ADMIN_IDS:
         bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ আছে!", reply_markup=admin_keyboard())
     else:
-        bot.send_message(message.chat.id, "🔒 HTML OBFUSCATOR BOT\n\n📄 Send your .html file to start protection!", reply_markup=user_keyboard())
+        bot.send_message(message.chat.id, "🔒 **HTML OBFUSCATOR BOT**\n\n📄 Send your .html file to start protection!", reply_markup=user_keyboard(), parse_mode='Markdown')
 
 @bot.callback_query_handler(func=lambda call: call.data == "check_join")
 def callback_check_join(call):
     user_id = call.from_user.id
     if check_user_membership(user_id):
-        bot.answer_callback_query(call.id, "✅ কনফার্ম হয়েছে!")
-        bot.send_message(call.message.chat.id, "🎉 অভিনন্দন! এখন বট ব্যবহার করতে পারেন। /start দিন।", reply_markup=user_keyboard())
+        bot.answer_callback_query(call.id, "✅ জয়েনিং কনফার্ম হয়েছে!")
+        bot.send_message(call.message.chat.id, "🎉 অভিনন্দন! এখন আপনি বট ব্যবহার করতে পারেন। /start দিন।", reply_markup=user_keyboard())
     else:
         bot.answer_callback_query(call.id, "❌ আপনি এখনো গ্রুপে জয়েন করেননি!", show_alert=True)
 
@@ -200,11 +204,13 @@ def handle_incoming(message):
         bot.reply_to(message, f"✅ ইউজার আইডি {target_id} ব্যান করা হয়েছে!")
         return
 
-    if user_id in banned_users or not check_user_membership(user_id):
-        if user_id in banned_users:
-            bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত।")
-        else:
-            send_force_join_msg(message.chat.id)
+    if user_id in banned_users:
+        bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন।")
+        return
+
+    # কোড পাঠানোর আগেও গ্রুপ জয়েনিং কড়াকড়িভাবে চেক করা হবে
+    if not check_user_membership(user_id):
+        send_force_join_msg(message.chat.id)
         return
 
     if text in ['/start', '📊 Admin Stats', '🛠️ Admin Help']:
@@ -255,12 +261,6 @@ def handle_incoming(message):
 
 if __name__ == '__main__':
     keep_alive()
-    print("Bot starting and clearing old webhooks/pending updates...")
-    try:
-        # আগের সব ঝুলন্ত ওয়েবহুক এবং পেন্ডিং আপডেট ক্লিয়ার করা
-        bot.remove_webhook()
-    except Exception as e:
-        print(f"Webhook removal error: {e}")
-
-    # drop_pending_updates=True দিলে পুরনো কোনো জ্যাম আটকে থাকবে না
-    bot.infinity_polling(skip_pending=True, timeout=20)
+    print("Bot starting...")
+    bot.remove_webhook()
+    bot.infinity_polling(skip_pending=True)
