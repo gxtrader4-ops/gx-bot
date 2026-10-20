@@ -7,8 +7,8 @@ from flask import Flask
 import telebot
 from telebot import types
 
-# আপনার সঠিক টেলিগ্রাম বট টোকেন এবং এডমিন আইডি
-TOKEN = '8987787400:AAFPia_ihTsJFEe-Lnwl0LU0z6COs8N1HDE'
+# আপনার সঠিক নতুন টেলিগ্রাম বট টোকেন এবং এডমিন আইডি
+TOKEN = '8328274170:AAFrNNK1tapx67WjaADQUXjmRc9wbPSDZ1w'
 ADMIN_IDS = [8419760844]
 
 bot = telebot.TeleBot(TOKEN, parse_mode='Markdown')
@@ -276,7 +276,7 @@ def handle_incoming_code(message):
     if user_id in banned_users:
         return
         
-    # অ্যাডমিন যদি `/ban` বা `/unban` কমান্ড দেয়, তবে সেটিকে কোড হিসেবে প্রসেস করা থেকে বাঁচানোর ফিল্টার
+    # অ্যাডমিন কমান্ড ফিল্টার
     if message.text and (message.text.startswith('/ban') or message.text.startswith('/unban') or message.text.startswith('/admin') or message.text.startswith('/start')):
         return
 
