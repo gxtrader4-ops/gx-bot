@@ -7,9 +7,17 @@ from flask import Flask
 import telebot
 from telebot import types
 
-# আপনার সঠিক টেলিগ্রাম বট টোকেন এবং এডমিন আইডি
+# আপনার বট টোকেন ও এডমিন আইডি
 TOKEN = '8987787400:AAFPia_ihTsJFEe-Lnwl0LU0z6COs8N1HDE'
 ADMIN_IDS = [8419760844]
+
+# রিকোয়ার্ড গ্রুপ ইউজারনেম/লিঙ্ক
+REQUIRED_GROUP = "@SUPPOR8TNIROB"
+REQUIRED_GROUP_LINK = "https://t.me/SUPPOR8TNIROB"
+
+# ব্র্যান্ডিং ইউজারনেমস
+BOT_USERNAME = "@nirob_team_Obucsate_bot"
+LEADER_USERNAME = "@NIROB_GX_LEADER"
 
 bot = telebot.TeleBot(TOKEN, parse_mode='Markdown')
 
@@ -17,7 +25,7 @@ bot = telebot.TeleBot(TOKEN, parse_mode='Markdown')
 banned_users = set()
 total_protected_count = 0
 
-# ফ্লাস্ক সার্ভার (Render ফ্রি টায়ারে ২৪ ঘণ্টা সচল রাখার জন্য)
+# ফ্লাস্ক সার্ভার (Render ২৪/৭ সচল রাখার জন্য)
 app = Flask('')
 
 @app.route('/')
@@ -32,7 +40,40 @@ def keep_alive():
     t = Thread(target=run)
     t.start()
 
-# আপনার আসল ব্রান্ডেড সিকিউরিটি হেডার ও হেভি ডেনস অবফাস্কেটর
+# গ্রুপে সদস্য কিনা তা যাচাই করার ফাংশন
+def is_user_joined(user_id):
+    if user_id in ADMIN_IDS:
+        return True
+    try:
+        member = bot.get_chat_member(REQUIRED_GROUP, user_id)
+        if member.status in ['creator', 'administrator', 'member']:
+            return True
+        return False
+    except Exception:
+        return False
+
+# জয়েন বাধ্যতামূলক করার কিবোর্ড
+def force_join_keyboard():
+    markup = types.InlineKeyboardMarkup()
+    btn_group = types.InlineKeyboardButton("📢 Join Support Group", url=REQUIRED_GROUP_LINK)
+    btn_check = types.InlineKeyboardButton("✅ I Have Joined", callback_data="check_join")
+    markup.add(btn_group)
+    markup.add(btn_check)
+    return markup
+
+# ইউজার রিফ্লেক্স কিবোর্ড
+def user_keyboard():
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    markup.add(types.KeyboardButton('🔒 Obfuscate'), types.KeyboardButton('🌐 HTML'))
+    return markup
+
+# অ্যাডমিন কিবোর্ড
+def admin_keyboard():
+    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+    markup.add(types.KeyboardButton('📊 Admin Stats'), types.KeyboardButton('🛠️ Admin Help'))
+    return markup
+
+# অবফাস্কেটর ইঞ্জিনের আপডেট
 def obfuscate_html(html_content):
     import base64
     
@@ -54,7 +95,7 @@ def obfuscate_html(html_content):
 ===================================
 PROTECTED - DO NOT MODIFY THIS HEADER
 ------------------------------------------------
-Obfuscated By: @nirobvip_bott
+Obfuscated By: @nirob_team_Obucsate_bot
 TG: @NIROB_GX_LEADER
 Timestamp: {current_time}
 Signature: NIROB_GX_PROTECTED_ENGINE
@@ -73,6 +114,7 @@ will cause this page to stop working!
 =========================================================================================
 👑 CREATOR & DEVELOPER  : NIROB (নিরব)
 💬 TELEGRAM OFFICIAL   : @NIROB_GX_LEADER
+🤖 OFFICIAL BOT        : @nirob_team_Obucsate_bot
 🌐 COMMUNITY           : GX BIG COMMUNITY
 =========================================================================================-->
 <html lang="bn">
@@ -161,33 +203,57 @@ will cause this page to stop working!
 </html>"""
     return secured_HTML
 
-# ইউজার কিবোর্ড
-def user_keyboard():
-    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    markup.add(types.KeyboardButton('🔒 Obfuscate'), types.KeyboardButton('🌐 HTML'))
-    return markup
-
-# অ্যাডমিন কিবোর্ড
-def admin_keyboard():
-    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    markup.add(types.KeyboardButton('📊 Admin Stats'), types.KeyboardButton('🛠️ Admin Help'))
-    return markup
-
+# /start হ্যান্ডলার
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     user_id = message.from_user.id
     if user_id in banned_users:
-        bot.reply_to(message, "❌ দুঃখিত, আপনি এই বট ব্যবহার করার জন্য ব্যানপ্রাপ্ত হয়েছেন।")
+        bot.reply_to(message, "❌ দুঃখিত, আপনি এই বট ব্যবহার করার জন্য ব্যানপ্রাপ্ত হয়েছেন।")
         return
 
+    # এডমিন চেক
     if user_id in ADMIN_IDS:
         admin_welcome = (
             "👑 **WELCOME ADMIN (নিরব ভাই)**\n\n"
             "আপনার নতুন সিকিউরিটি বট ফুল্লি লাইভ এবং অ্যাডমিন কন্ট্রোলে আছে!\n"
-            "নিচের অপشنগুলো ব্যবহার করুন অথবা `/admin` কমান্ড দিন।"
+            "নিচের অপশনগুলো ব্যবহার করুন অথবা `/admin` কমান্ড দিন।"
         )
         bot.send_message(message.chat.id, admin_welcome, reply_markup=admin_keyboard())
-    else:
+        return
+
+    # মেম্বারশিপ ভেরিফিকেশন চেক
+    if not is_user_joined(user_id):
+        join_msg = (
+            "⚠️ **মাস্ট জয়েন নোটিশ!**\n\n"
+            "আমাদের বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন করতে হবে।\n\n"
+            "👇 **নিচের লিংকে ক্লিক করে গ্রুপে জয়েন করুন এবং '✅ I Have Joined' বাটনে ক্লিক করুন:**"
+        )
+        bot.send_message(message.chat.id, join_msg, reply_markup=force_join_keyboard())
+        return
+
+    # ইউজার ভেরিফাইড হলে ওয়েলকাম মেসেজ
+    welcome_text = (
+        "🔒 **HTML OBFUSCATOR BOT**\n\n"
+        "🛡️ *Protect your HTML or JavaScript code with advanced dense obfuscation!*\n\n"
+        "✨ **Features:**\n"
+        "• 🛡️ Anti-Debug & DevTools Protection\n"
+        "• 🌐 Extreme Dense Stream Obfuscation\n"
+        "• 🔊 Voice Warning & Blackout Trap\n"
+        "• 🎯 Auto Telegram Redirect Trap (@NIROB_GX_LEADER)\n\n"
+        "📄 **Send me your HTML file to start!** (.html or .js)\n\n"
+        "👇 *Choose your mode first:*"
+    )
+    bot.send_message(message.chat.id, welcome_text, reply_markup=user_keyboard())
+
+# কলব্যাক ক্যোয়ারী হ্যান্ডলার (I Have Joined বাটনের জন্য)
+@bot.callback_query_handler(func=lambda call: call.data == "check_join")
+def check_join_callback(call):
+    user_id = call.from_user.id
+    
+    if is_user_joined(user_id):
+        bot.answer_callback_query(call.id, "✅ ধন্যবাদ! আপনি সফলভাবে গ্রুপে জয়েন করেছেন।", show_alert=True)
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+        
         welcome_text = (
             "🔒 **HTML OBFUSCATOR BOT**\n\n"
             "🛡️ *Protect your HTML or JavaScript code with advanced dense obfuscation!*\n\n"
@@ -199,8 +265,11 @@ def send_welcome(message):
             "📄 **Send me your HTML file to start!** (.html or .js)\n\n"
             "👇 *Choose your mode first:*"
         )
-        bot.send_message(message.chat.id, welcome_text, reply_markup=user_keyboard())
+        bot.send_message(call.message.chat.id, welcome_text, reply_markup=user_keyboard())
+    else:
+        bot.answer_callback_query(call.id, "❌ আপনি এখনো গ্রুপে জয়েন করেননি! আগে জয়েন করুন।", show_alert=True)
 
+# এডমিন প্যানেল
 @bot.message_handler(commands=['admin'])
 def admin_panel(message):
     if message.from_user.id not in ADMIN_IDS:
@@ -240,9 +309,9 @@ def ban_user(message):
         parts = message.text.split()
         target_id = int(parts[1])
         banned_users.add(target_id)
-        bot.reply_to(message, f"✅ ইউজার `{target_id}` সফলভাবে ব্যান করা হয়েছে।")
+        bot.reply_to(message, f"✅ ইউজার `{target_id}` সফলভাবে ব্যান করা হয়েছে।")
     except Exception:
-        bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/ban 123456789`")
+        bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/ban 123456789`")
 
 @bot.message_handler(commands=['unban'])
 def unban_user(message):
@@ -253,16 +322,24 @@ def unban_user(message):
         target_id = int(parts[1])
         if target_id in banned_users:
             banned_users.remove(target_id)
-            bot.reply_to(message, f"✅ ইউজার `{target_id}` আনব্যান করা হয়েছে।")
+            bot.reply_to(message, f"✅ ইউজার `{target_id}` আনব্যান করা হয়েছে।")
         else:
             bot.reply_to(message, "⚠️ এই ইউজার ব্যান লিস্টে নেই।")
     except Exception:
-        bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/unban 123456789`")
+        bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/unban 123456789`")
 
 @bot.message_handler(func=lambda message: message.text in ['🔒 Obfuscate', '🌐 HTML'])
 def handle_user_buttons(message):
-    if message.from_user.id in banned_users:
+    user_id = message.from_user.id
+    if user_id in banned_users:
         return
+    
+    # গ্রুপ মেম্বারশিপ চেক
+    if not is_user_joined(user_id):
+        join_msg = "⚠️ **আপনাকে আগে আমাদের সাপোর্ট গ্রুপে জয়েন করতে হবে!**"
+        bot.send_message(message.chat.id, join_msg, reply_markup=force_join_keyboard())
+        return
+
     if message.text == '🔒 Obfuscate':
         bot.send_message(message.chat.id, "🔒 **MODE: OBFUSCATE**\n\n📄 Send your **.html** file now and the bot will apply heavy dense protection.")
     elif message.text == '🌐 HTML':
@@ -273,6 +350,13 @@ def handle_incoming_code(message):
     user_id = message.from_user.id
     if user_id in banned_users:
         return
+
+    # গ্রুপ মেম্বারশিপ চেক
+    if not is_user_joined(user_id):
+        join_msg = "⚠️ **ফাইল প্রসেস করতে আগে সাপোর্ট গ্রুপে জয়েন করুন!**"
+        bot.send_message(message.chat.id, join_msg, reply_markup=force_join_keyboard())
+        return
+
     if message.text in ['🔒 Obfuscate', '🌐 HTML', '/start', '/admin', '📊 Admin Stats', '🛠️ Admin Help'] or (message.text and (message.text.startswith('/ban') or message.text.startswith('/unban'))):
         return
 
@@ -344,6 +428,5 @@ def handle_incoming_code(message):
 if __name__ == '__main__':
     keep_alive()
     print("Bot is starting with background thread...")
-    # সেফ পোলিং মেথড যা রেন্ডারে কখনোই ক্র্যাশ করবে না
     bot.remove_webhook()
     bot.infinity_polling(skip_pending=True)
