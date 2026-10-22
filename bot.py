@@ -47,9 +47,10 @@ def send_force_join_msg(chat_id):
     markup.add(types.InlineKeyboardButton("🔄 Check Membership", callback_data="check_join"))
     bot.send_message(
         chat_id,
-        "⚠️ এক্সেস ব্লকড!\n\n"
+        "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
         "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে 'Check Membership' বাটনে ক্লিক করুন।"
+        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
+        reply_markup=markup
     )
 
 def obfuscate_html(html_content):
