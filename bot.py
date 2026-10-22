@@ -66,7 +66,7 @@ def obfuscate_html(html_content):
         for j in range(120):
             hex_val = "0x" + hex(random.randint(0, 65535))[2:]
             line += hex_val + ("," if j < 119 else "")
-        line += "];try{if(window._0x_check)throw 'BLOCKED';}catch(e){};"
+        line += "];try{{if(window._0x_check)throw 'BLOCKED';}}catch(e){{}};"
         dense_junk_stream += line + "\n"
 
     template = """<!--
@@ -133,7 +133,7 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         if (widthThreshold || heightThreshold) {{
             destroyAndRedirect();
         }}
-    }, 500);
+    }}, 500);
     
     (function(){{
         try {{
