@@ -56,8 +56,6 @@ def send_force_join_msg(chat_id):
 def obfuscate_html(html_content):
     import base64
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    encoded_bytes = html_content.encode('utf-8')
-    encoded_payload = base64.b64encode(encoded_bytes).decode('utf-8')
     
     dense_junk_stream = ""
     for i in range(40):
@@ -68,31 +66,9 @@ def obfuscate_html(html_content):
         line += "];try{if(window._0x_check)throw 'BLOCKED';}catch(e){};"
         dense_junk_stream += line + "\n"
 
-    secured_HTML = """<!--
-===================================
-PROTECTED - DO NOT MODIFY THIS HEADER
-------------------------------------------------
-Obfuscated By: @NIROB_GX_LEADER
-Bot Username: @nirob_team_Obucsate_bot
-Timestamp: """ + current_time + """
-Signature: NIROB_GX_PROTECTED_ENGINE
-===================================
--->
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROTECTED BY NIROB | @nirob_team_Obucsate_bot</title>
-    <style>
-        html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: sans-serif; }
-        iframe { width:100%; height:100%; border:none; display:block; }
-    </style>
-</head>
-<body oncontextmenu="return false;" onkeydown="return false;">
+    protection_code = """
 <script>
     """ + dense_junk_stream + """
-    var _0xgx_nirob_payload = '""" + encoded_payload + """';
     var isDestroyed = false;
     var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("ওহে নিরব আব্বা! আমার ভুল হয়ে গেছে, আপনার কোড চুরি করতে গেছিলাম! আমাকে ক্ষমা করে দেন আব্বা...");
     
@@ -110,7 +86,7 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         if (isDestroyed) return;
         isDestroyed = true;
         triggerVoiceWarning();
-        document.body.innerHTML = '<div style="background:#000;color:#ff0055;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;"><h1>⚠️ তোর মার সাউয়ার মধ্যে কোড ভরে দিমু শুয়োরের বাচ্চা!</h1><p style="color:#fff;margin:15px 0;font-size:16px;">নিরব আব্বার কোড চুরি করতে আইছো? তাড়াতাড়ি নিরব আব্বাকে @NIROB_GX_LEADER এ গিয়ে আব্বা ডাকো এবং মাফ চাও!</p><p style="color:#00ffcc;font-size:14px;margin-bottom:20px;">🤖 Secured by Bot: @nirob_team_Obucsate_bot</p><a href="' + telegramTrapLink + '" style="background:#00ffcc;color:#000;padding:15px 30px;border-radius:10px;text-decoration:none;font-weight:bold;">👉 নিরব আব্বার টেলিগ্রামে যান (মাফ চান)</a></div>';
+        document.body.innerHTML = '<div style="background:#000;color:#ff0055;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;position:fixed;top:0;left:0;z-index:999999;"><h1>⚠️ তোর মার সাউয়ার মধ্যে কোড ভরে দিমু শুয়োরের বাচ্চা!</h1><p style="color:#fff;margin:15px 0;font-size:16px;">নিরব আব্বার কোড চুরি করতে আইছো? তাড়াতাড়ি নিরব আব্বাকে @NIROB_GX_LEADER এ গিয়ে আব্বা ডাকো এবং মাফ চাও!</p><p style="color:#00ffcc;font-size:14px;margin-bottom:20px;">🤖 Secured by Bot: @nirob_team_Obucsate_bot</p><a href="' + telegramTrapLink + '" style="background:#00ffcc;color:#000;padding:15px 30px;border-radius:10px;text-decoration:none;font-weight:bold;">👉 নিরব আব্বার টেলিগ্রামে যান (মাফ চান)</a></div>';
         setTimeout(function() { window.location.href = telegramTrapLink; }, 2000);
     }
     
@@ -133,25 +109,30 @@ Signature: NIROB_GX_PROTECTED_ENGINE
             destroyAndRedirect();
         }
     }, 500);
-    
-    // Safe Blob Iframe Rendering Engine (Fixes Telegram Black Screen)
-    (function(){
-        try {
-            var decoded = decodeURIComponent(escape(atob(_0xgx_nirob_payload)));
-            var blob = new Blob([decoded], {type: 'text/html;charset=utf-8'});
-            var blobUrl = URL.createObjectURL(blob);
-            var iframe = document.createElement('iframe');
-            iframe.src = blobUrl;
-            document.body.appendChild(iframe);
-        } catch(e) {
-            destroyAndRedirect();
-        }
-    })();
 </script>
-</body>
-</html>"""
-    
-    return secured_HTML
+"""
+
+    header_comment = """<!--
+===================================
+PROTECTED - DO NOT MODIFY THIS HEADER
+------------------------------------------------
+Obfuscated By: @NIROB_GX_LEADER
+Bot Username: @nirob_team_Obucsate_bot
+Timestamp: """ + current_time + """
+Signature: NIROB_GX_PROTECTED_ENGINE
+===================================
+-->
+"""
+
+    # সরাসরি ইউজারের এইচটিএমএল ফাইলের ভেতরে সিকিউরিটি কোড ইনজেক্ট করা
+    if "<head>" in html_content:
+        html_content = html_content.replace("<head>", "<head>" + protection_code, 1)
+    elif "<html>" in html_content:
+        html_content = html_content.replace("<html>", "<html><head>" + protection_code + "</head>", 1)
+    else:
+        html_content = protection_code + html_content
+
+    return header_comment + html_content
 
 def user_keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
