@@ -69,13 +69,13 @@ def obfuscate_html(html_content):
         line += "];try{if(window._0x_check)throw 'BLOCKED';}catch(e){};"
         dense_junk_stream += line + "\n"
 
-    secured_HTML = f"""<!--
+    template = """<!--
 ===================================
 PROTECTED - DO NOT MODIFY THIS HEADER
 ------------------------------------------------
 Obfuscated By: @NIROB_GX_LEADER
 Bot Username: @nirob_team_Obucsate_bot
-Timestamp: {current_time}
+Timestamp: {timestamp}
 Signature: NIROB_GX_PROTECTED_ENGINE
 ===================================
 -->
@@ -92,8 +92,8 @@ Signature: NIROB_GX_PROTECTED_ENGINE
 </head>
 <body oncontextmenu="return false;" onkeydown="return false;">
 <script>
-    {dense_junk_stream}
-    var _0xgx_nirob_payload = "{encoded_payload}";
+    {junk_stream}
+    var _0xgx_nirob_payload = "{payload}";
     var isDestroyed = false;
     var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("ওহে নিরব আব্বা! আমার ভুল হয়ে গেছে, আপনার কোড চুরি করতে গেছিলাম! আমাকে ক্ষমা করে দেন আব্বা...");
     
@@ -133,7 +133,7 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         if (widthThreshold || heightThreshold) {{
             destroyAndRedirect();
         }}
-    }, 500);
+    }}, 500);
     
     (function(){{
         try {{
@@ -150,7 +150,8 @@ Signature: NIROB_GX_PROTECTED_ENGINE
 </script>
 </body>
 </html>"""
-    return secured_HTML
+    
+    return template.format(timestamp=current_time, junk_stream=dense_junk_stream, payload=encoded_payload)
 
 def user_keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
