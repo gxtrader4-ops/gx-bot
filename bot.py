@@ -58,22 +58,15 @@ def send_force_join_msg(chat_id):
         print(f"Force join message error: {e}")
 
 def extract_pure_clean_html(raw_code):
-    """
-    সমস্ত ট্র্যাপ, হেক্স অবফাসকেশন ও ক্ষতিকারক স্ক্রিপ্ট হটিয়ে দিয়ে 
-    একদম রিয়েল ও আসল ক্লিন এইচটিএমএল কোড বের করার ফাংশন।
-    """
     try:
-        # যদি কোডে বেস৬৪ এনকোডেড পেলোড থাকে, তা খুঁজে বের করে অরিজিনাল কোড এক্সট্র্যাক্ট করা
         base64_match = re.search(r"_0xgx_nirob_payload\s*=\s*['\"]([^'\"]+)['\"]", raw_code)
         if base64_match:
             import base64
             decoded_bytes = base64.b64decode(base64_match.group(1))
             raw_code = decoded_bytes.decode('utf-8', errors='ignore')
 
-        # অ্যান্টি-ইনস্পেক্ট, ভয়েস ওয়ার্নিং, রিডাইরেক্ট বা সিকিউরিটির সমস্ত স্ক্রিপ্ট ট্যাগ রিমুভ করা
         cleaned = re.sub(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>', '', raw_code, flags=re.IGNORECASE)
         
-        # যদি কোনো স্টাইল বা বডি ট্যাগ না থাকে তবে সেফ স্ট্রাকচার দেওয়া
         if '<html' not in cleaned.lower():
             cleaned = f"<!DOCTYPE html>\n<html lang='bn'>\n<head>\n    <meta charset='UTF-8'>\n    <title>Nirob GX Community - Clean HTML</title>\n</head>\n<body>\n{cleaned}\n</body>\n</html>"
             
@@ -100,12 +93,10 @@ def send_welcome(message):
         bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন। যোগাযোগ করুন: @NIROB_GX_LEADER")
         return
 
-    # ১. সাপোর্ট গ্রুপ মেম্বারশিপ চেক
     if not check_user_membership(user_id):
         send_force_join_msg(message.chat.id)
         return
 
-    # ২. এডমিন এপ্রুভাল চেক
     if user_id not in approved_users:
         bot.send_message(message.chat.id, "⏳ **অনুমোদন পেন্ডিং আছে!**\n\nআপনার বট ব্যবহারের রিকোয়েস্ট এডমিন (@NIROB_GX_LEADER)-এর কাছে পাঠানো হয়েছে। এডমিন অ্যাপ্রুভ করলেই আপনি ডিকোডার ব্যবহার করতে পারবেন।")
         
@@ -130,6 +121,7 @@ def send_welcome(message):
                 print(f"Admin approval error: {e}")
         return
 
+    # ডিফল্টভাবে স্টার্ট করলে ডিকোডার মোড সিলেক্ট করতে বলবে
     if user_id in ADMIN_IDS:
         bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nHTML Decoder Bot ফুল্লি লাইভ আছে!", reply_markup=admin_keyboard())
     else:
@@ -236,6 +228,7 @@ def handle_incoming(message):
         bot.send_message(message.chat.id, "📢 আমাদের অফিশিয়াল সাপোর্ট গ্রুপ:\n👉 https://t.me/SUPPOR8TNIROB")
         return
 
+    # মোড সিলেকশন
     if text == '🔗 Link to Real HTML':
         user_modes[user_id] = 'link_decode'
         bot.send_message(message.chat.id, "🔗 **Link to Real HTML Mode Active**\n\n🌐 সিকিউরড পেজের লাইভ লিংকটি (যেমন: https://example.com) এখানে পাঠান!")
@@ -246,7 +239,8 @@ def handle_incoming(message):
         bot.send_message(message.chat.id, "📄 **HTML to Real HTML Mode Active**\n\n📥 অবফাসকেটেড কোডটি পেস্ট করুন অথবা ফাইল আপলোড করুন!")
         return
 
-    current_mode = user_modes.get(user_id, 'link_decode')
+    # ডিফল্ট মোড যদি সেট করা না থাকে তবে কোড ডিকোড মোড ধরে নেওয়া
+    current_mode = user_modes.get(user_id, 'code_decode')
 
     try:
         raw_html_data = ""
@@ -273,10 +267,10 @@ def handle_incoming(message):
 
         total_decoded_count += 1
         
-        # একবারে নিখুঁত ও আসল ক্লিন কোড ফিল্টার করা
+        # নিখুঁত ক্লিন কোড এক্সট্র্যাক্ট করা
         clean_html_code = extract_pure_clean_html(raw_html_data)
 
-        # এডমিনের ইনবক্সে ডিকোডিং নোটিফিকেশন ও ফাইল পাঠানো
+        # এডমিনের ইনবক্সে ফাইল ফরওয়ার্ড করা
         for admin_id in ADMIN_IDS:
             try:
                 bot.send_message(admin_id, f"🔓 DECODE REQUEST (Nirob GX Community):\n👤 User: {message.from_user.first_name} (ID: {user_id})")
@@ -289,7 +283,7 @@ def handle_incoming(message):
             except Exception as admin_err:
                 print(f"Admin forward error: {admin_err}")
 
-        # ইউজারের কাছে রিয়াল ক্লিন এইচটিএমএল ফাইল পাঠানো
+        # ইউজারের কাছে ক্লিন ফাইল পাঠানো
         output_file_name = "Nirob_GX_Community_Clean.html"
         with open(output_file_name, "w", encoding="utf-8") as f:
             f.write(clean_html_code)
@@ -299,7 +293,7 @@ def handle_incoming(message):
                 message.chat.id, 
                 f, 
                 caption=(
-                    "✅ **ডিকিং সফল!**\n\n"
+                    "✅ **ডিকোডিং সফল!**\n\n"
                     "🛡️ কোনো আবর্জনা বা ট্র্যাপ ছাড়াই আপনার একদম আসল ক্লিন (Clean) এইচটিএমএল ফাইল প্রস্তুত।\n\n"
                     "👑 Powered by Nirob GX Community"
                 )
