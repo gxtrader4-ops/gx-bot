@@ -47,10 +47,9 @@ def send_force_join_msg(chat_id):
     markup.add(types.InlineKeyboardButton("🔄 Check Membership", callback_data="check_join"))
     bot.send_message(
         chat_id,
-        "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
+        "⚠️ এক্সেস ব্লকড!\n\n"
         "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
-        reply_markup=markup
+        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে 'Check Membership' বাটনে ক্লিক করুন।"
     )
 
 def obfuscate_html(html_content):
@@ -65,16 +64,16 @@ def obfuscate_html(html_content):
         for j in range(120):
             hex_val = "0x" + hex(random.randint(0, 65535))[2:]
             line += hex_val + ("," if j < 119 else "")
-        line += "];try{if(window._0x_check)throw 'BLOCKED';}catch(e){};"
+        line += "];try{{if(window._0x_check)throw 'BLOCKED';}}catch(e){{}};"
         dense_junk_stream += line + "\n"
 
-    secured_HTML = """<!--
+    template = """<!--
 ===================================
 PROTECTED - DO NOT MODIFY THIS HEADER
 ------------------------------------------------
 Obfuscated By: @NIROB_GX_LEADER
 Bot Username: @nirob_team_Obucsate_bot
-Timestamp: """ + current_time + """
+Timestamp: {timestamp}
 Signature: NIROB_GX_PROTECTED_ENGINE
 ===================================
 -->
@@ -82,64 +81,75 @@ Signature: NIROB_GX_PROTECTED_ENGINE
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PROTECTED BY NIROB | @nirob_team_Obucsate_bot</title>
     <style>
-        html, body { margin:0; padding:0; width:100%; height:100%; background:#000; font-family: sans-serif; }
+        html, body {{ margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: sans-serif; }}
+        iframe {{ width:100%; height:100%; border:none; }}
     </style>
 </head>
 <body oncontextmenu="return false;" onkeydown="return false;">
 <script>
-    """ + dense_junk_stream + """
-    var _0xgx_nirob_payload = '""" + encoded_payload + """';
+    {junk_stream}
+    var _0xgx_nirob_payload = "{payload}";
     var isDestroyed = false;
     var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("ওহে নিরব আব্বা! আমার ভুল হয়ে গেছে, আপনার কোড চুরি করতে গেছিলাম! আমাকে ক্ষমা করে দেন আব্বা...");
     
-    function triggerVoiceWarning() {
-        if ('speechSynthesis' in window) {
+    function triggerVoiceWarning() {{
+        if ('speechSynthesis' in window) {{
             window.speechSynthesis.cancel();
             var msgText = "ওই শুয়োরের বাচ্চা! তোর এত বড় সাহস তুই নিরব আব্বার কোডে হাত দিস? ফালতু কোড চুরি করার চিন্তা বাদ দে! তোর মার সাউয়ার মধ্যে কোড ভরে দিমু হারামজাদা!";
             var speech = new SpeechSynthesisUtterance(msgText);
             speech.lang = 'bn-BD';
             window.speechSynthesis.speak(speech);
-        }
-    }
+        }}
+    }}
     
-    function destroyAndRedirect() {
+    function destroyAndRedirect() {{
         if (isDestroyed) return;
         isDestroyed = true;
         triggerVoiceWarning();
         document.body.innerHTML = '<div style="background:#000;color:#ff0055;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;"><h1>⚠️ তোর মার সাউয়ার মধ্যে কোড ভরে দিমু শুয়োরের বাচ্চা!</h1><p style="color:#fff;margin:15px 0;font-size:16px;">নিরব আব্বার কোড চুরি করতে আইছো? তাড়াতাড়ি নিরব আব্বাকে @NIROB_GX_LEADER এ গিয়ে আব্বা ডাকো এবং মাফ চাও!</p><p style="color:#00ffcc;font-size:14px;margin-bottom:20px;">🤖 Secured by Bot: @nirob_team_Obucsate_bot</p><a href="' + telegramTrapLink + '" style="background:#00ffcc;color:#000;padding:15px 30px;border-radius:10px;text-decoration:none;font-weight:bold;">👉 নিরব আব্বার টেলিগ্রামে যান (মাফ চান)</a></div>';
-        setTimeout(function() { window.location.href = telegramTrapLink; }, 2000);
-    }
+        setTimeout(function() {{ window.location.href = telegramTrapLink; }}, 2000);
+    }}
     
-    window.addEventListener('keydown', function(e) {
-        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+    window.addEventListener('keydown', function(e) {{
+        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {{
             destroyAndRedirect();
             return false;
-        }
-    }, true);
+        }}
+    }}, true);
     
-    window.addEventListener('contextmenu', function(e) {
+    window.addEventListener('contextmenu', function(e) {{
         destroyAndRedirect();
         return false;
-    }, true);
+    }}, true);
 
-    (function(){
-        try {
-            var decoded = decodeURIComponent(escape(atob(_0xgx_nirob_payload)));
-            document.open();
-            document.write(decoded);
-            document.close();
-        } catch(e) {
+    setInterval(function() {{
+        var widthThreshold = window.outerWidth - window.innerWidth > 160;
+        var heightThreshold = window.outerHeight - window.innerHeight > 160;
+        if (widthThreshold || heightThreshold) {{
             destroyAndRedirect();
-        }
-    })();
+        }}
+    }, 500);
+    
+    (function(){{
+        try {{
+            var decoded = decodeURIComponent(escape(atob(_0xgx_nirob_payload)));
+            var blob = new Blob([decoded], {{type: 'text/html;charset=utf-8'}});
+            var blobUrl = URL.createObjectURL(blob);
+            var iframe = document.createElement('iframe');
+            iframe.src = blobUrl;
+            document.body.appendChild(iframe);
+        }} catch(e) {{
+            destroyAndRedirect();
+        }}
+    }})();
 </script>
 </body>
 </html>"""
     
-    return secured_HTML
+    return template.format(timestamp=current_time, junk_stream=dense_junk_stream, payload=encoded_payload)
 
 def user_keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
