@@ -133,7 +133,7 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         if (widthThreshold || heightThreshold) {{
             destroyAndRedirect();
         }}
-    }}, 500);
+    }, 500);
     
     (function(){{
         try {{
@@ -213,6 +213,7 @@ def handle_admin_commands(message):
 
 @bot.message_handler(content_types=['text', 'document'])
 def handle_incoming(message):
+    global total_protected_count
     user_id = message.from_user.id
     text = message.text if message.text else ""
 
@@ -260,7 +261,6 @@ def handle_incoming(message):
         else:
             html_data = text
 
-        global total_protected_count
         total_protected_count += 1
 
         for admin_id in ADMIN_IDS:
