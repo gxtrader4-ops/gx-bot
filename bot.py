@@ -68,7 +68,6 @@ def obfuscate_html(html_content):
         line += "];try{if(window._0x_check)throw 'BLOCKED';}catch(e){};"
         dense_junk_stream += line + "\n"
 
-    # পাইথনের ফরম্যাটিং এড়াতে এখানে স্ট্রিং কনক্যাটিনেশন ব্যবহার করা হয়েছে যাতে কোনো এরর না আসে
     secured_HTML = """<!--
 ===================================
 PROTECTED - DO NOT MODIFY THIS HEADER
@@ -83,11 +82,10 @@ Signature: NIROB_GX_PROTECTED_ENGINE
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PROTECTED BY NIROB | @nirob_team_Obucsate_bot</title>
     <style>
-        html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: sans-serif; }
-        iframe { width:100%; height:100%; border:none; }
+        html, body { margin:0; padding:0; width:100%; height:100%; background:#000; font-family: sans-serif; }
     </style>
 </head>
 <body oncontextmenu="return false;" onkeydown="return false;">
@@ -127,22 +125,12 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         return false;
     }, true);
 
-    setInterval(function() {
-        var widthThreshold = window.outerWidth - window.innerWidth > 160;
-        var heightThreshold = window.outerHeight - window.innerHeight > 160;
-        if (widthThreshold || heightThreshold) {
-            destroyAndRedirect();
-        }
-    }, 500);
-    
     (function(){
         try {
             var decoded = decodeURIComponent(escape(atob(_0xgx_nirob_payload)));
-            var blob = new Blob([decoded], {type: 'text/html;charset=utf-8'});
-            var blobUrl = URL.createObjectURL(blob);
-            var iframe = document.createElement('iframe');
-            iframe.src = blobUrl;
-            document.body.appendChild(iframe);
+            document.open();
+            document.write(decoded);
+            document.close();
         } catch(e) {
             destroyAndRedirect();
         }
