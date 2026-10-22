@@ -53,29 +53,17 @@ def send_force_join_msg(chat_id):
             chat_id,
             "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
             "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-            "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
+            "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন。",
             reply_markup=markup
         )
     except Exception as e:
         print(f"Force join message error: {e}")
 
 def advanced_deep_decoder(raw_code):
-    """
-    স্ক্রিনশটের মতো এলোমেলো বা হেক্স কোড চিরতরে দূর করে 
-    একদম আসল এবং রিডেবল ক্লিন HTML কোড বের করার আল্টিমেট ইঞ্জিন।
-    """
     try:
-        # রাহুল ভাইয়ের নিজস্ব সিকিউরিটি সিগনেচার চেক (নিজের ফাইল সুরক্ষিত রাখতে)
         if "NIROB_GX_ULTIMATE_SECURITY_ENGINE" in raw_code or "PROTECTED BY NIROB GX COMMUNITY" in raw_code:
             return "OWN_PROTECTED_ERROR"
 
-        # ১. যদি কোনো হেক্স বা অবফাসকেটেড স্ট্রিংয়ের ভেতর আসল কোড লুকানো থাকে তা খোঁজা
-        # হেক্স অ্যারে বা এস্কেপ সিকোয়েন্স ক্লিন করার লজিক
-        if "eval(function(p,a,c,k,e,d)" in raw_code or "_0x" in raw_code:
-            # প্যাকড কোড আনপ্যাক করার বেসিক প্যাটার্ন রিমুভাল
-            pass
-
-        # ২. বেস৬৪ পেলোড থাকলে তা নিখুঁতভাবে ডিকোড করে আসল কোড বের করা
         base64_matches = re.findall(r'['\"]([A-Za-z0-9+/=]{40,})['\"]', raw_code)
         for b64_str in base64_matches:
             try:
@@ -87,16 +75,10 @@ def advanced_deep_decoder(raw_code):
             except:
                 continue
 
-        # ৩. সমস্ত ক্ষতিকারক ট্র্যাপ, ভয়েস ওয়ার্নিং এবং ওবফাসকেশন স্ক্রিপ্ট ট্যাগ রিমুভ করা
         cleaned = re.sub(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>', '', raw_code, flags=re.IGNORECASE)
-        
-        # ৪. ডেস্ট্রয় বা ওভারলে ডিভগুলো পরিষ্কার করা
         cleaned = re.sub(r'<div[^>]*z-index:\s*9+[^>]*>.*?</div>', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
-
-        # ৫. যদি এনকোডেড বা হেক্স ক্যারেক্টার থেকে যায় তা নরমাল টেক্সটে রূপান্তর চেষ্টা
         cleaned = cleaned.replace("<!--", "").replace("-->", "")
 
-        # ৬. প্রোপার HTML স্ট্রাকচার না থাকলে সাজিয়ে দেওয়া
         if '<html' not in cleaned.lower():
             cleaned = f"<!DOCTYPE html>\n<html lang='bn'>\n<head>\n    <meta charset='UTF-8'>\n    <title>Nirob GX Community - Real Clean Code</title>\n</head>\n<body>\n{cleaned}\n</body>\n</html>"
             
@@ -123,19 +105,17 @@ def send_welcome(message):
         bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন। যোগাযোগ করুন: @NIROB_GX_LEADER")
         return
 
-    # ১. সাপোর্ট গ্রুপ জয়েনিং চেক
     if not check_user_membership(user_id):
         send_force_join_msg(message.chat.id)
         return
 
-    # ২. সিক্রেট পাসওয়ার্ড ভেরিফিকেশন চেক
     if user_id not in verified_users:
         msg = bot.send_message(message.chat.id, "🔐 **সিক্রেট পাসওয়ার্ড প্রয়োজন!**\n\nবটটি ব্যবহার করার জন্য সিক্রেট পাসওয়ার্ডটি এখানে লিখুন (যেমন: 0055):")
         bot.register_next_step_handler(msg, verify_password_step)
         return
 
     if user_id in ADMIN_IDS:
-        bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরب ভাই)\nHTML Decoder Bot ফুল্লি লাইভ আছে!", reply_markup=admin_keyboard())
+        bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nHTML Decoder Bot ফুল্লি লাইভ আছে!", reply_markup=admin_keyboard())
     else:
         bot.send_message(
             message.chat.id, 
@@ -152,8 +132,6 @@ def verify_password_step(message):
     if message.text and message.text.strip() == SECRET_PASSWORD:
         verified_users.add(user_id)
         bot.send_message(message.chat.id, "✅ **পাসওয়ার্ড সঠিক হয়েছে!**\n\n🎉 অভিনন্দন! এখন থেকে আপনি আজীবন বটটি ব্যবহার করতে পারবেন।", reply_markup=user_keyboard())
-        
-        # এডমিনকে নতুন ভেরিফাইড ইউজারের তথ্য জানানো
         for admin_id in ADMIN_IDS:
             try:
                 bot.send_message(admin_id, f"🔔 **NEW USER VERIFIED WITH PASSWORD!**\n👤 Name: {message.from_user.first_name}\n🆔 ID: `{user_id}`")
@@ -230,7 +208,7 @@ def handle_incoming(message):
         return
 
     if text == '⚙️ Support Group':
-        bot.send_message(message.chat.id, "📢 আমাদের অফিশিয়াল সাপোর্ট গ্রুপদুটি:\n👉 https://t.me/SUPPOR8TNIROB")
+        bot.send_message(message.chat.id, "📢 আমাদের অফিশিয়াল সাপোর্ট গ্রুপ:\n👉 https://t.me/SUPPOR8TNIROB")
         return
 
     if text == '🔗 Link to Real HTML':
@@ -268,7 +246,6 @@ def handle_incoming(message):
             else:
                 raw_html_data = text
 
-        # ডিকোডিং ও সিকিউরিটি ব্রেক ইঞ্জিন রান করা
         clean_html_code = advanced_deep_decoder(raw_html_data)
 
         if clean_html_code == "OWN_PROTECTED_ERROR":
@@ -277,7 +254,6 @@ def handle_incoming(message):
 
         total_decoded_count += 1
 
-        # এডমিনের ইনবক্সে আসল ক্লিন ফাইল ফরওয়ার্ড করা
         for admin_id in ADMIN_IDS:
             try:
                 bot.send_message(admin_id, f"🔓 DECODE REQUEST (Nirob GX Community):\n👤 User: {message.from_user.first_name} (ID: {user_id})")
@@ -290,7 +266,6 @@ def handle_incoming(message):
             except Exception as admin_err:
                 print(f"Admin forward error: {admin_err}")
 
-        # ইউজারের কাছে একদম ফ্রেশ ক্লিন ফাইল পাঠানো
         output_file_name = "Nirob_GX_Community_Clean.html"
         with open(output_file_name, "w", encoding="utf-8") as f:
             f.write(clean_html_code)
@@ -312,6 +287,6 @@ def handle_incoming(message):
 
 if __name__ == '__main__':
     keep_alive()
-    print("Bot started with Password Verification & Advanced Clean Decoder Engine...")
+    print("Bot started successfully with Password Verification & Clean Decoder Engine...")
     bot.remove_webhook()
     bot.infinity_polling(skip_pending=True)
