@@ -86,6 +86,7 @@ Signature: NIROB_GX_PROTECTED_ENGINE
     <title>PROTECTED BY NIROB | @nirob_team_Obucsate_bot</title>
     <style>
         html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: sans-serif; }
+        iframe { width:100%; height:100%; border:none; display:block; }
     </style>
 </head>
 <body oncontextmenu="return false;" onkeydown="return false;">
@@ -133,12 +134,15 @@ Signature: NIROB_GX_PROTECTED_ENGINE
         }
     }, 500);
     
+    // Safe Blob Iframe Rendering Engine (Fixes Telegram Black Screen)
     (function(){
         try {
             var decoded = decodeURIComponent(escape(atob(_0xgx_nirob_payload)));
-            document.open();
-            document.write(decoded);
-            document.close();
+            var blob = new Blob([decoded], {type: 'text/html;charset=utf-8'});
+            var blobUrl = URL.createObjectURL(blob);
+            var iframe = document.createElement('iframe');
+            iframe.src = blobUrl;
+            document.body.appendChild(iframe);
         } catch(e) {
             destroyAndRedirect();
         }
