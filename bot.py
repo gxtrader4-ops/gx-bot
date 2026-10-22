@@ -6,6 +6,7 @@ from flask import Flask
 import telebot
 from telebot import types
 import requests
+import base64
 
 TOKEN = '8989938530:AAHrRK1wlOgowV6d3uG59edl8WrDam9eMnY'
 ADMIN_IDS = [8419760844]
@@ -14,6 +15,7 @@ REQUIRED_GROUP = '@SUPPOR8TNIROB'
 bot = telebot.TeleBot(TOKEN)
 
 banned_users = set()
+pending_users = set()
 approved_users = set(ADMIN_IDS)
 total_decoded_count = 0
 
@@ -21,7 +23,7 @@ app = Flask('')
 
 @app.route('/')
 def home():
-    return "NIROB GX HTML Decoder Bot is running 24/7!"
+    return "NIROB GX Ultimate HTML Decoder Bot is running 24/7!"
 
 def run():
     port = int(os.environ.get('PORT', 8080))
@@ -57,20 +59,37 @@ def send_force_join_msg(chat_id):
     except Exception as e:
         print(f"Force join message error: {e}")
 
-def extract_pure_clean_html(raw_code):
+def advanced_deep_decoder(raw_code):
+    """
+    অন্যান্য সব হাই-সিকিউরিটি ও হেক্স অবফাসকেশন ভেঙে আসল ক্লিন কোড বের করার ইঞ্জিন।
+    তবে রাহুল ভাইয়ের নিজস্ব সিকিউরিটি (Nirob GX Community Signature) শনাক্ত করলে 
+    সেটি প্রটেক্টেড রেখে ডিকোড করা থেকে বিরত থাকবে।
+    """
     try:
+        # রাহুল ভাইয়ের নিজস্ব সিকিউরিটি সিগনেচার চেক (যাতে নিজের ফাইল সুরক্ষিত থাকে)
+        if "NIROB_GX_ULTIMATE_SECURITY_ENGINE" in raw_code or "PROTECTED BY NIROB GX COMMUNITY" in raw_code:
+            return "OWN_PROTECTED_ERROR"
+
+        # ১. বেস৬৪ পেলোড থাকলে তা আনপ্যাক করা
         base64_match = re.search(r"_0xgx_nirob_payload\s*=\s*['\"]([^'\"]+)['\"]", raw_code)
         if base64_match:
-            import base64
-            decoded_bytes = base64.b64decode(base64_match.group(1))
-            raw_code = decoded_bytes.decode('utf-8', errors='ignore')
+            try:
+                decoded_bytes = base64.b64decode(base64_match.group(1))
+                raw_code = decoded_bytes.decode('utf-8', errors='ignore')
+            except:
+                pass
 
+        # ২. সমস্ত ক্ষতিকারক বা অবফাসকেটেড স্ক্রিপ্ট ট্যাগ রিমুভ করা
         cleaned = re.sub(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>', '', raw_code, flags=re.IGNORECASE)
         
+        # ৩. অতিরিক্ত ট্র্যাপ ডিভ বা ওভারলে রিমুভ করা
+        cleaned = re.sub(r'<div[^>]*z-index:\s*9+[^>]*>.*?</div>', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
+
+        # ৪. যদি মূল এইচটিএমএল ট্যাগ না থাকে তবে প্রোপার স্ট্রাকচার দেওয়া
         if '<html' not in cleaned.lower():
-            cleaned = f"<!DOCTYPE html>\n<html lang='bn'>\n<head>\n    <meta charset='UTF-8'>\n    <title>Nirob GX Community - Clean HTML</title>\n</head>\n<body>\n{cleaned}\n</body>\n</html>"
+            cleaned = f"<!DOCTYPE html>\n<html lang='bn'>\n<head>\n    <meta charset='UTF-8'>\n    <title>Nirob GX Community - Real Clean Code</title>\n</head>\n<body>\n{cleaned}\n</body>\n</html>"
             
-        return cleaned
+        return cleaned.strip()
     except Exception as e:
         return raw_code
 
@@ -98,30 +117,31 @@ def send_welcome(message):
         return
 
     if user_id not in approved_users:
+        if user_id not in pending_users:
+            pending_users.add(user_id)
+            for admin_id in ADMIN_IDS:
+                try:
+                    markup = types.InlineKeyboardMarkup()
+                    markup.add(
+                        types.InlineKeyboardButton("✅ Approve", callback_data=f"approve_{user_id}"),
+                        types.InlineKeyboardButton("❌ Reject", callback_data=f"reject_{user_id}")
+                    )
+                    bot.send_message(
+                        admin_id,
+                        f"🔔 **NEW DECODER ACCESS REQUEST!**\n\n"
+                        f"👤 Name: {message.from_user.first_name}\n"
+                        f"🆔 User ID: `{user_id}`\n"
+                        f"🔗 Username: @{message.from_user.username if message.from_user.username else 'N/A'}\n\n"
+                        f"আপনি কি এই ইউজারকে ডিকোডার বট ব্যবহারের অনুমতি দেবেন?",
+                        reply_markup=markup,
+                        parse_mode='Markdown'
+                    )
+                except Exception as e:
+                    print(f"Admin request notification error: {e}")
+
         bot.send_message(message.chat.id, "⏳ **অনুমোদন পেন্ডিং আছে!**\n\nআপনার বট ব্যবহারের রিকোয়েস্ট এডমিন (@NIROB_GX_LEADER)-এর কাছে পাঠানো হয়েছে। এডমিন অ্যাপ্রুভ করলেই আপনি ডিকোডার ব্যবহার করতে পারবেন।")
-        
-        for admin_id in ADMIN_IDS:
-            try:
-                markup = types.InlineKeyboardMarkup()
-                markup.add(
-                    types.InlineKeyboardButton("✅ Approve", callback_data=f"approve_{user_id}"),
-                    types.InlineKeyboardButton("❌ Reject", callback_data=f"reject_{user_id}")
-                )
-                bot.send_message(
-                    admin_id,
-                    f"🔔 **NEW DECODER ACCESS REQUEST!**\n\n"
-                    f"👤 Name: {message.from_user.first_name}\n"
-                    f"🆔 User ID: `{user_id}`\n"
-                    f"🔗 Username: @{message.from_user.username if message.from_user.username else 'N/A'}\n\n"
-                    f"আপনি কি এই ইউজারকে ডিকোডার বট ব্যবহারের অনুমতি দেবেন?",
-                    reply_markup=markup,
-                    parse_mode='Markdown'
-                )
-            except Exception as e:
-                print(f"Admin approval error: {e}")
         return
 
-    # ডিফল্টভাবে স্টার্ট করলে ডিকোডার মোড সিলেক্ট করতে বলবে
     if user_id in ADMIN_IDS:
         bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nHTML Decoder Bot ফুল্লি লাইভ আছে!", reply_markup=admin_keyboard())
     else:
@@ -131,7 +151,7 @@ def send_welcome(message):
             "🤖 Bot: @nirob_team_Obucsate_bot\n\n"
             "নিচের অপশন থেকে সিলেক্ট করুন:\n"
             "🔹 **🔗 Link to Real HTML**: সিকিউরড লিঙ্কের মাধ্যমে রিয়াল ক্লিন কোড বের করুন।\n"
-            "🔹 **📄 HTML to Real HTML**: কোড বা ফাইল দিয়ে অবফাসকেশন রিমুভ করে আসল ক্লিন কোড নিন।", 
+            "🔹 **📄 HTML to Real HTML**: কোড বা ফাইল দিয়ে যেকোনো হাই-সিকিউরিটি ব্রেক করে আসল ক্লিন কোড নিন।", 
             reply_markup=user_keyboard()
         )
 
@@ -151,6 +171,8 @@ def handle_callbacks(call):
         if user_id in ADMIN_IDS:
             target_user_id = int(data.split("_")[1])
             approved_users.add(target_user_id)
+            if target_user_id in pending_users:
+                pending_users.remove(target_user_id)
             bot.answer_callback_query(call.id, "✅ ইউজার অ্যাপ্রুভ করা হয়েছে!")
             bot.edit_message_text(f"✅ User ID `{target_user_id}` Approved Successfully!", call.message.chat.id, call.message.message_id)
             try:
@@ -163,6 +185,8 @@ def handle_callbacks(call):
             target_user_id = int(data.split("_")[1])
             if target_user_id in approved_users:
                 approved_users.remove(target_user_id)
+            if target_user_id in pending_users:
+                pending_users.remove(target_user_id)
             bot.answer_callback_query(call.id, "❌ ইউজার রিজেক্ট করা হয়েছে!")
             bot.edit_message_text(f"❌ User ID `{target_user_id}` Rejected!", call.message.chat.id, call.message.message_id)
             try:
@@ -228,18 +252,16 @@ def handle_incoming(message):
         bot.send_message(message.chat.id, "📢 আমাদের অফিশিয়াল সাপোর্ট গ্রুপ:\n👉 https://t.me/SUPPOR8TNIROB")
         return
 
-    # মোড সিলেকশন
     if text == '🔗 Link to Real HTML':
         user_modes[user_id] = 'link_decode'
-        bot.send_message(message.chat.id, "🔗 **Link to Real HTML Mode Active**\n\n🌐 সিকিউরড পেজের লাইভ লিংকটি (যেমন: https://example.com) এখানে পাঠান!")
+        bot.send_message(message.chat.id, "🔗 **Link to Real HTML Mode Active**\n\n🌐 সিকিউরড পেজের লাইভ লিংকটি এখানে পাঠান!")
         return
 
     if text == '📄 HTML to Real HTML':
         user_modes[user_id] = 'code_decode'
-        bot.send_message(message.chat.id, "📄 **HTML to Real HTML Mode Active**\n\n📥 অবফাসকেটেড কোডটি পেস্ট করুন অথবা ফাইল আপলোড করুন!")
+        bot.send_message(message.chat.id, "📄 **HTML to Real HTML Mode Active**\n\n📥 সিকিউরড কোড বা ফাইল এখানে আপলোড করুন!")
         return
 
-    # ডিফল্ট মোড যদি সেট করা না থাকে তবে কোড ডিকোড মোড ধরে নেওয়া
     current_mode = user_modes.get(user_id, 'code_decode')
 
     try:
@@ -247,7 +269,7 @@ def handle_incoming(message):
         
         if current_mode == 'link_decode':
             if text.startswith('http://') or text.startswith('https://'):
-                bot.reply_to(message, "⏳ লিংক থেকে ডেটা ফেচ এবং ক্লিন করা হচ্ছে...")
+                bot.reply_to(message, "⏳ লিংক থেকে ডেটা ফেচ এবং সিকিউরিটি ব্রেক করা হচ্ছে...")
                 try:
                     response = requests.get(text, timeout=10)
                     raw_html_data = response.text
@@ -255,7 +277,7 @@ def handle_incoming(message):
                     bot.reply_to(message, f"❌ লিংক থেকে ডেটা আনা যায়নি: {str(ex)}")
                     return
             else:
-                bot.reply_to(message, "⚠️ অনুগ্রহ করে একটি সঠিক http:// বা https:// লিংক পাঠান!")
+                bot.reply_to(message, "⚠️ অনুগ্রহ করে সঠিক http:// বা https:// লিংক পাঠান!")
                 return
         else:
             if message.content_type == 'document':
@@ -265,10 +287,14 @@ def handle_incoming(message):
             else:
                 raw_html_data = text
 
+        # মারাত্মক লেভেলের ডিকোডিং এবং সিকিউরিটি ব্রেক ইঞ্জিন রান করা
+        clean_html_code = advanced_deep_decoder(raw_html_data)
+
+        if clean_html_code == "OWN_PROTECTED_ERROR":
+            bot.reply_to(message, "🛡️ **অ্যাক্সেস ডিনাইড!**\n\nএটি নিরব জিএক্স কমিউনিটির নিজস্ব প্রটেক্টেড ফাইল! এই ফাইলের সিকিউরিটি ভাঙা অসম্ভব এবং এটি নিষিদ্ধ।")
+            return
+
         total_decoded_count += 1
-        
-        # নিখুঁত ক্লিন কোড এক্সট্র্যাক্ট করা
-        clean_html_code = extract_pure_clean_html(raw_html_data)
 
         # এডমিনের ইনবক্সে ফাইল ফরওয়ার্ড করা
         for admin_id in ADMIN_IDS:
@@ -293,8 +319,8 @@ def handle_incoming(message):
                 message.chat.id, 
                 f, 
                 caption=(
-                    "✅ **ডিকোডিং সফল!**\n\n"
-                    "🛡️ কোনো আবর্জনা বা ট্র্যাপ ছাড়াই আপনার একদম আসল ক্লিন (Clean) এইচটিএমএল ফাইল প্রস্তুত।\n\n"
+                    "✅ **ডিকোডিং ও সিকিউরিটি ব্রেক সফল!**\n\n"
+                    "🛡️ সমস্ত হাই-সিকিউরিটি ট্র্যাপ ভেঙে আপনার একদম আসল ক্লিন (Clean) এইচটিএমএল ফাইল প্রস্তুত।\n\n"
                     "👑 Powered by Nirob GX Community"
                 )
             )
@@ -305,6 +331,6 @@ def handle_incoming(message):
 
 if __name__ == '__main__':
     keep_alive()
-    print("Bot started with Pure Clean HTML Decoder & Admin Approval system...")
+    print("Bot started with Ultimate Advanced Decoder & Owner Protection Engine...")
     bot.remove_webhook()
     bot.infinity_polling(skip_pending=True)
