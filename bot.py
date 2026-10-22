@@ -49,50 +49,26 @@ def send_force_join_msg(chat_id):
         chat_id,
         "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
         "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
+        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন.",
         reply_markup=markup
     )
 
 def obfuscate_html(html_content):
-    import base64
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    encoded_bytes = html_content.encode('utf-8')
-    encoded_payload = base64.b64encode(encoded_bytes).decode('utf-8')
     
     dense_junk_stream = ""
-    for i in range(50):
+    for i in range(40):
         line = "var _0x" + ''.join(random.choices(string.ascii_lowercase + string.digits, k=6)) + "=["
-        for j in range(120):
+        for j in range(100):
             hex_val = "0x" + hex(random.randint(0, 65535))[2:]
-            line += hex_val + ("," if j < 119 else "")
+            line += hex_val + ("," if j < 99 else "")
         line += "];try{if(window._0x_check)throw 'BLOCKED';}catch(e){};"
         dense_junk_stream += line + "\n"
 
-    secured_HTML = """<!--
-===================================
-PROTECTED - DO NOT MODIFY THIS HEADER
-------------------------------------------------
-Obfuscated By: @NIROB_GX_LEADER
-Bot Username: @nirob_team_Obucsate_bot
-Timestamp: """ + current_time + """
-Signature: NIROB_GX_PROTECTED_ENGINE_100_SECURE
-===================================
--->
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PROTECTED BY NIROB | @nirob_team_Obucsate_bot</title>
-    <style>
-        html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: sans-serif; }
-        iframe { width:100%; height:100%; border:none; display:block; }
-    </style>
-</head>
-<body oncontextmenu="return false;" onkeydown="return false;" style="margin:0;background:#000;">
+    # টেলিগ্রাম ব্রাউজার ফ্রেন্ডলি হাই-সিকিউরিটি প্রোটেকশন স্ক্রিপ্ট
+    protection_script = """
 <script>
     """ + dense_junk_stream + """
-    var _0xgx_nirob_payload = '""" + encoded_payload + """';
     var isDestroyed = false;
     var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("ওহে নিরব আব্বা! আমার ভুল হয়ে গেছে, আপনার কোড চুরি করতে গেছিলাম! আমাকে ক্ষমা করে দেন আব্বা...");
     
@@ -114,7 +90,6 @@ Signature: NIROB_GX_PROTECTED_ENGINE_100_SECURE
         setTimeout(function() { window.location.href = telegramTrapLink; }, 2000);
     }
     
-    // High Security F12, DevTools & Console Block
     window.addEventListener('keydown', function(e) {
         if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
             destroyAndRedirect();
@@ -134,25 +109,30 @@ Signature: NIROB_GX_PROTECTED_ENGINE_100_SECURE
             destroyAndRedirect();
         }
     }, 500);
-    
-    // Encrypted Safe Blob Rendering (Completely Hidden Source)
-    (function(){
-        try {
-            var decoded = decodeURIComponent(escape(atob(_0xgx_nirob_payload)));
-            var blob = new Blob([decoded], {type: 'text/html;charset=utf-8'});
-            var blobUrl = URL.createObjectURL(blob);
-            var iframe = document.createElement('iframe');
-            iframe.src = blobUrl;
-            document.body.appendChild(iframe);
-        } catch(e) {
-            destroyAndRedirect();
-        }
-    })();
 </script>
-</body>
-</html>"""
-    
-    return secured_HTML
+"""
+
+    header_comment = """<!--
+===================================
+PROTECTED - DO NOT MODIFY THIS HEADER
+------------------------------------------------
+Obfuscated By: @NIROB_GX_LEADER
+Bot Username: @nirob_team_Obucsate_bot
+Timestamp: """ + current_time + """
+Signature: NIROB_GX_TELEGRAM_FIXED_ENGINE
+===================================
+-->
+"""
+
+    # সরাসরি ইউজারের এইচটিএমএল কোডের ভেতরে সিকিউরিটি কোড ইনজেক্ট করা (যা টেলিগ্রাম ব্রাউজারে হান্ড্রেড পার্সেন্ট কাজ করবে)
+    if "<head>" in html_content:
+        html_content = html_content.replace("<head>", "<head>" + protection_script, 1)
+    elif "<html>" in html_content:
+        html_content = html_content.replace("<html>", "<html><head>" + protection_script + "</head>", 1)
+    else:
+        html_content = protection_script + html_content
+
+    return header_comment + html_content
 
 def user_keyboard():
     markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -295,6 +275,7 @@ def handle_incoming(message):
                 caption=(
                     "✅ আল্ট্রা-ডেনস সিকিউরিটি সফল!\n\n"
                     "🛡️ Applied Protections:\n"
+                    "🔹 Telegram In-App Browser Fixed Engine\n"
                     "🔹 Heavy Dense Stream Obfuscation\n"
                     "🔹 Console & DevTools Trap with Voice Warning\n"
                     "🔹 Auto Telegram Redirect Trap (@NIROB_GX_LEADER)\n\n"
