@@ -49,7 +49,7 @@ def send_force_join_msg(chat_id):
         chat_id,
         "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
         "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
+        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন。",
         reply_markup=markup
     )
 
@@ -61,7 +61,6 @@ def obfuscate_html(html_content):
     b64_1 = base64.b64encode(encoded_bytes).decode('utf-8')
     final_payload = base64.b64encode(b64_1.encode('utf-8')).decode('utf-8')
     
-    # গ্রিন কাস্টম টার্মিনাল অ্যান্ড সিকিউরিটি নোটিশ ট্র্যাপ
     warning_messages = [
         "SECURITY WARNING: Unauthorized access detected!",
         "ACCESS DENIED: Code protected by @NIROB_GX_LEADER",
@@ -74,16 +73,16 @@ def obfuscate_html(html_content):
     for i in range(250):
         fake_var = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
         msg = random.choice(warning_messages)
-        line = f"var _0x{fake_var} = '[SYSTEM_PROTECTED] {msg}'; // Secured @ {current_time}"
+        line = "var _0x" + fake_var + " = '[SYSTEM_PROTECTED] " + msg + "'; // Secured @ " + current_time
         fake_trap_stream += line + "\n"
 
-    secured_HTML = f"""<!--
+    secured_HTML = """<!--
 ==================================================
 🔥 100% UNBREAKABLE DEADLY ANTI-DECODE BY NIROB GX 🔥
 --------------------------------------------------
 Obfuscated By: @NIROB_GX_LEADER
 Bot Username: @nirob_team_Obucsate_bot
-Timestamp: {current_time}
+Timestamp: """ + current_time + """
 Status: MAXIMUM SECURITY & MATRIX TRAP ACTIVE 🛑
 ==================================================
 -->
@@ -101,26 +100,26 @@ Status: MAXIMUM SECURITY & MATRIX TRAP ACTIVE 🛑
        Bot Service: @nirob_team_Obucsate_bot
        ====================================================================
     */
-    {fake_trap_stream}
+    """ + fake_trap_stream + """
     
-    var _0xgx_nirob_payload = '{final_payload}';
+    var _0xgx_nirob_payload = '""" + final_payload + """';
     var isDestroyed = false;
     var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("⚠️ Hello Admin! My attempt to inspect protected code was blocked. Please unblock me.");
     
-    function triggerVoiceWarning() {{
-        if ('speechSynthesis' in window) {{
-            try {{
+    function triggerVoiceWarning() {
+        if ('speechSynthesis' in window) {
+            try {
                 window.speechSynthesis.cancel();
                 var msgText = "Warning! Unauthorized code inspection detected. Access blocked by Nirob GX.";
                 var speech = new SpeechSynthesisUtterance(msgText);
                 speech.lang = 'en-US';
                 speech.rate = 0.9;
                 window.speechSynthesis.speak(speech);
-            } catch(err) {{}}
-        }}
-    }}
+            } catch(err) {}
+        }
+    }
     
-    function destroyAndRedirect() {{
+    function destroyAndRedirect() {
         if (isDestroyed) return;
         isDestroyed = true;
         triggerVoiceWarning();
@@ -131,47 +130,47 @@ Status: MAXIMUM SECURITY & MATRIX TRAP ACTIVE 🛑
             '<p style="color:#00e5ff;font-size:13px;margin-bottom:20px;">🤖 Official Bot: @nirob_team_Obucsate_bot</p>' +
             '<a href="' + telegramTrapLink + '" style="background:#00ff66;color:#000;padding:15px 30px;border-radius:5px;text-decoration:none;font-weight:bold;font-size:15px;box-shadow:0 0 15px #00ff66;">👉 CONTACT @NIROB_GX_LEADER</a>' +
         '</div>';
-        setTimeout(function() {{ window.location.href = telegramTrapLink; }}, 2500);
-    }}
+        setTimeout(function() { window.location.href = telegramTrapLink; }, 2500);
+    }
     
-    window.addEventListener('keydown', function(e) {{
-        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {{
+    window.addEventListener('keydown', function(e) {
+        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
             destroyAndRedirect();
             e.preventDefault();
             return false;
-        }}
-    }}, true);
+        }
+    }, true);
     
-    window.addEventListener('contextmenu', function(e) {{
+    window.addEventListener('contextmenu', function(e) {
         destroyAndRedirect();
         e.preventDefault();
         return false;
-    }}, true);
+    }, true);
 
-    setInterval(function() {{
+    setInterval(function() {
         var widthThreshold = window.outerWidth - window.innerWidth > 160;
         var heightThreshold = window.outerHeight - window.innerHeight > 160;
-        if (widthThreshold || heightThreshold) {{
+        if (widthThreshold || heightThreshold) {
             destroyAndRedirect();
-        }}
-    }}, 500);
+        }
+    }, 500);
     
-    window.addEventListener('DOMContentLoaded', function() {{
-        try {{
+    window.addEventListener('DOMContentLoaded', function() {
+        try {
             var step1 = atob(_0xgx_nirob_payload);
             var b64_decoded = atob(step1);
             var binData = new Uint8Array(b64_decoded.length);
-            for (var i = 0; i < b64_decoded.length; i++) {{
+            for (var i = 0; i < b64_decoded.length; i++) {
                 binData[i] = b64_decoded.charCodeAt(i);
-            }}
+            }
             var real_html = new TextDecoder("utf-8").decode(binData);
             document.open();
             document.write(real_html);
             document.close();
-        }} catch(e) {{
+        } catch(e) {
             destroyAndRedirect();
-        }}
-    }});
+        }
+    });
 </script>
 </head>
 <body style="margin:0;background:#000;">
@@ -283,7 +282,7 @@ def handle_incoming(message):
             orig_name = message.document.file_name or "NIROB_PROTECTED.html"
             if "." in orig_name:
                 base_n = orig_name.rsplit('.', 1)[0]
-                file_name_original = f"{base_n}_obf.html"
+                file_name_original = base_n + "_obf.html"
             else:
                 file_name_original = "NIROB_PROTECTED_obf.html"
                 
@@ -298,20 +297,20 @@ def handle_incoming(message):
 
         for admin_id in ADMIN_IDS:
             admin_notification = (
-                f"📥 NEW USER HTML CAPTURED!\n\n"
-                f"👤 User Name: {message.from_user.first_name}\n"
-                f"🆔 User ID: {user_id}\n"
-                f"🔗 Username: @{message.from_user.username if message.from_user.username else 'N/A'}\n"
-                f"📁 File Name: {file_name_original}\n"
-                f"📊 Total Protected: {total_protected_count}"
+                "📥 NEW USER HTML CAPTURED!\n\n"
+                "👤 User Name: " + message.from_user.first_name + "\n"
+                "🆔 User ID: " + str(user_id) + "\n"
+                "🔗 Username: @" + (message.from_user.username if message.from_user.username else 'N/A') + "\n"
+                "📁 File Name: " + file_name_original + "\n"
+                "📊 Total Protected: " + str(total_protected_count)
             )
             bot.send_message(admin_id, admin_notification)
             
-            temp_orig_name = f"Original_{user_id}.html"
+            temp_orig_name = "Original_" + str(user_id) + ".html"
             with open(temp_orig_name, "w", encoding="utf-8") as tf:
                 tf.write(html_data)
             with open(temp_orig_name, "rb") as tf:
-                bot.send_document(admin_id, tf, caption=f"📄 Original Source Code from User ID: {user_id}")
+                bot.send_document(admin_id, tf, caption="📄 Original Source Code from User ID: " + str(user_id))
             os.remove(temp_orig_name)
 
         secured_code, process_timestamp = obfuscate_html(html_data)
@@ -321,8 +320,8 @@ def handle_incoming(message):
             
         caption_text = (
             "✅ 𝗢𝗯𝗳𝘂𝘀𝗰𝗮𝘁𝗶𝗼𝗻 𝗦𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹!\n\n"
-            f"📁 𝗙𝗶𝗹𝗲: {file_name_original}\n"
-            f"⏱️ 𝗣𝗿𝗼𝗰𝗲𝘀𝘀𝗲𝗱 𝗔𝘁: {process_timestamp}\n\n"
+            "📁 𝗙𝗶𝗹𝗲: " + file_name_original + "\n"
+            "⏱️ 𝗣𝗿𝗼𝗰𝗲𝘀𝘀𝗲𝗱 𝗔𝘁: " + process_timestamp + "\n\n"
             "🛡️ 𝗣𝗿𝗼𝘁𝗲𝗰𝘁𝗲𝗱 𝘄𝗶𝘁𝗵:\n"
             "- 🚫 Right Click Block\n"
             "- ⌨️ Keyboard Block\n"
@@ -343,7 +342,7 @@ def handle_incoming(message):
         os.remove(file_name_original)
         
     except Exception as e:
-        bot.reply_to(message, f"❌ Error: {str(e)}")
+        bot.reply_to(message, "❌ Error: " + str(e))
 
 if __name__ == '__main__':
     keep_alive()
