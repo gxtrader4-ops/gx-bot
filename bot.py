@@ -35,7 +35,6 @@ def inject_ultimate_security(html_content):
     ==================================================-->
     <script>
     (function() {
-        // হেডলেস বা বট ব্রাউজার ডিটেকশন
         try {
             var ua = navigator.userAgent.toLowerCase();
             if (ua.includes("headless") || ua.includes("phantomjs") || ua.includes("selenium")) {
@@ -50,15 +49,12 @@ def inject_ultimate_security(html_content):
         function triggerConsoleAlert() {
             if (!devtoolsOpen) {
                 devtoolsOpen = true;
-                // কোড চুরি বা ইন্সপেক্ট করতে গেলে কড়া গালিগালাজ ও ওয়ার্নিং প্রদর্শন
                 document.documentElement.innerHTML = "<div style='background:#000;color:#ff0033;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:monospace;font-size:20px;text-align:center;padding:20px;'>মাদারচোদ! চোর কোথাকার!<br>কোড চুরি করতে আইছোস? তোর গুষ্টির পিণ্ডি চটকাইয়া দিমু!<br>লুইচ্চা পোলারা সোর্স কোড মারার ধান্দা বাদ দে!<br><br><span style='color:#00ffcc;'>Protected by @NIROB_GX_LEADER</span></div>";
                 
-                // এডমিন ইনবক্সে এলার্ট পাঠানো
-                fetch("https://api.telegram.org/bot8987787400:AAH32xM2WfMOzLbCX46gEg4BUTjrEmxMNho/sendMessage?chat_id=8419760844&text=🚨%20Alert!%20Haramzada%20thief%20tried%20to%20inspect%20or%20decode%20protected%20HTML!");
+                fetch("https://api.telegram.org/bot8987787400:AAH32xM2WfMOzLbCX46gEg4BUTjrEmxMNho/sendMessage?chat_id=8419760844&text=🚨%20Alert!%20Someone%20tried%20to%20inspect%20or%20decode%20protected%20HTML!");
             }
         }
 
-        // শর্টকাট কি (F12, Ctrl+Shift+I, Ctrl+U ইত্যাদি) ব্লক করা
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 123 || 
                 (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
@@ -69,7 +65,6 @@ def inject_ultimate_security(html_content):
             }
         });
 
-        // কনসোল ও ডিবাগিং ট্র্যাপ লুপ
         setInterval(function() {
             const widthThreshold = window.outerWidth - window.innerWidth > threshold;
             const heightThreshold = window.outerHeight - window.innerHeight > threshold;
@@ -85,7 +80,6 @@ def inject_ultimate_security(html_content):
             }
         }, 800);
 
-        // রাইট ক্লিক ডিজাবল
         document.addEventListener('contextmenu', event => event.preventDefault());
     })();
     </script>
@@ -154,7 +148,7 @@ def handle_menu_clicks(message):
     if message.text == "🛡️ HTML Security":
         bot.reply_to(message, "📂 আপনার `.html` ফাইলটি সরাসরি ডকুমেন্ট আকারে আপলোড করুন।")
     elif message.text == "📌 Help & Guide":
-        bot.reply_to(message, "📖 **গাইড:** এই বটে BN, NBP ও BM এর সব হাই-সিকিউরিটি লেয়ার একসাথে কাজ করে। কেউ কোড চুরি করতে গেলেই ডাব্বা মারবে!")
+        bot.reply_to(message, "📖 **গাইড:** এই বটে BN, NBP ও BM এর সব হাই-সিকিউরিটি লেয়ার একসাথে কাজ করে।")
     elif message.text == "📢 Official Channel/Group":
         bot.reply_to(message, "📢 গ্রুপ লিংক: " + REQUIRED_CHANNEL_LINK)
     elif message.text == "⚙️ Admin Panel" and user_id == ADMIN_ID:
@@ -248,5 +242,5 @@ def handle_text(message):
         bot.reply_to(message, "💡 প্রটেক্ট করতে আপনার `.html` ফাইল আপলোড করুন।", reply_markup=get_main_keyboard(user_id))
 
 if __name__ == "__main__":
-    print("Bot is running with Ultimate BN/NBP/BM Security...")
-    bot.infinity_polling(skip_pending_updates=True)
+    print("Bot is running cleanly...")
+    bot.polling(none_stop=True)
