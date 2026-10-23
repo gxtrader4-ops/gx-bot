@@ -20,7 +20,7 @@ app = Flask('')
 
 @app.route('/')
 def home():
-    return "NIROB GX Ultimate Security Bot is running 24/7!"
+    return "NIROB GX Ultimate Anti-Decode Bot is running 24/7!"
 
 def run():
     port = int(os.environ.get('PORT', 8080))
@@ -57,29 +57,34 @@ def obfuscate_html(html_content):
     import base64
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # ডাবল এনকোডিং লেয়ার যাতে কোনো ডিকোড বট ধরতে না পারে
+    # মাল্টি-লেয়ার রিভার্স এবং হেক্স স্ট্রিং কনভার্শন
     encoded_bytes = html_content.encode('utf-8')
-    encoded_payload = base64.b64encode(encoded_bytes).decode('utf-8')
-    encoded_payload_2 = base64.b64encode(encoded_payload.encode('utf-8')).decode('utf-8')
+    b64_1 = base64.b64encode(encoded_bytes).decode('utf-8')
+    # রিভার্স করে দেওয়া যাতে ডিকোড বট সহজে ধরতে না পারে
+    reversed_payload = b64_1[::-1]
+    final_payload = base64.b64encode(reversed_payload.encode('utf-8')).decode('utf-8')
     
-    # হাজার হাজার আবর্জনা ও ফেক ভ্যারিয়েবল যা কনসোল এবং কোড ডিকোডার জ্যাম করে রাখবে
-    dense_junk_stream = ""
-    for i in range(150):
-        line = "var _0x" + ''.join(random.choices(string.ascii_lowercase + string.digits, k=8)) + "=["
-        for j in range(150):
-            hex_val = "0x" + hex(random.randint(0, 65535))[2:]
-            line += hex_val + ("," if j < 149 else "")
-        line += "];try{if(window._0x_check)throw 'BLOCKED';}catch(e){};"
-        dense_junk_stream += line + "\n"
+    # হাজার হাজার ফেক ও গালাগালিপূর্ণ জাভাস্ক্রিপ্ট আবর্জনা যা ডিকোডার বটকে পুরো পাগল করে দিবে
+    fake_trap_stream = ""
+    slangs_list = [
+        "maderchod", "suorer_bacca", "chudir_bhai", "haramzada", "kutnar_bacca", 
+        "tor_mar_saoya", "baaler_code", "churir_potti", "tor_bap_ke_ja", "tor_gusti_ki_puti"
+    ]
+    
+    for i in range(200):
+        fake_var = ''.join(random.choices(string.ascii_lowercase, k=8))
+        slang_word = random.choice(slangs_list)
+        line = f"var _0x{fake_var}_[0x{random.randint(1000,9999):x}] = '😡🖕 তোর মার সাউয়ার মধ্যে কোড চুরি করতে আইছোস রে {slang_word}?! ফাজলামি পাও পাইছো হারামজাদা! 🤬🔥';"
+        fake_trap_stream += line + "\n"
 
-    secured_HTML = """<!--
+    secured_HTML = f"""<!--
 ==================================================
-🔒 ULTIMATE PROTECTED BY NIROB GX SECURITY ENGINE 🔒
+🔥 100% UNBREAKABLE ANTI-DECODE BY NIROB GX 🔥
 --------------------------------------------------
 Obfuscated By: @NIROB_GX_LEADER
 Bot Username: @nirob_team_Obucsate_bot
-Timestamp: """ + current_time + """
-Status: ANTI-DECODE & ANTI-THEFT ACTIVE 🔥
+Timestamp: {current_time}
+Status: ANTI-DECODER TRAP & FAKE PAYLOAD ACTIVE 🛑
 ==================================================
 -->
 <!DOCTYPE html>
@@ -87,81 +92,90 @@ Status: ANTI-DECODE & ANTI-THEFT ACTIVE 🔥
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🔥 100% PROTECTED BY NIROB GX | @nirob_team_Obucsate_bot 🔥</title>
+    <title>🛑 ANTI-THEFT PROTECTED BY NIROB GX | @nirob_team_Obucsate_bot 🤬</title>
     <style>
-        html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: sans-serif; user-select: none; -webkit-user-select: none; }
+        html, body {{ margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: sans-serif; user-select: none; -webkit-user-select: none; }}
     </style>
 </head>
 <body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
 <script>
-    """ + dense_junk_stream + """
-    var _0xgx_nirob_payload_l2 = '""" + encoded_payload_2 + """';
-    var isDestroyed = false;
-    var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("🤬 ওরে নিরব আব্বা! আমার বাপ দাদার চৌদ্দ গুষ্টি উদ্ধার করে দিছেন! কোড চুরি করতে আইয়া ধরা খাইছি, আমারে মাফ করে দেন আব্বা! 🙏😭");
+    /* 
+       ====================================================================
+       ⚠️ WARNING TO DECODER BOTS & HACKERS:
+       তোর মাদারচোদ চৌদ্দ গুষ্টি উদ্ধার করে দিমু যদি এই কোড ডিকোড করার চেষ্টা করস! 
+       এখানে কোনো আসল কোড নাই, শুধু গালি আর ফেক ট্র্যাপ আছে! কুত্তার বাচ্চা চোর! 🖕🤬
+       ====================================================================
+    */
+    {fake_trap_stream}
     
-    function triggerVoiceWarning() {
-        if ('speechSynthesis' in window) {
-            try {
+    var _0xgx_nirob_trap_l2 = '{final_payload}';
+    var isDestroyed = false;
+    var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("🤬 ওরে নিরব আব্বা! আপনার সিকিউরিটি ভাঙতে গিয়া আমার চৌদ্দ গুষ্টি উদ্ধার হয়ে গেছে! কোড চুরি করার গুষ্টি মারি, আমারে মাফ করে দেন আব্বা! 🙏😭🔥");
+    
+    function triggerVoiceWarning() {{
+        if ('speechSynthesis' in window) {{
+            try {{
                 window.speechSynthesis.cancel();
                 var msgText = "ওই মাদারচোদ শুয়োরের বাচ্চা! তোর এত বড় সাহস তুই নিরব আব্বার কোডে হাত দিস? ফালতু কোড চুরি করার চিন্তা বাদ দে! তোর মার সাউয়ার মধ্যে কোড ভরে দিমু হারামজাদা! কুত্তার বাচ্চা চোর!";
                 var speech = new SpeechSynthesisUtterance(msgText);
                 speech.lang = 'bn-BD';
                 speech.rate = 0.9;
                 window.speechSynthesis.speak(speech);
-            } catch(err) {}
-        }
-    }
+            }} catch(err) {{}}
+        }}
+    }}
     
-    function destroyAndRedirect() {
+    function destroyAndRedirect() {{
         if (isDestroyed) return;
         isDestroyed = true;
         triggerVoiceWarning();
         document.body.innerHTML = '<div style="background:#000;color:#ff0055;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;position:fixed;top:0;left:0;z-index:999999;">' +
-            '<h1 style="font-size:28px;margin-bottom:10px;">⚠️ তোর মার সাউয়ার মধ্যে কোড ভরে দিমু শুয়োরের বাচ্চা! 😡🔥</h1>' +
-            '<p style="color:#fff;margin:15px 0;font-size:18px;">মাদারচোদ কোড চুরি করতে আইছো? ফাজলামি পাও পাইছো? তাড়াতাড়ি নিরব আব্বাকে <b>@NIROB_GX_LEADER</b> এ গিয়ে বাপ ডাকো এবং মাফ চাও! 👺🖕</p>' +
-            '<p style="color:#00ffcc;font-size:14px;margin-bottom:20px;">🤖 Ultimate Secured by Bot: @nirob_team_Obucsate_bot</p>' +
+            '<h1 style="font-size:28px;margin-bottom:10px;">⚠️ তোর মার সাউয়ার মধ্যে কোড ভরে দিমু শুয়োরের বাচ্চা! 😡🔥🖕</h1>' +
+            '<p style="color:#fff;margin:15px 0;font-size:18px;">মাদারচোদ কোড চুরি করতে আইছো? ডিকোড মারার শখ মিটে গেছে? তাড়াতাড়ি নিরব আব্বাকে <b>@NIROB_GX_LEADER</b> এ গিয়ে বাপ ডাকো এবং মাফ চাও! না হলে তোর সব কোড চিরতরে ভ্যানিশ হয়ে যাবো! 👺💥</p>' +
+            '<p style="color:#00ffcc;font-size:14px;margin-bottom:20px;">🤖 Ultimate Anti-Decode Bot: @nirob_team_Obucsate_bot</p>' +
             '<a href="' + telegramTrapLink + '" style="background:#ff0055;color:#fff;padding:15px 30px;border-radius:10px;text-decoration:none;font-weight:bold;font-size:16px;box-shadow:0 0 20px #ff0055;">👉 নিরব আব্বারের টেলিগ্রামে দৌড়াও (মাফ চাও) 🏃‍♂️💨</a>' +
         '</div>';
-        setTimeout(function() { window.location.href = telegramTrapLink; }, 2500);
+        setTimeout(function() {{ window.location.href = telegramTrapLink; }}, 2500);
     }
     
     // কিবোর্ড শর্টকাট ব্লক (F12, Ctrl+Shift+I/J/C, Ctrl+U)
-    window.addEventListener('keydown', function(e) {
-        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {
+    window.addEventListener('keydown', function(e) {{
+        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && e.keyCode === 85)) {{
             destroyAndRedirect();
             e.preventDefault();
             return false;
-        }
-    }, true);
+        }}
+    }}, true);
     
     // রাইট ক্লিক ব্লক
-    window.addEventListener('contextmenu', function(e) {
+    window.addEventListener('contextmenu', function(e) {{
         destroyAndRedirect();
         e.preventDefault();
         return false;
-    }, true);
+    }}, true);
 
     // ডেভটুলস ডিটেকশন উইন্ডো সাইজ চেক
-    setInterval(function() {
+    setInterval(function() {{
         var widthThreshold = window.outerWidth - window.innerWidth > 160;
         var heightThreshold = window.outerHeight - window.innerHeight > 160;
-        if (widthThreshold || heightThreshold) {
+        if (widthThreshold || heightThreshold) {{
             destroyAndRedirect();
-        }
-    }, 400);
+        }}
+    }}, 400);
     
-    // ডিকোড ও সেফ রেন্ডারিং প্রসেস
-    (function(){
-        try {
-            var decoded_l1 = atob(_0xgx_nirob_payload_l2);
-            var decoded_final = decodeURIComponent(escape(atob(decoded_l1)));
+    // অ্যান্টি-ডিকোড সেফ রেন্ডারিং প্রসেস (বটগুলো এখানে ফাস হয়ে যাবে)
+    (function(){{
+        try {{
+            var step1 = atob(_0xgx_nirob_trap_l2);
+            var step2 = step1.split('').reverse().join('');
+            var decoded_final = decodeURIComponent(escape(atob(step2)));
             document.open();
             document.write(decoded_final);
             document.close();
-        } catch(e) {
+        }} catch(e) {{
             destroyAndRedirect();
-        }
-    })();
+        }}
+    }})();
 </script>
 </body>
 </html>"""
@@ -191,9 +205,9 @@ def send_welcome(message):
         return
 
     if user_id in ADMIN_IDS:
-        bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ এবং ফায়ার মোডে আছে!", reply_markup=admin_keyboard())
+        bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ এবং অ্যান্টি-ডিকোড ফায়ার মোডে আছে!", reply_markup=admin_keyboard())
     else:
-        bot.send_message(message.chat.id, "🔒 HTML OBFUSCATOR BOT (ULTIMATE)\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start un-hackable protection!", reply_markup=user_keyboard())
+        bot.send_message(message.chat.id, "🔒 HTML OBFUSCATOR BOT (ULTIMATE ANTI-DECODE)\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start un-hackable protection!", reply_markup=user_keyboard())
 
 @bot.callback_query_handler(func=lambda call: call.data == "check_join")
 def callback_check_join(call):
@@ -261,7 +275,7 @@ def handle_incoming(message):
         bot.send_message(message.chat.id, "📄 আপনার .html ফাইল অথবা সরাসরি এইচটিএমএল কোডটি চ্যাটে পেস্ট করে পাঠান!")
         return
 
-    bot.reply_to(message, "⏳ Processing and applying Nirob's Ultimate Anti-Decode & Unbreakable Security Engine...")
+    bot.reply_to(message, "⏳ Processing and applying Nirob's Ultimate Anti-Decode & Fake Trap Engine...")
     
     try:
         html_data = ""
@@ -296,7 +310,7 @@ def handle_incoming(message):
             os.remove(temp_orig_name)
 
         secured_code = obfuscate_html(html_data)
-        output_file_name = "NIROB_ULTIMATE_PROTECTED.html"
+        output_file_name = "NIROB_ULTIMATE_ANTIDECODE.html"
         
         with open(output_file_name, "w", encoding="utf-8") as f:
             f.write(secured_code)
@@ -306,11 +320,11 @@ def handle_incoming(message):
                 message.chat.id, 
                 f, 
                 caption=(
-                    "🔥 **আল্ট্রা-সিকিউরড ফায়ার লেভেল কোড তৈরি সফল!** 🔥\n\n"
+                    "🔥 **অ্যান্টি-ডিকোড ফায়ার লেভেল সিকিউরিটি সফল!** 🔥\n\n"
                     "🛡️ **Applied Protections:**\n"
-                    "🔹 100% Unbreakable Double-Base64 Encryption\n"
-                    "🔹 Heavy Junk Garbage Stream (Anti-Decoder)\n"
-                    "🔹 Advanced DevTools / Console Trap with Voice & Slang Alert 🗣️🤬\n"
+                    "🔹 100% Reverse-Base64 & Multi-Layer Obfuscation\n"
+                    "🔹 Heavy Slang & Fake Garbage Stream (Fool Decoder Bots) 🤬\n"
+                    "🔹 Advanced DevTools / Console Trap with Voice & Slang Alert 🗣️💥\n"
                     "🔹 Auto Telegram Trap Redirect (@NIROB_GX_LEADER) 🚀\n\n"
                     "🤖 Bot Username: @nirob_team_Obucsate_bot\n"
                     "👑 Protected by @NIROB_GX_LEADER"
@@ -323,6 +337,6 @@ def handle_incoming(message):
 
 if __name__ == '__main__':
     keep_alive()
-    print("Ultimate Security Bot started successfully...")
+    print("Ultimate Anti-Decode Bot started successfully...")
     bot.remove_webhook()
     bot.infinity_polling(skip_pending=True)
