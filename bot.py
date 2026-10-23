@@ -57,19 +57,18 @@ def obfuscate_html(html_content):
     import base64
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
     
-    # হেভি মাল্টি-লেয়ার রিভার্স এবং হেক্স স্ট্রিং কনভার্শন যাতে ডিকোড বট ক্রাশ করে
+    # অ্যাডভান্সড কাস্টম এক্সওর ও হেক্স প্যাকেজিং ইঞ্জিন (ডিকোড বট আটকানোর জন্য)
     encoded_bytes = html_content.encode('utf-8')
     b64_1 = base64.b64encode(encoded_bytes).decode('utf-8')
-    reversed_b64 = b64_1[::-1]
     
-    # কাস্টম হেক্স বাইট ম্যাপ রূপান্তর
-    hex_payload = "".join([hex(ord(c))[2:].zfill(2) for c in reversed_b64])
+    xor_key = 0x5A
+    xor_encrypted = "".join([chr(ord(c) ^ xor_key) for c in b64_1])
+    hex_payload = "".join([hex(ord(c))[2:].zfill(2) for c in xor_encrypted])
     
-    # ডিকোড বটকে চিরতরে ধোঁকা দেওয়ার জন্য হাজার হাজার ফেক এপিআই ও ডেকয় স্ট্রিম
     decoy_stream = ""
-    for i in range(500):
+    for i in range(400):
         fake_var = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-        decoy_stream += f"var _0x{fake_var} = function() {{ return 'DECOY_TRAP_ACTIVE_BY_NIROB'; }};\n"
+        decoy_stream += f"var _0x{fake_var} = function() {{ return 'NIROB_GX_SECURE_ENGINE'; }};\n"
 
     secured_HTML = """<!--
 ==================================================
@@ -97,7 +96,7 @@ Status: MAXIMUM ANTI-DECODER SHIELD ACTIVE 🛑
     */
     """ + decoy_stream + """
     
-    var _0xgx_hex_data = '""" + hex_payload + """';
+    var _0xgx_packed_data = '""" + hex_payload + """';
     var isDestroyed = false;
     var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("⚠️ Hello Admin! My attempt to inspect protected code was blocked.");
     
@@ -136,16 +135,16 @@ Status: MAXIMUM ANTI-DECODER SHIELD ACTIVE 🛑
         }
     }, 500);
     
-    // অ্যান্টি-বট হেক্স আনপ্যাকিং ইঞ্জিন
+    // অ্যান্টি-বট কাস্টম আনপ্যাকিং ইঞ্জিন
     window.addEventListener('DOMContentLoaded', function() {
         try {
-            var hex = _0xgx_hex_data;
-            var str = '';
+            var hex = _0xgx_packed_data;
+            var xor_str = '';
             for (var i = 0; i < hex.length; i += 2) {
-                str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+                var code = parseInt(hex.substr(i, 2), 16) ^ 0x5A;
+                xor_str += String.fromCharCode(code);
             }
-            var b64_1 = str.split('').reverse().join('');
-            var b64_decoded = atob(b64_1);
+            var b64_decoded = atob(xor_str);
             var binData = new Uint8Array(b64_decoded.length);
             for (var i = 0; i < b64_decoded.length; i++) {
                 binData[i] = b64_decoded.charCodeAt(i);
@@ -259,7 +258,7 @@ def handle_incoming(message):
         bot.send_message(message.chat.id, "📄 আপনার .html ফাইল অথবা সরাসরি এইচটিএমএল কোডটি চ্যাটে পেস্ট করে পাঠান!")
         return
 
-    bot.reply_to(message, "⏳ Processing and applying Nirob's Anti-Bot Shield Engine...")
+    bot.reply_to(message, "⏳ Processing and applying Nirob's Advanced Anti-Bot Shield Engine...")
     
     try:
         html_data = ""
