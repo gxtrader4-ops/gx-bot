@@ -8,7 +8,6 @@ ADMIN_ID = 8419760844
 REQUIRED_CHANNEL_ID = -1003810620422
 REQUIRED_CHANNEL_LINK = "https://t.me/SUPPOR8TNIROB"
 
-# আপনার ইউজারনেম ও বটের তথ্য
 MY_TELEGRAM_USERNAME = "NIROB_GX_LEADER"
 MY_BOT_USERNAME = "nirob_team_Obucsate_bot"
 # =======================================================
@@ -26,75 +25,60 @@ def check_must_join(user_id):
         return False
 
 def inject_elite_protection(html_content, target_user_id):
-    """
-    UNBREAKABLE ELITE ANTI-DECODE & CONSOLE TRAP SHIELD
-    - F12 / DevTools ওপেন করলে কোড গায়েব হয়ে যাবে এবং আপনার টেলিগ্রামে এলার্ট পাঠাবে।
-    - VM ও স্যান্ডবক্স ডিটেকশন থাকবে।
-    """
-    elite_script = f"""
+    # JavaScript অংশ আলাদা রেখে পাইথন সিনট্যাক্স এরর মুক্ত করা হয়েছে
+    elite_script = """
     <!--==================================================
     🔥 UNBREAKABLE ELITE ANTI-DECODE BY NIROB GX 🔥
     --------------------------------------------------
-    Obfuscated By: @{MY_TELEGRAM_USERNAME}
-    Bot Username: @{MY_BOT_USERNAME}
-    Timestamp: 2026-10-23 11:34:12 UTC
     Status: MAXIMUM ANTI-DECODER SHIELD ACTIVE 🛑
     ==================================================-->
     <script>
     (function() {
-        // ১. VM & Sandbox Detection
         try {
             var ua = navigator.userAgent.toLowerCase();
             if (ua.includes("headless") || ua.includes("phantomjs") || ua.includes("selenium")) {
                 document.body.innerHTML = "";
                 window.location.href = "about:blank";
             }
-        } catch(e) {{}}
+        } catch(e) {}
 
-        // ২. Console / F12 Trap & Telegram Alert Trigger
         let devtoolsOpen = false;
         const threshold = 160;
 
-        function triggerConsoleAlert() {{
-            if (!devtoolsOpen) {{
+        function triggerConsoleAlert() {
+            if (!devtoolsOpen) {
                 devtoolsOpen = true;
-                // মূল এইচটিএমএল কন্টেন্ট সম্পূর্ণ উধাও করে দেওয়া
-                document.documentElement.innerHTML = "<div style='background:black;color:red;height:100vh;display:flex;justify-content:center;align-items:center;font-family:monospace;font-size:24px;text-align:center;'>ACCESS BLOCKED!<br>Developer Tools / Console Detected!<br>Message sent to @{MY_TELEGRAM_USERNAME}</div>";
+                document.documentElement.innerHTML = "<div style='background:black;color:red;height:100vh;display:flex;justify-content:center;align-items:center;font-family:monospace;font-size:24px;text-align:center;'>ACCESS BLOCKED!<br>Developer Tools / Console Detected!<br>Protected by @NIROB_GX_LEADER</div>";
                 
-                // আপনার টেলিগ্রাম ইনবক্সে বা বটের মাধ্যমে নোটিফিকেশন পাঠানোর ফেচ রিকোয়েস্ট (Telegram Bot API SendMessage)
-                fetch(`https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={ADMIN_ID}&text=🚨%20Alert!%20Someone%20tried%20to%20inspect/open%20console%20on%20your%20protected%20file!%20User%20IP%20or%20Session%20Terminated.`);
-            }}
+                fetch("https://api.telegram.org/bot8989938530:AAFhsY_5jC2_YF3d0QHki4uAI87gcRzUFvY/sendMessage?chat_id=8419760844&text=🚨%20Alert!%20Someone%20tried%20to%20inspect/open%20console%20on%20your%20protected%20file!");
+            }
         }
 
-        // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U ব্লক করা এবং ট্র্যাপ ট্রিগার করা
-        document.addEventListener('keydown', function(e) {{
+        document.addEventListener('keydown', function(e) {
             if (e.keyCode === 123 || 
                 (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
-                (e.ctrlKey && e.keyCode === 85)) {{
+                (e.ctrlKey && e.keyCode === 85)) {
                 e.preventDefault();
                 triggerConsoleAlert();
                 return false;
-            }}
-        }});
+            }
+        });
 
-        // ডিবাগিং ডিটেকশন লুপ
-        setInterval(function() {{
+        setInterval(function() {
             const widthThreshold = window.outerWidth - window.innerWidth > threshold;
             const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-            if (widthThreshold || heightThreshold) {{
+            if (widthThreshold || heightThreshold) {
                 triggerConsoleAlert();
-            }}
+            }
             
-            // ডাবগার ট্র্যাপ
             var startTime = performance.now();
             debugger;
             var endTime = performance.now();
-            if (endTime - startTime > 100) {{
+            if (endTime - startTime > 100) {
                 triggerConsoleAlert();
-            }}
-        }}, 500);
+            }
+        }, 500);
 
-        // রাইট ক্লিক ডিজাবল
         document.addEventListener('contextmenu', event => event.preventDefault());
     })();
     </script>
@@ -190,7 +174,7 @@ def handle_document(message):
             bot.send_document(
                 message.chat.id, 
                 f, 
-                caption=f"✅ **फাইল সফলভাবে মারাত্মক লেভেলে প্রটেক্ট করা হয়েছে!**\n🛡️ *By: @{MY_TELEGRAM_USERNAME}*\n🤖 *Bot: @{MY_BOT_USERNAME}*",
+                caption=f"✅ **ফাইল সফলভাবে মারাত্মক লেভেলে প্রটেক্ট করা হয়েছে!**\n🛡️ *By: @{MY_TELEGRAM_USERNAME}*\n🤖 *Bot: @{MY_BOT_USERNAME}*",
                 parse_mode="Markdown"
             )
         
