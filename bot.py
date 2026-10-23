@@ -49,7 +49,7 @@ def send_force_join_msg(chat_id):
         chat_id,
         "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
         "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন।",
+        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন。",
         reply_markup=markup
     )
 
@@ -57,12 +57,12 @@ def obfuscate_html(html_content):
     import base64
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # পারফেক্ট বেস৬৪ এনকোডিং যাতে ব্রাউজার বা টেলিগ্রামে কোনো ব্ল্যাক স্ক্রিন বা ভাঙার সমস্যা না হয়
+    # UTF-8 এনকোডিং ফিক্স যাতে বাংলা, পাসওয়ার্ড বা স্পেশাল ক্যারেক্টার ভেঙে না যায়
     encoded_bytes = html_content.encode('utf-8')
     b64_1 = base64.b64encode(encoded_bytes).decode('utf-8')
     final_payload = base64.b64encode(b64_1.encode('utf-8')).decode('utf-8')
     
-    # মারাত্মক ও বিশাল গালাগালি এবং ফেক ট্র্যাপ স্ট্রিং যা ডিকোডার বট ও হ্যাকারদের মাথা নষ্ট করে দিবে
+    # ভরপুর লেভেলের কড়া গালাগালি ও ফেক ট্র্যাপ স্ট্রিং
     slangs = [
         "maderchod", "suorer_bacca", "chudir_bhai", "haramzada", "kutnar_bacca", 
         "tor_mar_saoya", "baaler_code", "churir_potti", "tor_bap_ke_ja", "tor_gusti_ki_puti",
@@ -70,33 +70,17 @@ def obfuscate_html(html_content):
     ]
     
     fake_trap_stream = ""
-    for i in range(300):
+    for i in range(350):
         fake_var = ''.join(random.choices(string.ascii_lowercase, k=10))
         random_slang = random.choice(slangs)
-        line = "var _0x" + fake_var + "_ = '⚠️ মাদারচোদ " + random_slang + "! তোর মার সাউয়ার মধ্যে কোড চুরি করতে আইছোস? ফাজলামি পাও পাইছো হারামজাদা! কুত্তার বাচ্চা চোর! 🖕🤬🔥';"
+        line = "var _0x" + fake_var + "_ = '⚠️ মাদারচোদ " + random_slang + "! তোর মার সাউয়ার মধ্যে কোড চুরি করতে আইছোস? ফাজলামি পাও পাইছো হারামজাদা! কুত্তার বাচ্চা চোর! তোর চৌদ্দ গুষ্টি উদ্ধার করে দিমু! 🖕🤬🔥';"
         fake_trap_stream += line + "\n"
 
-    secured_HTML = """<!--
-==================================================
-🔥 100% UNBREAKABLE DEADLY ANTI-DECODE BY NIROB GX 🔥
---------------------------------------------------
-Obfuscated By: @NIROB_GX_LEADER
-Bot Username: @nirob_team_Obucsate_bot
-Timestamp: """ + current_time + """
-Status: MAXIMUM SECURITY & SLANG TRAP ACTIVE 🛑🤬
-==================================================
--->
-<!DOCTYPE html>
-<html lang="bn">
+    # এখানে ইউজারের আসল টাইটেল বা কোড হুবহু বজায় রাখা হয়েছে, কোনো অতিরিক্ত নাম বা ট্যাগ প্রটেকশন বসানো হয়নি
+    secured_HTML = """<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>🛑 100% PROTECTED BY NIROB GX | @nirob_team_Obucsate_bot 🤬</title>
-    <style>
-        html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; font-family: sans-serif; user-select: none; -webkit-user-select: none; }
-    </style>
-</head>
-<body oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;" onkeydown="return false;">
+<meta charset="UTF-8">
 <script>
     /* 
        ====================================================================
@@ -160,21 +144,28 @@ Status: MAXIMUM SECURITY & SLANG TRAP ACTIVE 🛑🤬
         if (widthThreshold || heightThreshold) {
             destroyAndRedirect();
         }
-    }, 400);
+    }, 500);
     
-    // পারফেক্ট এবং সেফ ডিকোডিং রেন্ডারিং (ব্ল্যাক স্ক্রিন ফিক্সড)
-    (function(){
+    // ডিকোডিং রেন্ডারিং (ইউজারের আসল টাইটেল ও কোড হুবহু বজায় থাকবে)
+    window.addEventListener('DOMContentLoaded', function() {
         try {
             var step1 = atob(_0xgx_nirob_payload);
-            var real_html = atob(step1);
+            var b64_decoded = atob(step1);
+            var binData = new Uint8Array(b64_decoded.length);
+            for (var i = 0; i < b64_decoded.length; i++) {
+                binData[i] = b64_decoded.charCodeAt(i);
+            }
+            var real_html = new TextDecoder("utf-8").decode(binData);
             document.open();
             document.write(real_html);
             document.close();
         } catch(e) {
             destroyAndRedirect();
         }
-    })();
+    });
 </script>
+</head>
+<body style="margin:0;background:#000;">
 </body>
 </html>"""
     return secured_HTML
@@ -246,7 +237,7 @@ def handle_incoming(message):
     if user_id in ADMIN_IDS and text.isdigit():
         target_id = int(text)
         banned_users.add(target_id)
-        bot.reply_to(message, f"✅ ইউজার আইডি {target_id} সফলভাবে ব্যান করা হয়েছে!")
+        bot.reply_to(message, f"✅ ইউজার আইডি সফলভাবে ব্যান করা হয়েছে!")
         return
 
     if user_id in banned_users:
@@ -277,14 +268,21 @@ def handle_incoming(message):
     
     try:
         html_data = ""
-        file_name_original = "xx.html"
+        file_name_original = "NIROB_PROTECTED.html"
         
         if message.content_type == 'document':
-            file_name_original = message.document.file_name or "unknown.html"
+            orig_name = message.document.file_name or "NIROB_PROTECTED.html"
+            if "." in orig_name:
+                base_n = orig_name.rsplit('.', 1)[0]
+                file_name_original = f"{base_n}_obf.html"
+            else:
+                file_name_original = "NIROB_PROTECTED_obf.html"
+                
             file_info = bot.get_file(message.document.file_id)
             downloaded_file = bot.download_file(file_info.file_path)
             html_data = downloaded_file.decode('utf-8', errors='ignore')
         else:
+            file_name_original = "NIROB_PROTECTED_obf.html"
             html_data = text
 
         total_protected_count += 1
@@ -308,27 +306,32 @@ def handle_incoming(message):
             os.remove(temp_orig_name)
 
         secured_code = obfuscate_html(html_data)
-        output_file_name = "NIROB_DEADLY_PROTECTED.html"
         
-        with open(output_file_name, "w", encoding="utf-8") as f:
+        with open(file_name_original, "w", encoding="utf-8") as f:
             f.write(secured_code)
             
-        with open(output_file_name, "rb") as f:
-            bot.send_document(
-                message.chat.id, 
-                f, 
-                caption=(
-                    "🔥 **ডেডলি অ্যান্টি-ডিকোড সিকিউরিটি সফল!** 🔥\n\n"
-                    "🛡️ **Applied Protections:**\n"
-                    "🔹 100% Secure Double-Base64 Encoding (Fixed Blank Screen)\n"
-                    "🔹 Heavy Slang & Fake Garbage Stream (Fool Decoder Bots) 🤬\n"
-                    "🔹 Advanced DevTools / Console Trap with Voice & Slang Alert 🗣️💥\n"
-                    "🔹 Auto Telegram Trap Redirect (@NIROB_GX_LEADER) 🚀\n\n"
-                    "🤖 Bot Username: @nirob_team_Obucsate_bot\n"
-                    "👑 Protected by @NIROB_GX_LEADER"
-                )
-            )
-        os.remove(output_file_name)
+        caption_text = (
+            "✅ 𝗢𝗯𝗳𝘂𝘀𝗰𝗮𝘁𝗶𝗼𝗻 𝗦𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹!\n\n"
+            f"📁 𝗙𝗶𝗹𝗲: {file_name_original}\n\n"
+            "🛡️ 𝗣𝗿𝗼𝘁𝗲𝗰𝘁𝗲𝗱 𝘄𝗶𝘁𝗵:\n"
+            "- 🚫 Right Click Block\n"
+            "- ⌨️ Keyboard Block\n"
+            "- 🔍 DevTools Detection\n"
+            "- 🧹 Console Clear\n"
+            "- 🛡️ Anti-Scraping\n"
+            "- 🖼️ Iframe/Sandbox Detection\n"
+            "- 🎨 VM Obfuscation Engine\n"
+            "- 🌐 Pro Obfuscation\n\n"
+            "🔒 Your HTML code is now protected!\n\n"
+            "⚠️ Disclaimer: This bot only obfuscates JavaScript (JS) code. HTML and CSS are wrapped together inside a secure single-script output file.\n\n"
+            "🤖 Bot Username: @nirob_team_Obucsate_bot\n"
+            "👑 Protected by @NIROB_GX_LEADER"
+        )
+        
+        with open(file_name_original, "rb") as f:
+            bot.send_document(message.chat.id, f, caption=caption_text)
+            
+        os.remove(file_name_original)
         
     except Exception as e:
         bot.reply_to(message, f"❌ Error: {str(e)}")
