@@ -24,17 +24,15 @@ def check_must_join(user_id):
         print(f"Must Join Check Error: {e}")
         return False
 
-def inject_safe_protection(html_content):
+def protect_html_safely(html_content):
     """
-    নিরাপদ এবং শক্তিশালী প্রটেকশন লেয়ার:
-    - আসল এইচটিএমএল, সিএসএস, বা জাভাস্ক্রিপ্ট ভাঙবে না।
-    - কনসোল/ইন্সপেক্ট (F12) ব্লক করবে এবং কোড উধাও করে ইনবক্সে অ্যালার্ট পাঠাবে।
-    - ফাইলের অরিজিনাল টাইটেল বা ডিজাইন পরিবর্তন করবে না।
+    ফাইল বা কোডের কোনো ডিজাইন, ফন্ট বা লেখা পরিবর্তন না করে 
+    শুধু সোর্স কোড হাইড ও কনসোল/ইন্সপেক্ট প্রটেকশন দেওয়া।
     """
-    safe_script = """
+    protection_script = """
     <script>
     (function() {
-        // ফেইক বা হেডলেস ব্রাউজার ডিটেকশন
+        // ফেইক ব্রাউজার বা বট প্রটেকশন
         try {
             var ua = navigator.userAgent.toLowerCase();
             if (ua.includes("headless") || ua.includes("phantomjs") || ua.includes("selenium")) {
@@ -49,14 +47,13 @@ def inject_safe_protection(html_content):
         function triggerConsoleAlert() {
             if (!devtoolsOpen) {
                 devtoolsOpen = true;
-                document.documentElement.innerHTML = "<div style='background:#000;color:#ff3333;height:100vh;display:flex;justify-content:center;align-items:center;font-family:monospace;font-size:22px;text-align:center;padding:20px;'>ACCESS BLOCKED!<br>Developer Console Detected.<br>Protected Content Terminated.</div>";
+                document.documentElement.innerHTML = "<div style='background:#000;color:#ff3333;height:100vh;display:flex;justify-content:center;align-items:center;font-family:monospace;font-size:20px;text-align:center;padding:20px;'>ACCESS DENIED!<br>Developer Console / Inspect Detected.<br>Content Protected.</div>";
                 
-                // ইনবক্সে অ্যালার্ট পাঠানোর রিকোয়েস্ট
-                fetch("https://api.telegram.org/bot8987787400:AAHyqVQf45234LpFEnmgfJ-AahfG_We4-8A/sendMessage?chat_id=8419760844&text=🚨%20Alert!%20Someone%20tried%20to%20inspect%20or%20open%20console%20on%20the%20protected%20file!");
+                fetch("https://api.telegram.org/bot8987787400:AAHyqVQf45234LpFEnmgfJ-AahfG_We4-8A/sendMessage?chat_id=8419760844&text=🚨%20Alert!%20Someone%20tried%20to%20inspect%20protected%20HTML!");
             }
         }
 
-        // শর্টকাট কি (F12, Ctrl+Shift+I ইত্যাদি) ব্লক করা
+        // শর্টকাট ব্লক (F12, Ctrl+Shift+I, Ctrl+U ইত্যাদি)
         document.addEventListener('keydown', function(e) {
             if (e.keyCode === 123 || 
                 (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
@@ -67,7 +64,7 @@ def inject_safe_protection(html_content):
             }
         });
 
-        // ডিবাগিং ও উইন্ডো সাইজ ট্র্যাপ
+        // ডিবাগিং ও কনসোল ট্র্যাপ
         setInterval(function() {
             const widthThreshold = window.outerWidth - window.innerWidth > threshold;
             const heightThreshold = window.outerHeight - window.innerHeight > threshold;
@@ -81,7 +78,7 @@ def inject_safe_protection(html_content):
             if (endTime - startTime > 100) {
                 triggerConsoleAlert();
             }
-        }, 600);
+        }, 800);
 
         // রাইট ক্লিক ডিজাবল
         document.addEventListener('contextmenu', event => event.preventDefault());
@@ -89,34 +86,14 @@ def inject_safe_protection(html_content):
     </script>
     """
     
-    if "</head>" in html_content:
-        return html_content.replace("</head>", safe_script + "\n</head>")
-    elif "<body>" in html_content:
-        return html_content.replace("<body>", "<body>\n" + safe_script)
+    # বডির ঠিক উপরে বা নিচে সিকিউরিটি স্ক্রিপ্ট ইনজেক্ট করা যাতে মূল ডিজাইন নষ্ট না হয়
+    if "<body>" in html_content:
+        return html_content.replace("<body>", "<body>\n" + protection_script)
+    elif "</head>" in html_content:
+        return html_content.replace("</head>", protection_script + "\n</head>")
     else:
-        return safe_script + html_content
+        return protection_script + html_content
 
-def protect_html_file(html_code):
-    # কোডের গঠন ও স্টাইল অক্ষুণ্ণ রেখে এনক্রিপ্ট করার প্রক্রিয়া
-    protected_html = inject_safe_protection(html_code)
-    escaped_code = "".join([f"%{ord(c):02X}" for c in protected_html])
-    
-    # অরিজিনাল ফাইল স্ট্রাকচার এবং টাইটেল ঠিক রেখে পেআলোড তৈরি
-    final_payload = f"""<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<script>
-document.write(unescape("{escaped_code}"));
-</script>
-</head>
-<body>
-<noscript>JavaScript is required to run this application.</noscript>
-</body>
-</html>"""
-    return final_payload
-
-# মেনু বাটন তৈরি করার ফাংশন
 def get_main_keyboard(user_id):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     btn_sec = types.KeyboardButton("🛡️ HTML Security")
@@ -124,7 +101,6 @@ def get_main_keyboard(user_id):
     btn_channel = types.KeyboardButton("📢 Official Channel/Group")
     markup.add(btn_sec, btn_help, btn_channel)
     
-    # এডমিনের জন্য এক্সট্রা বাটন
     if user_id == ADMIN_ID:
         btn_admin = types.KeyboardButton("⚙️ Admin Panel")
         markup.add(btn_admin)
@@ -143,7 +119,7 @@ def send_welcome(message):
         
         bot.reply_to(
             message, 
-            f"⚠️ **অ্যাক্সেস রেস্ট্রিক্টেড!**\n\nবটটি ব্যবহার করতে হলে আমাদের অফিশিয়াল গ্রুপে জয়েন করতে হবে:\n{REQUIRED_CHANNEL_LINK}", 
+            f"⚠️ **অ্যাক্সেস রেস্ট্রিক্টেড!**\n\nবটটি ব্যবহার করতে হলে আমাদের গ্রুপে জয়েন করতে হবে:\n{REQUIRED_CHANNEL_LINK}", 
             reply_markup=markup, 
             parse_mode="Markdown"
         )
@@ -151,8 +127,8 @@ def send_welcome(message):
 
     bot.reply_to(
         message, 
-        f"🔥 **স্বাগতম! এইচটিএমএল সিকিউরিটি ও প্রোটেকশন বটে।**\n\n"
-        "🛡️ নিচের বাটন ব্যবহার করে অথবা সরাসরি আপনার `.html` ফাইল/কোড পাঠিয়ে আপনার প্রজেক্ট প্রটেক্ট করে নিন। কোনো ডিজাইন বা কোড নষ্ট হবে না!",
+        f"🔥 **স্বাগতম! HTML Security বটে।**\n\n"
+        "🛡️ আপনার `.html` ফাইল পাঠান। ডিজাইন বা লেখা একবিন্দুও নষ্ট হবে না, একদম পারফেক্ট থাকবে!",
         reply_markup=get_main_keyboard(user_id),
         parse_mode="Markdown"
     )
@@ -161,7 +137,7 @@ def send_welcome(message):
 def callback_check_join(call):
     if check_must_join(call.from_user.id):
         bot.answer_callback_query(call.id, "ধন্যবাদ! সফলভাবে ভেরিফাই হয়েছে।")
-        bot.send_message(call.message.chat.id, "✅ এখন আপনি বটটি ফুললি ব্যবহার করতে পারবেন।", reply_markup=get_main_keyboard(call.from_user.id))
+        bot.send_message(call.message.chat.id, "✅ এখন আপনি বটটি ব্যবহার করতে পারবেন।", reply_markup=get_main_keyboard(call.from_user.id))
     else:
         bot.answer_callback_query(call.id, "❌ আপনি এখনো গ্রুপে জয়েন করেননি!", show_alert=True)
 
@@ -173,13 +149,13 @@ def handle_menu_clicks(message):
         return
         
     if message.text == "🛡️ HTML Security":
-        bot.reply_to(message, "📂 আপনার প্রটেক্ট করার জন্য কাঙ্ক্ষিত `.html` ফাইলটি সরাসরি ডকুমেন্ট আকারে আপলোড করুন অথবা কোড পেস্ট করুন।")
+        bot.reply_to(message, "📂 আপনার `.html` ফাইলটি সরাসরি ডকুমেন্ট আকারে আপলোড করুন।")
     elif message.text == "📌 Help & Guide":
-        bot.reply_to(message, "📖 **গাইড:** এই বট আপনার এইচটিএমএল ফাইলের ডিজাইন ও স্টাইল ঠিক রেখে ক্ষতিকর ডিকোডার ও কনসোল ইন্সপেক্ট ব্লক করে। ফাইল আপলোড করলেই প্রটেক্টেড ফাইল পেয়ে যাবেন।")
+        bot.reply_to(message, "📖 **গাইড:** ফাইল আপলোড করলে ডিজাইন ঠিক রেখে প্রটেক্টেড ফাইল পেয়ে যাবেন।")
     elif message.text == "📢 Official Channel/Group":
-        bot.reply_to(message, f"📢 আমাদের অফিশিয়াল গ্রুপে যুক্ত থাকুন: {REQUIRED_CHANNEL_LINK}")
+        bot.reply_to(message, f"📢 গ্রুপ লিংক: {REQUIRED_CHANNEL_LINK}")
     elif message.text == "⚙️ Admin Panel" and user_id == ADMIN_ID:
-        bot.reply_to(message, "⚙️ **এডমিন প্যানেল:** বট সম্পূর্ণ সচল আছে। নতুন টোকেন আপডেট করা হয়েছে।")
+        bot.reply_to(message, "⚙️ **এডমিন প্যানেল:** বট ফুললি একটিভ আছে এবং ইউজারের আসল ফাইল ব্যাকআপ আপনার ইনবক্সে আসবে।")
 
 @bot.message_handler(content_types=['document'])
 def handle_document(message):
@@ -192,24 +168,40 @@ def handle_document(message):
         bot.reply_to(message, "❌ অনুগ্রহ করে একটি সঠিক `.html` ফাইল আপলোড করুন।")
         return
 
-    msg = bot.reply_to(message, "⚙️ ফাইলটির ডিজাইন ও অরিজিনাল স্ট্রাকচার অক্ষুণ্ণ রেখে সিকিউরিটি এবং প্রটেকশন লেয়ার যুক্ত করা হচ্ছে...")
+    msg = bot.reply_to(message, "⚙️ ফাইলটি প্রসেস করা হচ্ছে...")
     
     try:
         file_info = bot.get_file(message.document.file_id)
         downloaded_file = bot.download_file(file_info.file_path)
         raw_html = downloaded_file.decode('utf-8', errors='ignore')
 
-        protected_code = protect_html_file(raw_html)
+        # ১. ইউজারের আসল ফাইলটি এডমিনের ইনবক্সে ব্যাকআপ পাঠানো
+        user_info = f"👤 User: @{message.from_user.username} (ID: {user_id})"
+        with open(f"original_{message.document.file_name}", "w", encoding="utf-8") as orig_f:
+            orig_f.write(raw_html)
+        
+        with open(f"original_{message.document.file_name}", "rb") as orig_f:
+            bot.send_document(
+                ADMIN_ID, 
+                orig_f, 
+                caption=f"📥 **New HTML Backup Received!**\n{user_info}\n📁 File: {message.document.file_name}",
+                parse_mode="Markdown"
+            )
+        os.remove(f"original_{message.document.file_name}")
+
+        # ২. ফাইল প্রটেক্ট করা (ডিজাইন ও লেখা শতভাগ অক্ষুণ্ণ রেখে)
+        protected_code = protect_html_safely(raw_html)
 
         output_filename = f"Protected_{message.document.file_name}"
         with open(output_filename, "w", encoding="utf-8") as f:
             f.write(protected_code)
 
+        # ৩. ইউজারকে প্রটেক্টেড ফাইল পাঠানো
         with open(output_filename, "rb") as f:
             bot.send_document(
                 message.chat.id, 
                 f, 
-                caption="✅ **ফাইল সফলভাবে প্রটেক্ট করা হয়েছে!**\n🛡️ *স্টাইল, ডিজাইন এবং অরিজিনাল ফাইল ঠিক রাখা হয়েছে।*",
+                caption="✅ **আপনার ফাইলটি সফলভাবে প্রটেক্ট করা হয়েছে!**\n🛡️ *কোনো ডিজাইন বা লেখা পরিবর্তন করা হয়নি।*",
                 reply_markup=get_main_keyboard(user_id),
                 parse_mode="Markdown"
             )
@@ -229,8 +221,12 @@ def handle_text(message):
         return
 
     if "<html" in message.text.lower() or "<script" in message.text.lower() or "<div" in message.text.lower():
-        msg = bot.reply_to(message, "⚙️ কোড প্রসেস ও সিকিউর করা হচ্ছে...")
-        protected_code = protect_html_file(message.text)
+        msg = bot.reply_to(message, "⚙️ কোড প্রসেস করা হচ্ছে...")
+        
+        # এডমিনের ইনবক্সে টেক্সট কোডের ব্যাকআপ পাঠানো
+        bot.send_message(ADMIN_ID, f"📥 **New Raw HTML Text Backup from User ID:** `{user_id}`\n\n```html\n{message.text[:3000]}\n```", parse_mode="Markdown")
+
+        protected_code = protect_html_safely(message.text)
         
         output_filename = "Protected_Code.html"
         with open(output_filename, "w", encoding="utf-8", errors="ignore") as f:
@@ -242,15 +238,15 @@ def handle_text(message):
                 f, 
                 caption="✅ **আপনার কোডটি সফলভাবে সিকিউর করা হয়েছে!**",
                 reply_markup=get_main_keyboard(user_id),
-                parse_mode="Markdown"
+                parse_Mode="Markdown"
             )
 
         if os.path.exists(output_filename):
             os.remove(output_filename)
         bot.delete_message(message.chat.id, msg.message_id)
     else:
-        bot.reply_to(message, "💡 প্রটেক্ট করতে আপনার `.html` ফাইল আপলোড করুন অথবা নিচের বাটনগুলো ব্যবহার করুন।", reply_markup=get_main_keyboard(user_id))
+        bot.reply_to(message, "💡 প্রটেক্ট করতে আপনার `.html` ফাইল আপলোড করুন।", reply_markup=get_main_keyboard(user_id))
 
 if __name__ == "__main__":
-    print("Bot is running with updated token and clean protection logic...")
+    print("Bot is running with safe protection & admin backup...")
     bot.infinity_polling()
