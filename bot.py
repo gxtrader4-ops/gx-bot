@@ -57,36 +57,38 @@ def obfuscate_html(html_content):
     import base64
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
     
-    # আল্ট্রা-লেভেল রিভার্সড ও মাল্টি-স্টেপ এনক্রিপশন যা ডিকোড বট টোটাল ব্লক করবে
+    # ডিকোড বট বা চোরদের জন্য কাস্টম মারাত্মক ওয়াটারমার্ক ও ওয়ার্নিং হেডার (আপনার আসল ইউজারনেম সহ)
+    watermark_text = "🚫🔥💀 [কোড চোর সনাক্ত হয়েছে! তোর বাপ @nirob_team_Obucsate_bot দিয়ে ইনক্রিপ্ট করা কোড ডিকোড করার ক্ষমতা কারো নাই! ওনার: @NIROB_GX_LEADER] 🔒 ⚡ _qpFrtaI9o6TYo4Owdj6Fzz8IjffHujX"
+    
     encoded_bytes = html_content.encode('utf-8')
     b64_1 = base64.b64encode(encoded_bytes).decode('utf-8')
     reversed_payload = b64_1[::-1]
     
-    # কাস্টম সাইফার ক্যারেক্টার শিফটিং
-    shifted_payload = "".join([chr(ord(c) + 3) for c in reversed_payload])
-    final_b64 = base64.b64encode(shifted_payload.encode('utf-8')).decode('utf-8')
+    # কাস্টম শিফটিং ও ডাবল এনক্রিপশন
+    shifted_payload = "".join([chr(ord(c) + 5) for c in reversed_payload])
+    final_payload = base64.b64encode(shifted_payload.encode('utf-8')).decode('utf-8')
     
-    # হেভি গার্বেজ ডিকয় অবজেক্ট ও ফাংশন স্ট্রিম
     decoy_garbage = ""
-    for i in range(600):
+    for i in range(500):
         v1 = ''.join(random.choices(string.ascii_lowercase, k=8))
         v2 = ''.join(random.choices(string.ascii_lowercase, k=6))
         decoy_garbage += f"const _0x{v1} = (function() {{ let _0x{v2} = 0x{random.randint(100,999)}; return _0x{v2}; }})();\n"
 
     secured_HTML = """<!--
 ==================================================
-🔥 ELITE ANTI-DECODE & UNBREAKABLE SHIELD BY NIROB GX 🔥
+🔥 UNBREAKABLE ELITE ANTI-DECODE BY NIROB GX 🔥
 --------------------------------------------------
 Obfuscated By: @NIROB_GX_LEADER
 Bot Username: @nirob_team_Obucsate_bot
 Timestamp: """ + current_time + """
-Status: MAXIMUM ELITE OBFUSCATION ACTIVE 🛑
+Status: MAXIMUM ANTI-DECODER SHIELD ACTIVE 🛑
 ==================================================
 -->
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
+<title>""" + watermark_text + """</title>
 <script>
     /* 
        ====================================================================
@@ -99,7 +101,7 @@ Status: MAXIMUM ELITE OBFUSCATION ACTIVE 🛑
     */
     """ + decoy_garbage + """
     
-    var _0xgx_elite_data = '""" + final_b64 + """';
+    var _0xgx_elite_data = '""" + final_payload + """';
     var isLocked = false;
     var telegramLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("⚠️ Hello Admin! My attempt to inspect elite protected code was blocked.");
     
@@ -144,7 +146,7 @@ Status: MAXIMUM ELITE OBFUSCATION ACTIVE 🛑
             let step1 = atob(_0xgx_elite_data);
             let shifted = "";
             for(let i=0; i<step1.length; i++) {
-                shifted += String.fromCharCode(step1.charCodeAt(i) - 3);
+                shifted += String.fromCharCode(step1.charCodeAt(i) - 5);
             }
             let reversed = shifted.split('').reverse().join('');
             let b64_decoded = atob(reversed);
