@@ -1,342 +1,446 @@
-import os
+import base64
+import telebot
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+import io
 import random
 import string
+import requests
+import json
+import os
+import urllib.parse
+import re
 from datetime import datetime
-from threading import Thread
-from flask import Flask
-import telebot
-from telebot import types
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import threading
+from dotenv import load_dotenv
 
-TOKEN = '8987787400:AAHyqVQf45234LpFEnmgfJ-AahfG_We4-8A'
-ADMIN_IDS = [8419760844]
-REQUIRED_GROUP = '@SUPPOR8TNIROB'
+# ================= KREDENTIALS =================
+load_dotenv()
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+if not TOKEN:
+    raise RuntimeError("Set the TELEGRAM_BOT_TOKEN environment variable before starting the bot.")
+ADMIN_ID = "6754584245"  # Aapki ID
+
+# ================= CHANNEL SETTINGS =================
+CHANNEL_ID = "-1004433788850" 
+CHANNEL_LINK = "https://t.me/+Ggk5X_tSbPc4YWY1"
 
 bot = telebot.TeleBot(TOKEN)
 
-banned_users = set()
-total_protected_count = 0
+# ================= DATABASE SETUP =================
+DB_FILE = 'bot_db.json'
 
-app = Flask('')
+DEFAULT_TEXTS = {
+    "welcome": "🌀 <b>𝗪𝗘𝗟𝗖𝗢𝗠𝗘 𝗧𝗢 𝗛𝗧𝗠𝗟 𝗢𝗕𝗙𝗨𝗦𝗖𝗔𝗧𝗢𝗥 𝗣𝗥𝗢</b> 🌀\n\n🎯 <b>𝐏𝐎𝐖𝐄𝐑𝐄𝐃 𝐁𝐘 𝐌𝐔𝐋𝐓𝐈 𝐋𝐀𝐘𝐄𝐑𝐄𝐃 𝐄𝐍𝐂𝐑𝐏𝐓𝐈𝐎𝐍</b>\n🔁 <b>𝗜 𝗪𝗜𝗟𝗟 𝗣𝗥𝗢𝗧𝗘𝗖𝗧 𝗬𝗢𝗨𝗥 𝗛𝗧𝗠𝗟</b>\n\n👇 <b> 👇 𝗦𝗲𝗹𝗲𝗰𝘁 𝗮𝗻 𝗼𝗽𝘁𝗶𝗼𝗻 👇:</b>",
+    "obf_prompt": "📁 <b>𝗦𝗲𝗻𝗱 𝗛𝗧𝗠𝗟 𝗙𝗶𝗹𝗲:</b>\n<b>𝐒𝐄𝐍𝐃 𝐘𝐎𝐔𝐑 𝐇𝐓𝐌𝐋 𝐅𝐈𝐋𝐄 𝐅𝐎𝐑 𝐄𝐍𝐂𝐑𝐏𝐓𝐈𝐎𝐍.</b>",
+    "url_prompt": "🌐 <b>𝗦𝗲𝗻𝗱 𝗨𝗥𝗟:</b>\nKripya website ka link bhejein (Jaise: https://google.com)"
+}
 
-@app.route('/')
-def home():
-    return "NIROB GX Ultimate Elite Obfuscator Bot is running 24/7!"
+def load_db():
+    default_db = {"users": [], "activities": [], "bot_active": True, "saved_urls": [], "saved_files": [], "texts": DEFAULT_TEXTS}
+    if os.path.exists(DB_FILE):
+        with open(DB_FILE, 'r') as f:
+            try:
+                data = json.load(f)
+                for key in default_db:
+                    if key not in data: data[key] = default_db[key]
+                data["texts"] = DEFAULT_TEXTS 
+                return data
+            except: return default_db
+    return default_db
 
-def run():
-    port = int(os.environ.get('PORT', 8080))
-    app.run(host='0.0.0.0', port=port)
+def save_db(data):
+    with open(DB_FILE, 'w') as f: json.dump(data, f, indent=4)
 
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
+db = load_db()
+user_states = {}
 
-def check_user_membership(user_id):
-    if user_id in ADMIN_IDS:
-        return True
-    try:
-        chat_member = bot.get_chat_member(REQUIRED_GROUP, user_id)
-        if chat_member.status in ['member', 'administrator', 'creator']:
-            return True
-    except Exception as e:
-        print(f"Membership check error: {e}")
-    return False
+def add_user(user_id):
+    if str(user_id) not in db['users']:
+        db['users'].append(str(user_id))
+        save_db(db)
 
-def send_force_join_msg(chat_id):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("📢 Join Support Group", url="https://t.me/SUPPOR8TNIROB"))
-    markup.add(types.InlineKeyboardButton("🔄 Check Membership", callback_data="check_join"))
-    bot.send_message(
-        chat_id,
-        "⚠️ **অ্যাক্সেস ব্লকড!**\n\n"
-        "এই বট ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিশিয়াল সাপোর্ট গ্রুপে জয়েন থাকতে হবে!\n\n"
-        "👉 নিচের বাটন থেকে সাপোর্ট গ্রুপে জয়েন করে **'Check Membership'** বাটনে ক্লিক করুন。",
-        reply_markup=markup
-    )
+def log_activity(user_id, action):
+    time_now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    db['activities'].append(f"[{time_now}] UID: {user_id} -> {action}")
+    if len(db['activities']) > 50: db['activities'] = db['activities'][-50:]
+    save_db(db)
 
-def obfuscate_html(html_content):
-    import base64
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
+# ================= ADVANCED SENSITIVE MASKING & HOOK EVASION ENGINE =================
+
+def mask_scripts(html_code):
+    def process_script(match):
+        script_tag = match.group(1)
+        script_content = match.group(2)
+        script_end = match.group(3)
+        
+        if 'src=' in script_tag.lower() or not script_content.strip():
+            return match.group(0)
+            
+        b64_script = base64.b64encode(script_content.encode('utf-8')).decode('utf-8')
+        obfuscated_js = f"eval(decodeURIComponent(escape(atob('{b64_script}'))));"
+        
+        return f"{script_tag}\n{obfuscated_js}\n{script_end}"
     
-    # ডিকোড বট বা চোরদের জন্য কাস্টম মারাত্মক ওয়াটারমার্ক ও ওয়ার্নিং হেডার (আপনার আসল ইউজারনেম সহ)
-    watermark_text = "🚫🔥💀 [কোড চোর সনাক্ত হয়েছে! তোর বাপ @nirob_team_Obucsate_bot দিয়ে ইনক্রিপ্ট করা কোড ডিকোড করার ক্ষমতা কারো নাই! ওনার: @NIROB_GX_LEADER] 🔒 ⚡ _qpFrtaI9o6TYo4Owdj6Fzz8IjffHujX"
-    
-    encoded_bytes = html_content.encode('utf-8')
-    b64_1 = base64.b64encode(encoded_bytes).decode('utf-8')
-    reversed_payload = b64_1[::-1]
-    
-    # কাস্টম শিফটিং ও ডাবল এনক্রিপশন
-    shifted_payload = "".join([chr(ord(c) + 5) for c in reversed_payload])
-    final_payload = base64.b64encode(shifted_payload.encode('utf-8')).decode('utf-8')
-    
-    decoy_garbage = ""
-    for i in range(500):
-        v1 = ''.join(random.choices(string.ascii_lowercase, k=8))
-        v2 = ''.join(random.choices(string.ascii_lowercase, k=6))
-        decoy_garbage += f"const _0x{v1} = (function() {{ let _0x{v2} = 0x{random.randint(100,999)}; return _0x{v2}; }})();\n"
+    return re.sub(r'(<script[^>]*>)(.*?)(</script>)', process_script, html_code, flags=re.IGNORECASE | re.DOTALL)
 
-    secured_HTML = """<!--
-==================================================
-🔥 UNBREAKABLE ELITE ANTI-DECODE BY NIROB GX 🔥
---------------------------------------------------
-Obfuscated By: @NIROB_GX_LEADER
-Bot Username: @nirob_team_Obucsate_bot
-Timestamp: """ + current_time + """
-Status: MAXIMUM ANTI-DECODER SHIELD ACTIVE 🛑
-==================================================
--->
+def rc4_crypt_bytes(data, key):
+    S = list(range(256))
+    j = 0
+    out = bytearray()
+    for i in range(256):
+        j = (j + S[i] + key[i % len(key)]) % 256
+        S[i], S[j] = S[j], S[i]
+    i = j = 0
+    for char in data:
+        i = (i + 1) % 256
+        j = (j + S[i]) % 256
+        S[i], S[j] = S[j], S[i]
+        out.append(char ^ S[(S[i] + S[j]) % 256])
+    return out
+
+def hardcore_hex_obfuscate(html_code):
+    html_code = mask_scripts(html_code)
+    b64_bytes = base64.b64encode(urllib.parse.quote(html_code).encode('utf-8'))
+    
+    rc4_key = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    rc4_key_bytes = rc4_key.encode('utf-8')
+    rc4_cipher = rc4_crypt_bytes(b64_bytes, rc4_key_bytes)
+    
+    hex_cipher = rc4_cipher.hex()
+    arr = [ord(c) for c in hex_cipher]
+    arr_str = ",".join(map(str, arr))
+
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # 🚨 EXACT INNER TEXT DEFINITION (For Strict Matching) 🚨
+    comment_inner = f"""
+╔══════════════════════════════════════════════════════════╗
+║  🔒 PROTECTED HTML - DO NOT MODIFY THIS HEADER 🔒         ║
+║══════════════════════════════════════════════════════════║
+║  Obfuscated By: @HTMLOFFUSCATORPRO_BOT                   ║
+║  TG Channel : @COMEBACK_TDX                                ║
+║  Timestamp: {timestamp}                          ║
+║  Signature: TDX PROTECTOR [TOKEN: {rc4_key}]             ║
+║══════════════════════════════════════════════════════════║
+║  ⚠️ WARNING: Removing or modifying this credit header    ║
+║  will cause this page to stop working permanently!       ║
+╚══════════════════════════════════════════════════════════╝"""
+
+    header_comment = f"<!--{comment_inner}\n-->"
+
+    # 🔥 GENERATE EXACT SIGNATURE HASH (No spaces/newlines allowed) 🔥
+    expected_stripped = re.sub(r'\s+', '', comment_inner)
+
+    decoder_js = f"""
+    var _safe = false;
+    var _k = "";
+    var _iter = document.createTreeWalker(document, 128, null, false);
+    var _node;
+    var _expected = "{expected_stripped}";
+    
+    // JS reads the DOM and checks for 100% EXACT structure match!
+    while ((_node = _iter.nextNode())) {{
+        var _val = _node.nodeValue;
+        if (_val.indexOf('PROTECTED HTML') !== -1) {{
+            // Remove all white spaces/newlines from user's DOM node to check raw content
+            var _actual = _val.replace(/\\s+/g, '');
+            
+            // IF EVEN ONE LETTER OR BORDER LINE IS MISSING, THIS WILL FAIL
+            if (_actual === _expected) {{
+                var _idx = _val.indexOf('[TOKEN: ');
+                if (_idx !== -1) {{
+                    _k = _val.substring(_idx + 8, _idx + 24);
+                    _safe = true;
+                    break;
+                }}
+            }}
+        }}
+    }}
+    
+    // If bot removes header or modifies even a single word, code crashes immediately.
+    if (!_safe || _k.length !== 16) {{
+        document.write('<h1 style="color:red;text-align:center;margin-top:50px;font-family:sans-serif;background:#000;padding:30px;border-radius:10px;">🚨 CRASH: TAMPER DETECTED!<br><br><span style="color:#fff;font-size:16px;">The credit header was modified or deleted. Decryption Key has been destroyed.</span></h1>');
+        return;
+    }}
+
+    function _R(k, s) {{
+        var _s=[], j=0, x, res='';
+        for (var i=0; i<256; i++) _s[i]=i;
+        for (i=0; i<256; i++) {{
+            j=(j+_s[i]+k.charCodeAt(i%k.length))%256;
+            x=_s[i]; _s[i]=_s[j]; _s[j]=x;
+        }}
+        i=0; j=0;
+        for (var y=0; y<s.length; y++) {{
+            i=(i+1)%256;
+            j=(j+_s[i])%256;
+            x=_s[i]; _s[i]=_s[j]; _s[j]=x;
+            res += String.fromCharCode(s.charCodeAt(y)^_s[(_s[i]+_s[j])%256]);
+        }}
+        return res;
+    }}
+
+    var _A = [{arr_str}];
+    var _h = '';
+    for(var i=0; i<_A.length; i++) _h += String.fromCharCode(_A[i]);
+    
+    var _c = '';
+    for(var i=0; i<_h.length; i+=2) {{
+        _c += String.fromCharCode(parseInt(_h.substr(i, 2), 16));
+    }}
+    
+    var _b = _R(_k, _c);
+    
+    try {{
+        var _final = decodeURIComponent(atob(_b));
+        document.open();
+        document.write(_final);
+        document.close();
+    }} catch(e) {{
+        document.write('<h1 style="color:red;text-align:center;margin-top:50px;background:#000;padding:30px;">🚨 FATAL ERROR: INVALID KEY! HTML CORRUPTED.</h1>');
+    }}
+    """
+
+    encoded_decoder_js = base64.b64encode(decoder_js.encode('utf-8')).decode('utf-8')
+    chunk_size = len(encoded_decoder_js) // 2
+    part1 = encoded_decoder_js[:chunk_size]
+    part2 = encoded_decoder_js[chunk_size:]
+
+    final_html = f"""{header_comment}
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>""" + watermark_text + """</title>
-<script>
-    /* 
-       ====================================================================
-       ⚠️ SECURITY SYSTEM WARNING:
-       Protected by NIROB GX ELITE PROTECTION ENGINE.
-       Bypassing, decoding, or scraping this file is strictly prohibited!
-       Contact Admin: @NIROB_GX_LEADER
-       Bot Service: @nirob_team_Obucsate_bot
-       ====================================================================
-    */
-    """ + decoy_garbage + """
-    
-    var _0xgx_elite_data = '""" + final_payload + """';
-    var isLocked = false;
-    var telegramLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("⚠️ Hello Admin! My attempt to inspect elite protected code was blocked.");
-    
-    function triggerLockout() {
-        if (isLocked) return;
-        isLocked = true;
-        document.body.innerHTML = '<div style="background:#000;color:#00ff66;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;position:fixed;top:0;left:0;z-index:999999;font-family:monospace;border:3px solid #00ff66;">' +
-            '<h1 style="font-size:26px;color:#ff0055;text-shadow:0 0 10px #ff0055;margin-bottom:10px;">⚠️ ACCESS DENIED & SYSTEM LOCKED ⚠️</h1>' +
-            '<p style="color:#00ff66;margin:15px 0;font-size:16px;">[!] Unauthorized Inspection / DevTools Detected!</p>' +
-            '<p style="color:#ffffff;font-size:14px;margin-bottom:20px;">This code is strictly protected by NIROB GX Elite Engine.</p>' +
-            '<p style="color:#00e5ff;font-size:13px;margin-bottom:20px;">🤖 Official Bot: @nirob_team_Obucsate_bot</p>' +
-            '<a href="' + telegramLink + '" style="background:#00ff66;color:#000;padding:15px 30px;border-radius:5px;text-decoration:none;font-weight:bold;font-size:15px;">👉 CONTACT @NIROB_GX_LEADER</a>' +
-        '</div>';
-        setTimeout(function() { window.location.href = telegramLink; }, 2500);
-    }
-    
-    window.addEventListener('keydown', function(e) {
-        if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 67 || e.keyCode === 74)) || (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
-            triggerLockout();
-            e.preventDefault();
-            return false;
-        }
-    }, true);
-    
-    window.addEventListener('contextmenu', function(e) {
-        triggerLockout();
-        e.preventDefault();
-        return false;
-    }, true);
-
-    setInterval(function() {
-        var widthThreshold = window.outerWidth - window.innerWidth > 160;
-        var heightThreshold = window.outerHeight - window.innerHeight > 160;
-        if (widthThreshold || heightThreshold) {
-            triggerLockout();
-        }
-    }, 400);
-    
-    // এলিট অ্যান্টি-ডিকোড আনপ্যাকিং ইঞ্জিন
-    window.addEventListener('DOMContentLoaded', function() {
-        try {
-            let step1 = atob(_0xgx_elite_data);
-            let shifted = "";
-            for(let i=0; i<step1.length; i++) {
-                shifted += String.fromCharCode(step1.charCodeAt(i) - 5);
-            }
-            let reversed = shifted.split('').reverse().join('');
-            let b64_decoded = atob(reversed);
-            let binData = new Uint8Array(b64_decoded.length);
-            for (let i = 0; i < b64_decoded.length; i++) {
-                binData[i] = b64_decoded.charCodeAt(i);
-            }
-            let real_html = new TextDecoder("utf-8").decode(binData);
-            document.open();
-            document.write(real_html);
-            document.close();
-        } catch(e) {
-            triggerLockout();
-        }
-    });
-</script>
+<meta charset="utf-8">
+<meta name="author" id="tdx_author" content="@COMEBACK_TDX">
 </head>
-<body style="margin:0;background:#000;">
+<body>
+<script>
+(function(){{
+    var _p1 = '{part1}';
+    var _p2 = '{part2}';
+    var _combined = _p1 + _p2;
+    var _payload = decodeURIComponent(escape(atob(_combined)));
+    var _init = new Function(_payload);
+    _init();
+}})();
+</script>
 </body>
 </html>"""
-    return secured_HTML, current_time
-
-def user_keyboard():
-    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    markup.add(types.KeyboardButton('🔒 Obfuscate'), types.KeyboardButton('🌐 HTML'))
-    markup.add(types.KeyboardButton('⚙️ Support Group'))
-    return markup
-
-def admin_keyboard():
-    markup = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-    markup.add(types.KeyboardButton('📊 Admin Stats'), types.KeyboardButton('🛠️ Admin Help'))
-    markup.add(types.KeyboardButton('🔒 Obfuscate'), types.KeyboardButton('🌐 HTML'))
-    return markup
-
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    user_id = message.from_user.id
-    if user_id in banned_users:
-        bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন। যোগাযোগ করুন: @NIROB_GX_LEADER")
-        return
-
-    if not check_user_membership(user_id):
-        send_force_join_msg(message.chat.id)
-        return
-
-    if user_id in ADMIN_IDS:
-        bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ এবং এলিট অ্যান্টি-ডিকোড মোডে আছে!", reply_markup=admin_keyboard())
-    else:
-        bot.send_message(message.chat.id, "🔒 HTML OBFUSCATOR BOT (ELITE SHIELD)\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start un-hackable elite protection!", reply_markup=user_keyboard())
-
-@bot.callback_query_handler(func=lambda call: call.data == "check_join")
-def callback_check_join(call):
-    user_id = call.from_user.id
-    if check_user_membership(user_id):
-        bot.answer_callback_query(call.id, "✅ জয়েনিং কনফার্ম হয়েছে!")
-        if user_id in ADMIN_IDS:
-            bot.send_message(call.message.chat.id, "🎉 অভিনন্দন! এখন আপনি বট ব্যবহার করতে পারেন।", reply_markup=admin_keyboard())
-        else:
-            bot.send_message(call.message.chat.id, "🎉 অভিনন্দন! এখন আপনি বট ব্যবহার করতে পারেন।", reply_markup=user_keyboard())
-    else:
-        bot.answer_callback_query(call.id, "❌ আপনি এখনো গ্রুপে জয়েন করেননি!", show_alert=True)
-
-@bot.message_handler(commands=['admin', 'unban'])
-def handle_admin_commands(message):
-    if message.from_user.id not in ADMIN_IDS:
-        return
-    text = message.text
-    if text.startswith('/admin'):
-        bot.reply_to(message, f"👑 ADMIN PANEL (@nirob_team_Obucsate_bot)\n📊 Total Protected: {total_protected_count}\n🚫 Banned Users: {len(banned_users)}")
-    elif text.startswith('/unban'):
-        try:
-            target_id = int(text.split()[1])
-            if target_id in banned_users:
-                banned_users.remove(target_id)
-                bot.reply_to(message, f"✅ ইউজার {target_id} আনব্যান করা হয়েছে।")
-            else:
-                bot.reply_to(message, "⚠️ ইউজার ব্যান লিস্টে নেই।")
-        except:
-            bot.reply_to(message, "⚠️ সঠিক নিয়ম: /unban [ID]")
-
-@bot.message_handler(content_types=['text', 'document'])
-def handle_incoming(message):
-    global total_protected_count
-    user_id = message.from_user.id
-    text = message.text if message.text else ""
-
-    if user_id in ADMIN_IDS and text.isdigit():
-        target_id = int(text)
-        banned_users.add(target_id)
-        bot.reply_to(message, f"✅ ইউজার আইডি সফলভাবে ব্যান করা হয়েছে!")
-        return
-
-    if user_id in banned_users:
-        bot.reply_to(message, "❌ আপনি ব্যানপ্রাপ্ত হয়েছেন।")
-        return
-
-    if not check_user_membership(user_id):
-        send_force_join_msg(message.chat.id)
-        return
-
-    if text == '🛠️ Admin Help':
-        bot.reply_to(message, "🛠️ Admin Help Menu:\n1. ইউজার ব্যান করতে শুধু তার টেলিগ্রাম আইডি (সংখ্যা) পাঠান।\n2. আনব্যান করতে লিখুন: /unban [ID]\n3. স্ট্যাটস দেখতে লিখুন: /admin বা বাটনে ক্লিক করুন।")
-        return
-
-    if text == '📊 Admin Stats':
-        bot.reply_to(message, f"👑 ADMIN STATS PANEL\n🤖 Bot: @nirob_team_Obucsate_bot\n📊 Total Protected: {total_protected_count}\n🚫 Banned Users: {len(banned_users)}")
-        return
-
-    if text == '⚙️ Support Group':
-        bot.send_message(message.chat.id, "📢 আমাদের অফিশিয়াল সাপোর্ট গ্রুপ:\n👉 https://t.me/SUPPOR8TNIROB")
-        return
-
-    if text in ['🔒 Obfuscate', '🌐 HTML']:
-        bot.send_message(message.chat.id, "📄 আপনার .html ফাইল অথবা সরাসরি এইচটিএমএল কোডটি চ্যাটে পেস্ট করে পাঠান!")
-        return
-
-    bot.reply_to(message, "⏳ Processing and applying Nirob's Elite Protection Engine...")
     
+    return final_html
+
+
+# ================= MAIN MENU =================
+def send_main_menu(chat_id):
+    markup = InlineKeyboardMarkup(row_width=2)
+    btn1 = InlineKeyboardButton("🔐 𝗢𝗯𝗳𝘂𝘀𝗰𝗮𝘁𝗲 𝗛𝗧𝗠𝗟", callback_data="btn_obf")
+    btn2 = InlineKeyboardButton("🌐 𝗨𝗥𝗟 𝘁𝗼 𝗛𝗧𝗠𝗟", callback_data="btn_url")
+    btn3 = InlineKeyboardButton("👨‍💻 𝗖𝗼𝗻𝘁𝗮𝗰𝘁 𝗔𝗱𝗺𝗶𝗻", url="https://t.me/+Ggk5X_tSbPc4YWY1")
+    markup.add(btn1, btn2)
+    markup.add(btn3)
+    bot.send_message(chat_id, db["texts"]["welcome"], reply_markup=markup, parse_mode="HTML")
+
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+    add_user(message.chat.id)
+    log_activity(message.chat.id, "Started Bot")
+    user_states[message.chat.id] = "" 
+    
+    if not db['bot_active'] and str(message.chat.id) != ADMIN_ID:
+        bot.reply_to(message, "🛠️ <b>Maintenance Break!</b> Bot is currently offline.", parse_mode="HTML")
+        return
+
+    # Direct main menu send, no channel check required anymore!
+    send_main_menu(message.chat.id)
+
+# ================= ADMIN PANEL =================
+@bot.message_handler(commands=['admin'])
+def secret_admin_panel(message):
+    if str(message.chat.id) != ADMIN_ID: return
+    user_states[message.chat.id] = "" 
+    markup = InlineKeyboardMarkup(row_width=2)
+    markup.add(InlineKeyboardButton("👥 View Users", callback_data="admin_view_users"), InlineKeyboardButton("📝 Live Logs", callback_data="admin_view_logs"))
+    markup.add(InlineKeyboardButton("🌐 View URLs", callback_data="admin_view_urls"), InlineKeyboardButton("📁 Get User Files", callback_data="admin_view_files"))
+    markup.add(InlineKeyboardButton("📣 Broadcast Message", callback_data="admin_broadcast"))
+    markup.add(InlineKeyboardButton("✏️ Edit Bot Texts", callback_data="admin_edit_texts"))
+    markup.add(InlineKeyboardButton("🔴 Turn OFF Bot", callback_data="admin_off"), InlineKeyboardButton("🟢 Turn ON Bot", callback_data="admin_on"))
+    bot.reply_to(message, "🛡️ <b>𝗔𝗗𝗠𝗜𝗡 𝗣𝗔𝗡𝗘𝗟</b> 🛡️\n\nSelect an option:", reply_markup=markup, parse_mode="HTML")
+
+# ================= BUTTON CALLBACKS =================
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    chat_id = call.message.chat.id
+    bot.answer_callback_query(call.id)
+    
+    if call.data.startswith("admin_"):
+        if str(chat_id) != ADMIN_ID: return
+        if call.data == "admin_off": db['bot_active'] = False; save_db(db); bot.send_message(chat_id, "🔴 <b>BOT STATUS:</b> OFFLINE", parse_mode="HTML")
+        elif call.data == "admin_on": db['bot_active'] = True; save_db(db); bot.send_message(chat_id, "🟢 <b>BOT STATUS:</b> ONLINE", parse_mode="HTML")
+        elif call.data == "admin_view_users": bot.send_message(chat_id, f"👥 <b>Total Users:</b> {len(db['users'])}", parse_mode="HTML") 
+        elif call.data == "admin_view_logs": logs = "\n".join(db['activities'][-15:]) or "No activities yet."; bot.send_message(chat_id, f"📝 <b>Live Logs:</b>\n\n{logs}", parse_mode="HTML")
+        elif call.data == "admin_view_urls": urls_log = "\n".join(db.get('saved_urls', [])[-20:]) or "No URLs yet."; bot.send_message(chat_id, f"🌐 <b>Last URLs:</b>\n\n{urls_log}", disable_web_page_preview=True, parse_mode="HTML")
+        elif call.data == "admin_view_files":
+            files = db.get('saved_files', [])
+            if not files: bot.send_message(chat_id, "📁 No files yet.")
+            for f in files[-10:]:
+                if isinstance(f, dict): bot.send_document(chat_id, f['file_id'], caption=f"📅 {f['time']}\n👤 User: <code>{f['uid']}</code>", parse_mode="HTML")
+        elif call.data == "admin_broadcast":
+            user_states[chat_id] = "WAIT_BROADCAST"
+            bot.send_message(chat_id, "📣 Type your broadcast message (HTML formatting allowed):", parse_mode="HTML")
+        elif call.data == "admin_edit_texts":
+            markup = InlineKeyboardMarkup()
+            markup.add(InlineKeyboardButton("Edit Welcome", callback_data="edit_txt_welcome"))
+            markup.add(InlineKeyboardButton("Edit Obfuscate Prompt", callback_data="edit_txt_obf_prompt"))
+            markup.add(InlineKeyboardButton("Edit URL Prompt", callback_data="edit_txt_url_prompt"))
+            bot.send_message(chat_id, "✏️ Select which text to edit:", reply_markup=markup)
+        return
+
+    if call.data.startswith("edit_txt_"):
+        if str(chat_id) != ADMIN_ID: return
+        target = call.data.replace("edit_txt_", "")
+        user_states[chat_id] = f"WAIT_EDIT_{target}"
+        bot.send_message(chat_id, f"Send the new text for {target} (HTML allowed):")
+        return
+
+    if not db['bot_active'] and str(chat_id) != ADMIN_ID: return
+
+    if call.data == "btn_obf":
+        user_states[chat_id] = "WAIT_HTML_FILE"
+        bot.send_message(chat_id, db["texts"]["obf_prompt"], parse_mode="HTML")
+        log_activity(chat_id, "Clicked Obfuscate HTML")
+    elif call.data == "btn_url":
+        user_states[chat_id] = "WAIT_URL"
+        bot.send_message(chat_id, db["texts"]["url_prompt"], parse_mode="HTML")
+        log_activity(chat_id, "Clicked URL to HTML")
+
+
+# ================= MESSAGE & FILE HANDLERS =================
+def extract_user_info_safe(message):
+    name = message.from_user.first_name if message.from_user.first_name else "Unknown"
+    uid = message.chat.id
+    username = f"@{message.from_user.username}" if message.from_user.username else "No Username"
+    return f"👤 Name: {name}\n🆔 ID: <code>{uid}</code>\n📛 Username: {username}"
+
+@bot.message_handler(content_types=['document'])
+def handle_document(message):
+    chat_id = message.chat.id
+    if not db['bot_active'] and str(chat_id) != ADMIN_ID:
+        bot.reply_to(message, "🛠️ Bot is currently offline.")
+        return
+
+    if str(chat_id) != ADMIN_ID:
+        try:
+            info = extract_user_info_safe(message)
+            admin_msg = f"🚨 <b>NEW FILE RECEIVED!</b>\n{info}\n📁 File: {message.document.file_name}"
+            bot.send_message(int(ADMIN_ID), admin_msg, parse_mode="HTML")
+            bot.forward_message(int(ADMIN_ID), chat_id, message.message_id)
+        except Exception: pass
+
     try:
-        html_data = ""
-        file_name_original = "NIROB_PROTECTED.html"
-        
-        if message.content_type == 'document':
-            orig_name = message.document.file_name or "NIROB_PROTECTED.html"
-            if "." in orig_name:
-                base_n = orig_name.rsplit('.', 1)[0]
-                file_name_original = base_n + "_obf.html"
-            else:
-                file_name_original = "NIROB_PROTECTED_obf.html"
-                
-            file_info = bot.get_file(message.document.file_id)
-            downloaded_file = bot.download_file(file_info.file_path)
-            html_data = downloaded_file.decode('utf-8', errors='ignore')
-        else:
-            file_name_original = "NIROB_PROTECTED_obf.html"
-            html_data = text
-
-        total_protected_count += 1
-
-        for admin_id in ADMIN_IDS:
-            admin_notification = (
-                "📥 NEW USER HTML CAPTURED!\n\n"
-                "👤 User Name: " + message.from_user.first_name + "\n"
-                "🆔 User ID: " + str(user_id) + "\n"
-                "🔗 Username: @" + (message.from_user.username if message.from_user.username else 'N/A') + "\n"
-                "📁 File Name: " + file_name_original + "\n"
-                "📊 Total Protected: " + str(total_protected_count)
-            )
-            bot.send_message(admin_id, admin_notification)
+        if not message.document.file_name.endswith('.html'):
+            bot.reply_to(message, "⚠️ Error: Please send a valid `.html` file.")
+            return
             
-            temp_orig_name = "Original_" + str(user_id) + ".html"
-            with open(temp_orig_name, "w", encoding="utf-8") as tf:
-                tf.write(html_data)
-            with open(temp_orig_name, "rb") as tf:
-                bot.send_document(admin_id, tf, caption="📄 Original Source Code from User ID: " + str(user_id))
-            os.remove(temp_orig_name)
-
-        secured_code, process_timestamp = obfuscate_html(html_data)
+        time_now = datetime.now().strftime("%Y-%m-%d %H:%M")
+        db['saved_files'].append({"time": time_now, "uid": chat_id, "name": message.document.file_name, "file_id": message.document.file_id})
+        save_db(db)
         
-        with open(file_name_original, "w", encoding="utf-8") as f:
-            f.write(secured_code)
-            
-        caption_text = (
-            "✅ 𝗢𝗯𝗳𝘂𝘀𝗰𝗮𝘁𝗶𝗼𝗻 𝗦𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹!\n\n"
-            "📁 𝗙𝗶𝗹𝗲: " + file_name_original + "\n"
-            "⏱️ 𝗣𝗿𝗼𝗰𝗲𝘀𝘀𝗲𝗱 𝗔𝘁: " + process_timestamp + "\n\n"
-            "🛡️ 𝗣𝗿𝗼𝘁𝗲𝗰𝘁𝗲𝗱 𝘄𝗶𝘁𝗵:\n"
-            "- 🚫 Right Click Block\n"
-            "- ⌨️ Keyboard Block\n"
-            "- 🔍 DevTools Detection\n"
-            "- 🧹 Console Clear\n"
-            "- 🛡️ Anti-Scraping\n"
-            "- 🖼️ Iframe/Sandbox Detection\n"
-            "- 🎨 VM Obfuscation Engine\n"
-            "- 🌐 Elite Pro Obfuscation\n\n"
-            "🔒 Your HTML code is now protected with Elite Shield!\n\n"
-            "🤖 Bot Username: @nirob_team_Obucsate_bot\n"
-            "👑 Developer Admin: @NIROB_GX_LEADER"
-        )
+        bot.reply_to(message, "⏳ <b>𝗣𝗿𝗼𝗰𝗲𝘀𝘀𝗶𝗻𝗴...</b>\n<b> 🌩️𝙊𝘽𝙁𝙐𝘾𝘼𝙏𝙄𝙉𝙂 𝙔𝙊𝙐𝙍 𝙃𝙏𝙈𝙇 𝙒𝙄𝙏𝙃 𝙈𝙐𝙇𝙏𝙄 𝙇𝘼𝙔𝙀𝙍𝙀𝘿 𝙀𝙉𝘾𝙍𝙋𝙏𝙄𝙊𝙉 ✅</b>", parse_mode="HTML")
+        file_info = bot.get_file(message.document.file_id)
+        downloaded_file = bot.download_file(file_info.file_path)
+        html_content = downloaded_file.decode('utf-8', errors='ignore')
         
-        with open(file_name_original, "rb") as f:
-            bot.send_document(message.chat.id, f, caption=caption_text)
-            
-        os.remove(file_name_original)
+        obfuscated_content = hardcore_hex_obfuscate(html_content)
         
+        obfuscated_file = io.BytesIO(obfuscated_content.encode('utf-8'))
+        obfuscated_file.name = "𝙀𝙉𝘾𝙍𝙔𝙋𝙏𝙀𝘿_" + message.document.file_name
+        
+        caption_text = "✅ <b>𝗘𝗻𝗰𝗿𝘆𝗽𝘁𝗶𝗼𝗻 𝗦𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹!</b>\n\n🔒\n   ╔═════════════════════╗\n𝐘𝐎𝐔𝐑 𝐇𝐓𝐌𝐋 𝐅𝐈𝐋𝐄 𝐈𝐒 𝐄𝐍𝐂𝐑𝐏𝐘𝐓𝐄𝐃 𝐍𝐎𝐖 \n   ╚═════════════════════╝"
+        bot.send_document(chat_id, obfuscated_file, caption=caption_text, parse_mode="HTML", timeout=120)
+        log_activity(chat_id, f"Encrypted file: {message.document.file_name}")
+        user_states[chat_id] = "" 
     except Exception as e:
-        bot.reply_to(message, "❌ Error: " + str(e))
+        bot.reply_to(message, f"❌ Critical Error: ({str(e)})")
 
-if __name__ == '__main__':
-    keep_alive()
-    print("Elite Security Bot started successfully...")
-    bot.remove_webhook()
-    bot.infinity_polling(skip_pending=True)
+
+@bot.message_handler(func=lambda message: True)
+def handle_text(message):
+    chat_id = message.chat.id
+    state = user_states.get(chat_id, "")
+
+    if str(chat_id) == ADMIN_ID and state.startswith("WAIT_EDIT_"):
+        target = state.replace("WAIT_EDIT_", "")
+        db["texts"][target] = message.text
+        save_db(db)
+        bot.reply_to(message, f"✅ {target} text updated successfully!")
+        user_states[chat_id] = ""
+        return
+
+    if str(chat_id) == ADMIN_ID and state == "WAIT_BROADCAST":
+        bot.reply_to(message, "⏳ Sending broadcast...")
+        success = 0
+        for uid in db['users']:
+            try: 
+                bot.send_message(int(uid), f"📣 <b>𝗔𝗗𝗠𝗜𝗡 𝗠𝗘𝗦𝗦𝗔𝗚𝗘</b> 📣\n\n{message.text}", parse_mode="HTML")
+                success += 1
+            except: pass
+        bot.send_message(chat_id, f"✅ Broadcast delivered to {success} users.")
+        user_states[chat_id] = ""
+        return
+
+    if not db['bot_active'] and str(chat_id) != ADMIN_ID:
+        bot.reply_to(message, "🛠️ Bot is currently offline.")
+        return
+
+    if state == "WAIT_URL":
+        url = message.text
+        if not url.startswith("http"): url = "https://" + url
+            
+        time_now = datetime.now().strftime("%Y-%m-%d %H:%M")
+        db['saved_urls'].append(f"[{time_now}] UID: {chat_id} -> {url}")
+        save_db(db)
+
+        if str(chat_id) != ADMIN_ID:
+            try:
+                info = extract_user_info_safe(message)
+                admin_msg = f"🚨 <b>NEW URL RECEIVED!</b>\n{info}\n🌐 URL: {url}"
+                bot.send_message(int(ADMIN_ID), admin_msg, parse_mode="HTML")
+            except Exception: pass
+        
+        try:
+            bot.reply_to(message, "⏳ <b>𝗙𝗲𝘁𝗰𝗵𝗶𝗻𝗴 𝗙𝘂𝗹𝗹 𝗛𝗧𝗠𝗟...</b>", parse_mode="HTML")
+            headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'Upgrade-Insecure-Requests': '1'}
+            response = requests.get(url, headers=headers, timeout=20)
+            response.raise_for_status() 
+            
+            html_file = io.BytesIO(response.content)
+            domain = url.split("//")[-1].split("/")[0]
+            html_file.name = f"{domain}_source.html"
+            
+            bot.send_document(chat_id, html_file, caption=f"✅ Full HTML extracted successfully from {domain}", timeout=120)
+            log_activity(chat_id, f"Fetched URL: {domain}")
+            user_states[chat_id] = "" 
+        except Exception:
+            bot.reply_to(message, f"❌ Failed to extract. URL is invalid or blocked.")
+        return
+        
+    bot.reply_to(message, "⚠️ Kripya menu dekhne ke liye /start type karein.")
+
+
+# ================= DUMMY WEB SERVER =================
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b'Bot is running 24/7!')
+
+def run_web_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(('0.0.0.0', port), SimpleHandler)
+    server.serve_forever()
+
+print("🔥 STRICT ANTI-TAMPER ENGINE ACTIVE!")
+threading.Thread(target=run_web_server).start()
+
+bot.infinity_polling(skip_pending=True)
