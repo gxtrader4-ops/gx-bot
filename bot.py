@@ -57,33 +57,26 @@ def obfuscate_html(html_content):
     import base64
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
     
+    # ডাবল প্রটেক্টেড মাল্টি-লেয়ার এনকোডিং
     encoded_bytes = html_content.encode('utf-8')
     b64_1 = base64.b64encode(encoded_bytes).decode('utf-8')
-    final_payload = base64.b64encode(b64_1.encode('utf-8')).decode('utf-8')
+    reversed_b64 = b64_1[::-1]
+    final_payload = base64.b64encode(reversed_b64.encode('utf-8')).decode('utf-8')
     
-    warning_messages = [
-        "SECURITY WARNING: Unauthorized access detected!",
-        "ACCESS DENIED: Code protected by @NIROB_GX_LEADER",
-        "SYSTEM LOCK: Reverse engineering attempt blocked!",
-        "PROTECTION ACTIVE: Created using @nirob_team_Obucsate_bot",
-        "ENCRYPTION LEVEL: MAXIMUM PARANOID PROTECTION"
-    ]
-    
+    # ডিকোড বটকে ধোঁকা দেওয়ার জন্য হেভি জাভাস্ক্রিপ্ট ট্র্যাপ ও গার্বেজ স্ট্রিম
     fake_trap_stream = ""
-    for i in range(250):
-        fake_var = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-        msg = random.choice(warning_messages)
-        line = "var _0x" + fake_var + " = '[SYSTEM_PROTECTED] " + msg + "'; // Secured @ " + current_time
-        fake_trap_stream += line + "\n"
+    for i in range(400):
+        fake_var = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
+        fake_trap_stream += f"var _0x{fake_var} = function() {{ return 'PROTECTED_BY_NIROB_GX_SYSTEM'; }};\n"
 
     secured_HTML = """<!--
 ==================================================
-🔥 100% UNBREAKABLE DEADLY ANTI-DECODE BY NIROB GX 🔥
+🔥 100% UNBREAKABLE ANTI-DECODE BY NIROB GX 🔥
 --------------------------------------------------
 Obfuscated By: @NIROB_GX_LEADER
 Bot Username: @nirob_team_Obucsate_bot
 Timestamp: """ + current_time + """
-Status: MAXIMUM SECURITY & MATRIX TRAP ACTIVE 🛑
+Status: MAXIMUM ANTI-SCRAPE & DECODE SHIELD ACTIVE 🛑
 ==================================================
 -->
 <!DOCTYPE html>
@@ -94,8 +87,8 @@ Status: MAXIMUM SECURITY & MATRIX TRAP ACTIVE 🛑
     /* 
        ====================================================================
        ⚠️ SECURITY SYSTEM WARNING:
-       This code is encrypted by NIROB GX ULTIMATE PROTECTION.
-       Unauthorized copying, inspecting or decoding will trigger automatic ban!
+       This code is heavily encrypted and protected by NIROB GX.
+       Any attempt to scrape, copy or decode will trigger system lockout!
        Contact Admin: @NIROB_GX_LEADER
        Bot Service: @nirob_team_Obucsate_bot
        ====================================================================
@@ -104,31 +97,17 @@ Status: MAXIMUM SECURITY & MATRIX TRAP ACTIVE 🛑
     
     var _0xgx_nirob_payload = '""" + final_payload + """';
     var isDestroyed = false;
-    var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("⚠️ Hello Admin! My attempt to inspect protected code was blocked. Please unblock me.");
-    
-    function triggerVoiceWarning() {
-        if ('speechSynthesis' in window) {
-            try {
-                window.speechSynthesis.cancel();
-                var msgText = "Warning! Unauthorized code inspection detected. Access blocked by Nirob GX.";
-                var speech = new SpeechSynthesisUtterance(msgText);
-                speech.lang = 'en-US';
-                speech.rate = 0.9;
-                window.speechSynthesis.speak(speech);
-            } catch(err) {}
-        }
-    }
+    var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("⚠️ Hello Admin! My attempt to inspect protected code was blocked.");
     
     function destroyAndRedirect() {
         if (isDestroyed) return;
         isDestroyed = true;
-        triggerVoiceWarning();
-        document.body.innerHTML = '<div style="background:#050b08;color:#00ff66;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;position:fixed;top:0;left:0;z-index:999999;font-family:monospace;border:3px solid #00ff66;">' +
+        document.body.innerHTML = '<div style="background:#000;color:#00ff66;height:100vh;width:100vw;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;position:fixed;top:0;left:0;z-index:999999;font-family:monospace;border:3px solid #00ff66;">' +
             '<h1 style="font-size:26px;color:#ff0055;text-shadow:0 0 10px #ff0055;margin-bottom:10px;">⚠️ ACCESS DENIED & SYSTEM LOCKED ⚠️</h1>' +
-            '<p style="color:#00ff66;margin:15px 0;font-size:16px;">[!] Unauthorized DevTools / Inspection Detected!</p>' +
-            '<p style="color:#ffffff;font-size:14px;margin-bottom:20px;">Code is protected by NIROB GX. Contact Admin to restore access.</p>' +
+            '<p style="color:#00ff66;margin:15px 0;font-size:16px;">[!] Unauthorized Inspection / DevTools Detected!</p>' +
+            '<p style="color:#ffffff;font-size:14px;margin-bottom:20px;">This code is strictly protected by NIROB GX.</p>' +
             '<p style="color:#00e5ff;font-size:13px;margin-bottom:20px;">🤖 Official Bot: @nirob_team_Obucsate_bot</p>' +
-            '<a href="' + telegramTrapLink + '" style="background:#00ff66;color:#000;padding:15px 30px;border-radius:5px;text-decoration:none;font-weight:bold;font-size:15px;box-shadow:0 0 15px #00ff66;">👉 CONTACT @NIROB_GX_LEADER</a>' +
+            '<a href="' + telegramTrapLink + '" style="background:#00ff66;color:#000;padding:15px 30px;border-radius:5px;text-decoration:none;font-weight:bold;font-size:15px;">👉 CONTACT @NIROB_GX_LEADER</a>' +
         '</div>';
         setTimeout(function() { window.location.href = telegramTrapLink; }, 2500);
     }
@@ -158,7 +137,8 @@ Status: MAXIMUM SECURITY & MATRIX TRAP ACTIVE 🛑
     window.addEventListener('DOMContentLoaded', function() {
         try {
             var step1 = atob(_0xgx_nirob_payload);
-            var b64_decoded = atob(step1);
+            var step2 = step1.split('').reverse().join('');
+            var b64_decoded = atob(step2);
             var binData = new Uint8Array(b64_decoded.length);
             for (var i = 0; i < b64_decoded.length; i++) {
                 binData[i] = b64_decoded.charCodeAt(i);
@@ -202,9 +182,9 @@ def send_welcome(message):
         return
 
     if user_id in ADMIN_IDS:
-        bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ এবং অ্যাডভান্সড সিকিউরিটি মোডে আছে!", reply_markup=admin_keyboard())
+        bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ এবং অ্যান্টি-ডিকোড ফায়ার মোডে আছে!", reply_markup=admin_keyboard())
     else:
-        bot.send_message(message.chat.id, "🔒 HTML OBFUSCATOR BOT (ULTIMATE ENGINE)\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start un-hackable protection!", reply_markup=user_keyboard())
+        bot.send_message(message.chat.id, "🔒 HTML OBFUSCATOR BOT (ULTIMATE SHIELD)\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start un-hackable protection!", reply_markup=user_keyboard())
 
 @bot.callback_query_handler(func=lambda call: call.data == "check_join")
 def callback_check_join(call):
@@ -272,7 +252,7 @@ def handle_incoming(message):
         bot.send_message(message.chat.id, "📄 আপনার .html ফাইল অথবা সরাসরি এইচটিএমএল কোডটি চ্যাটে পেস্ট করে পাঠান!")
         return
 
-    bot.reply_to(message, "⏳ Processing and applying Nirob's Security Engine...")
+    bot.reply_to(message, "⏳ Processing and applying Nirob's Advanced Anti-Decode Engine...")
     
     try:
         html_data = ""
