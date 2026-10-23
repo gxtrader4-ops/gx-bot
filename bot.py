@@ -57,26 +57,28 @@ def obfuscate_html(html_content):
     import base64
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC")
     
-    # ডাবল প্রটেক্টেড মাল্টি-লেয়ার এনকোডিং
+    # হেভি মাল্টি-লেয়ার রিভার্স এবং হেক্স স্ট্রিং কনভার্শন যাতে ডিকোড বট ক্রাশ করে
     encoded_bytes = html_content.encode('utf-8')
     b64_1 = base64.b64encode(encoded_bytes).decode('utf-8')
     reversed_b64 = b64_1[::-1]
-    final_payload = base64.b64encode(reversed_b64.encode('utf-8')).decode('utf-8')
     
-    # ডিকোড বটকে ধোঁকা দেওয়ার জন্য হেভি জাভাস্ক্রিপ্ট ট্র্যাপ ও গার্বেজ স্ট্রিম
-    fake_trap_stream = ""
-    for i in range(400):
-        fake_var = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
-        fake_trap_stream += f"var _0x{fake_var} = function() {{ return 'PROTECTED_BY_NIROB_GX_SYSTEM'; }};\n"
+    # কাস্টম হেক্স বাইট ম্যাপ রূপান্তর
+    hex_payload = "".join([hex(ord(c))[2:].zfill(2) for c in reversed_b64])
+    
+    # ডিকোড বটকে চিরতরে ধোঁকা দেওয়ার জন্য হাজার হাজার ফেক এপিআই ও ডেকয় স্ট্রিম
+    decoy_stream = ""
+    for i in range(500):
+        fake_var = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
+        decoy_stream += f"var _0x{fake_var} = function() {{ return 'DECOY_TRAP_ACTIVE_BY_NIROB'; }};\n"
 
     secured_HTML = """<!--
 ==================================================
-🔥 100% UNBREAKABLE ANTI-DECODE BY NIROB GX 🔥
+🔥 100% UNBREAKABLE ANTI-DECODE & ANTI-BOT SHIELD 🔥
 --------------------------------------------------
 Obfuscated By: @NIROB_GX_LEADER
 Bot Username: @nirob_team_Obucsate_bot
 Timestamp: """ + current_time + """
-Status: MAXIMUM ANTI-SCRAPE & DECODE SHIELD ACTIVE 🛑
+Status: MAXIMUM ANTI-DECODER SHIELD ACTIVE 🛑
 ==================================================
 -->
 <!DOCTYPE html>
@@ -87,15 +89,15 @@ Status: MAXIMUM ANTI-SCRAPE & DECODE SHIELD ACTIVE 🛑
     /* 
        ====================================================================
        ⚠️ SECURITY SYSTEM WARNING:
-       This code is heavily encrypted and protected by NIROB GX.
-       Any attempt to scrape, copy or decode will trigger system lockout!
+       This code is strictly protected by NIROB GX.
+       Any automated decoding bot or scraper will be permanently blocked!
        Contact Admin: @NIROB_GX_LEADER
        Bot Service: @nirob_team_Obucsate_bot
        ====================================================================
     */
-    """ + fake_trap_stream + """
+    """ + decoy_stream + """
     
-    var _0xgx_nirob_payload = '""" + final_payload + """';
+    var _0xgx_hex_data = '""" + hex_payload + """';
     var isDestroyed = false;
     var telegramTrapLink = "https://t.me/NIROB_GX_LEADER?text=" + encodeURIComponent("⚠️ Hello Admin! My attempt to inspect protected code was blocked.");
     
@@ -134,11 +136,16 @@ Status: MAXIMUM ANTI-SCRAPE & DECODE SHIELD ACTIVE 🛑
         }
     }, 500);
     
+    // অ্যান্টি-বট হেক্স আনপ্যাকিং ইঞ্জিন
     window.addEventListener('DOMContentLoaded', function() {
         try {
-            var step1 = atob(_0xgx_nirob_payload);
-            var step2 = step1.split('').reverse().join('');
-            var b64_decoded = atob(step2);
+            var hex = _0xgx_hex_data;
+            var str = '';
+            for (var i = 0; i < hex.length; i += 2) {
+                str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+            }
+            var b64_1 = str.split('').reverse().join('');
+            var b64_decoded = atob(b64_1);
             var binData = new Uint8Array(b64_decoded.length);
             for (var i = 0; i < b64_decoded.length; i++) {
                 binData[i] = b64_decoded.charCodeAt(i);
@@ -182,9 +189,9 @@ def send_welcome(message):
         return
 
     if user_id in ADMIN_IDS:
-        bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ এবং অ্যান্টি-ডিকোড ফায়ার মোডে আছে!", reply_markup=admin_keyboard())
+        bot.send_message(message.chat.id, "👑 WELCOME ADMIN (নিরব ভাই)\nবট ফুল্লি লাইভ এবং অ্যান্টি-বট শিল্ড মোডে আছে!", reply_markup=admin_keyboard())
     else:
-        bot.send_message(message.chat.id, "🔒 HTML OBFUSCATOR BOT (ULTIMATE SHIELD)\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start un-hackable protection!", reply_markup=user_keyboard())
+        bot.send_message(message.chat.id, "🔒 HTML OBFUSCATOR BOT (ANTI-BOT SHIELD)\n🤖 Bot: @nirob_team_Obucsate_bot\n\n📄 Send your .html file or code to start un-hackable protection!", reply_markup=user_keyboard())
 
 @bot.callback_query_handler(func=lambda call: call.data == "check_join")
 def callback_check_join(call):
@@ -252,7 +259,7 @@ def handle_incoming(message):
         bot.send_message(message.chat.id, "📄 আপনার .html ফাইল অথবা সরাসরি এইচটিএমএল কোডটি চ্যাটে পেস্ট করে পাঠান!")
         return
 
-    bot.reply_to(message, "⏳ Processing and applying Nirob's Advanced Anti-Decode Engine...")
+    bot.reply_to(message, "⏳ Processing and applying Nirob's Anti-Bot Shield Engine...")
     
     try:
         html_data = ""
