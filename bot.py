@@ -25,84 +25,101 @@ def check_must_join(user_id):
         print(f"Must Join Check Error: {e}")
         return False
 
-def obfuscate_html(raw_html):
-    # Basic HTML/JS Obfuscation and Payload Wrapper
-    encoded_html = base64.b64encode(raw_html.encode('utf-8')).decode('utf-8')
+def heavy_garbage_obfuscate(raw_html):
+    # Encoding raw html into base64 and reversing for heavy anti-theft packing
+    encoded_b64 = base64.b64encode(raw_html.encode('utf-8')).decode('utf-8')
+    payload = encoded_b64[::-1]
     
-    ultimate_script = f"""
-    <!--==================================================
-    🔥 ULTRA BN, NBP & BM HIGH-GRADE SECURITY SHIELD 🔥
-    --------------------------------------------------
-    Protected By: @{MY_TELEGRAM_USERNAME}
-    Official Bot: @{MY_BOT_USERNAME}
-    Status: 100% UNBREAKABLE ANTI-DECODE & ANTI-THEFT ACTIVE 🛑
-    ==================================================-->
+    # Generating heavy junk characters to mimic the extreme obfuscation look requested
+    junk_filler = ""
+    for i in range(15):
+        junk_filler += f"<!-- 🛡️ PROTECTED BY @{MY_TELEGRAM_USERNAME} - ANTI THEFT SECURE LAYER {i} [x8f9a{i}b7c] -->\n"
+
+    protected_template = f"""<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>Secured by @{MY_TELEGRAM_USERNAME}</title>
+    {junk_filler}
+    <style>
+        body {{ background-color: #000; color: #fff; margin: 0; padding: 0; overflow: hidden; }}
+    </style>
+</head>
+<body>
+    <div id="app-container" style="background:#000;color:#00ffcc;height:100vh;display:flex;justify-content:center;align-items:center;font-family:monospace;font-size:18px;">
+        ⚡ Loading Secure Encrypted Payload...
+    </div>
+
     <script>
-    (function() {
-        try {
+    (function() {{
+        try {{
             var ua = navigator.userAgent.toLowerCase();
-            if (ua.includes("headless") || ua.includes("phantomjs") || ua.includes("selenium")) {
+            if (ua.includes("headless") || ua.includes("phantomjs") || ua.includes("selenium")) {{
                 document.body.innerHTML = "";
                 window.location.href = "about:blank";
-            }
-        } catch(e) {}
+            }}
+        }} catch(e) {{}}
 
         let devtoolsOpen = false;
         const threshold = 160;
 
-        function triggerConsoleAlert() {
-            if (!devtoolsOpen) {
+        function triggerConsoleAlert() {{
+            if (!devtoolsOpen) {{
                 devtoolsOpen = true;
                 document.documentElement.innerHTML = "<div style='background:#000;color:#ff0033;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:monospace;font-size:22px;text-align:center;padding:20px;'>মাদারচোদ! চোর কোথাকার!<br>কোড চুরি করতে আইছোস? তোর গুষ্টির পিণ্ডি চটকাইয়া দিমু!<br>লুইচ্চা পোলারা সোর্স কোড মারার ধান্দা বাদ দে!<br>খানকির পোলা নোংরা পোলা তোর মারে চুদি!<br><br><span style='color:#00ffcc;'>Protected by @{MY_TELEGRAM_USERNAME} | Bot: @{MY_BOT_USERNAME}</span></div>";
                 
                 fetch("https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={ADMIN_ID}&text=🚨%20Alert!%20Thief%20tried%20to%20steal%20or%20inspect%20protected%20HTML!");
-            }
-        }
+            }}
+        }}
 
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function(e) {{
             if (e.keyCode === 123 || 
                 (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
-                (e.ctrlKey && e.keyCode === 85)) {
+                (e.ctrlKey && e.keyCode === 85)) {{
                 e.preventDefault();
                 triggerConsoleAlert();
                 return false;
-            }
-        });
+            }}
+        }});
 
-        setInterval(function() {
+        setInterval(function() {{
             const widthThreshold = window.outerWidth - window.innerWidth > threshold;
             const heightThreshold = window.outerHeight - window.innerHeight > threshold;
-            if (widthThreshold || heightThreshold) {
+            if (widthThreshold || heightThreshold) {{
                 triggerConsoleAlert();
-            }
+            }}
             
             var startTime = performance.now();
             debugger;
             var endTime = performance.now();
-            if (endTime - startTime > 100) {
+            if (endTime - startTime > 100) {{
                 triggerConsoleAlert();
-            }
-        }, 800);
+            }}
+        }}, 800);
 
         document.addEventListener('contextmenu', event => event.preventDefault());
-    })();
+    }})();
 
-    // Decryption Payload
+    // Heavy Runtime Unpacker Engine
     window.addEventListener('DOMContentLoaded', (event) => {{
         try {{
-            var encodedData = "{encoded_html}";
-            var decodedData = decodeURIComponent(escape(atob(encodedData)));
+            var packed = "{payload}";
+            var reversed = packed.split("").reverse().join("");
+            var decodedHtml = atob(reversed);
+            
             document.open();
-            document.write(decodedData);
+            document.write(decodedHtml);
             document.close();
         }} catch(err) {{
-            document.body.innerHTML = "<h1 style='color:red;text-align:center;'>Security Error: Decryption Failed! Protected by @{MY_TELEGRAM_USERNAME}</h1>";
+            document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:20vh;'>❌ Decryption Failed! Protected by @{MY_TELEGRAM_USERNAME}</h1>";
         }}
     }});
     </script>
-    <noscript><h1 style="color:red;text-align:center;">JavaScript is required to view this protected content! Protected by @{MY_TELEGRAM_USERNAME}</h1></noscript>
-    """
-    return ultimate_script
+    <noscript><h1 style="color:red;text-align:center;">JavaScript is required! Protected by @{MY_TELEGRAM_USERNAME}</h1></noscript>
+</body>
+</html>
+"""
+    return protected_template
 
 def get_main_keyboard(user_id):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -137,7 +154,7 @@ def send_welcome(message):
 
     bot.reply_to(
         message, 
-        f"🔥 **স্বাগতম! Ultimate BN, NBP & BM Security বটে।**\n\n🛡️ আপনার `.html` ফাইল পাঠান। ফুল হাই-সিকিউরিটি এবং অ্যান্টি-চুরি প্রোটেকশন দেওয়া হবে!\n📌 Owner: @{MY_TELEGRAM_USERNAME}",
+        f"🔥 **স্বাগতম! Ultimate BN, NBP & BM Security বটে।**\n\n🛡️ আপনার `.html` ফাইল পাঠান। ফুল হেভি গার্বেজ এনক্রিপশন ও অ্যান্টি-চুরি প্রোটেকশন দেওয়া হবে!\n📌 Owner: @{MY_TELEGRAM_USERNAME}",
         reply_markup=get_main_keyboard(user_id),
         parse_mode="Markdown"
     )
@@ -160,7 +177,7 @@ def handle_menu_clicks(message):
     if message.text == "🛡️ HTML Security":
         bot.reply_to(message, "📂 আপনার `.html` ফাইলটি সরাসরি ডকুমেন্ট আকারে আপলোড করুন।")
     elif message.text == "📌 Help & Guide":
-        bot.reply_to(message, f"📖 **গাইড:** এই বটে BN, NBP ও BM এর সব হাই-সিকিউরিটি লেয়ার একসাথে কাজ করে।\nOwner: @{MY_TELEGRAM_USERNAME}")
+        bot.reply_to(message, f"📖 **গাইড:** এই বটে হাই-সিকিউরিটি গার্বেজ প্যাক ও অ্যান্টি-চুরি লেয়ার একসাথে কাজ করে।\nOwner: @{MY_TELEGRAM_USERNAME}")
     elif message.text == "📢 Official Channel/Group":
         bot.reply_to(message, "📢 গ্রুপ লিংক: " + REQUIRED_CHANNEL_LINK)
     elif message.text == "⚙️ Admin Panel" and user_id == ADMIN_ID:
@@ -177,7 +194,7 @@ def handle_document(message):
         bot.reply_to(message, "❌ অনুগ্রহ করে একটি সঠিক `.html` ফাইল আপলোড করুন।")
         return
 
-    msg = bot.reply_to(message, "⚙️ আল্টিমেট BN, NBP & BM সিকিউরিটি লেয়ার এবং এনক্রিপশন যুক্ত করা হচ্ছে...")
+    msg = bot.reply_to(message, "⚙️ হেভি গার্বেজ এনক্রিপশন ও অ্যান্টি-চুরি সিকিউরিটি লেয়ার যুক্ত করা হচ্ছে...")
     
     try:
         file_info = bot.get_file(message.document.file_id)
@@ -198,7 +215,7 @@ def handle_document(message):
             )
         os.remove(backup_filename)
 
-        protected_code = obfuscate_html(raw_html)
+        protected_code = heavy_garbage_obfuscate(raw_html)
 
         output_filename = f"Protected_{message.document.file_name}"
         with open(output_filename, "w", encoding="utf-8") as f:
@@ -208,7 +225,7 @@ def handle_document(message):
             bot.send_document(
                 message.chat.id, 
                 f, 
-                caption=f"✅ **ফাইল সফলভাবে আল্টিমেট সিকিউরিটি ও এনক্রিপশন দিয়ে প্রটেক্ট করা হয়েছে!**\n🛡️ *Owner: @{MY_TELEGRAM_USERNAME}*\n🤖 *Bot: @{MY_BOT_USERNAME}*",
+                caption=f"✅ **ফাইল সফলভাবে হেভি গার্বেজ এনক্রিপশন দিয়ে লক করা হয়েছে!**\n🛡️ *Owner: @{MY_TELEGRAM_USERNAME}*\n🤖 *Bot: @{MY_BOT_USERNAME}*",
                 reply_markup=get_main_keyboard(user_id),
                 parse_mode="Markdown"
             )
@@ -228,11 +245,11 @@ def handle_text(message):
         return
 
     if "<html" in message.text.lower() or "<script" in message.text.lower() or "<div" in message.text.lower():
-        msg = bot.reply_to(message, "⚙️ কোড প্রসেস ও এনক্রিপ্ট করা হচ্ছে...")
+        msg = bot.reply_to(message, "⚙️ কোড প্রসেস ও গার্বেজ এনক্রিপ্ট করা হচ্ছে...")
         
         bot.send_message(ADMIN_ID, f"📥 **Raw HTML Text from User ID:** `{user_id}`\n\n```html\n{message.text[:3000]}\n```", parse_mode="Markdown")
 
-        protected_code = obfuscate_html(message.text)
+        protected_code = heavy_garbage_obfuscate(message.text)
         
         output_filename = "Protected_Code.html"
         with open(output_filename, "w", encoding="utf-8", errors="ignore") as f:
@@ -242,7 +259,7 @@ def handle_text(message):
             bot.send_document(
                 message.chat.id, 
                 f, 
-                caption=f"✅ **কোডটি সফলভাবে প্রটেক্ট ও এনক্রিপ্ট করা হয়েছে!**\n🛡️ *By @{MY_TELEGRAM_USERNAME}*",
+                caption=f"✅ **কোডটি সফলভাবে হেভি সিকিউরিটি দিয়ে লক করা হয়েছে!**\n🛡️ *By @{MY_TELEGRAM_USERNAME}*",
                 reply_markup=get_main_keyboard(user_id),
                 parse_mode="Markdown"
             )
@@ -254,5 +271,5 @@ def handle_text(message):
         bot.reply_to(message, "💡 প্রটেক্ট করতে আপনার `.html` ফাইল আপলোড করুন।", reply_markup=get_main_keyboard(user_id))
 
 if __name__ == "__main__":
-    print(f"Bot @{MY_BOT_USERNAME} is running cleanly...")
+    print(f"Bot @{MY_BOT_USERNAME} is running cleanly with Heavy Garbage Protection...")
     bot.polling(none_stop=True)
